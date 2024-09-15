@@ -1,13 +1,126 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bg-color: #171717;
+    --main-color: #facc15;
+    --sub-color: #cbd5e1;
+    --sub-accent-color: #64748b;
+    --text-color: #52525b;
+    --mistake-color: #e11d48;
+    --text-correct-color: #e4e4e7;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+body {
+    user-select: none;
+    @apply font-mono
+}
+
+.page-content {
+    background-color: var(--bg-color);
+}
+
+.header {
+    color: var(--sub-color)
+}
+
+.timer, .words-countdown {
+    color: var(--main-color)
+}
+
+.words-container {
+    overflow: visible clip;
+    transition: all 0.15s ease;
+}
+
+.blur-warning {
+    color: var(--sub-color)
+}
+
+.base {
+    color: var(--text-color);
+    @apply text-3xl font-semibold
+}
+
+.correct {
+    color: var(--text-correct-color);
+    @apply text-3xl font-semibold
+}
+
+.incorrect {
+    color: var(--mistake-color);
+    @apply text-3xl text-rose-600 font-semibold
+}
+.mode {
+    background-color: var(--sub-accent-color);
+    color: var(--sub-color)
+}
+
+.mode-btn {
+    color: var(--sub-color)
+}
+
+.mode-active {
+    color: var(--main-color)
+}
+
+.result-left {
+    p {
+        color: var(--text-color);
+
+        span {
+            color: var(--main-color);
+        }
+    }
+
+}
+
+.result-footer {
+    p {
+        color: var(--text-color);
+
+        span {
+            color: var(--main-color);
+        }
+    }
+
+}
+
+.chart-line {
+    stroke: var(--main-color);
+}
+
+.caret {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2rem;
+    top: 5%;
+    left: -1px;
+    opacity: 0.6;
+    transition: transform 0.2s ease-out;
+    animation: caret-animation 2s infinite;
+    @apply bg-yellow-400
+  }
+
+
+@keyframes caret-animation {
+    0% {
+        opacity: 0;
+    }
+    
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
