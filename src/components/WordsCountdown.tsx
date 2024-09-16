@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { getWpm } from "../utils/resultUtil";
-import { ResultData } from "../types/types";
+import { GameSettings, ResultData } from "../types/types";
 import { useTypeSettings } from "../contexts/TypeSettingsContext";
 
 interface WordsCountdownProps {
@@ -15,9 +15,10 @@ interface WordsCountdownProps {
   isGameStarted: boolean;
   currentWordsAmount: number;
   resultData: ResultData;
+  avgWordLength: number;
   setResultData: Dispatch<SetStateAction<ResultData>>;
   callback: () => void;
-  setTime:Dispatch<SetStateAction<number>>
+  setGameSettings: Dispatch<SetStateAction<GameSettings>>
 }
 
 const WordsCountdown: React.FC<WordsCountdownProps> = ({
@@ -25,17 +26,27 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   currentWordsAmount,
   isGameStarted,
   resultData,
+  avgWordLength,
   setResultData,
   callback,
-  setTime
+  setGameSettings
 }) => {
-  const { typeSettings, setTypeSettings } = useTypeSettings();
   const [timerId, setTimerId] = useState<null | NodeJS.Timeout>(null);
   const [totalTime, setTotalTime] = useState(0);
   const prevMistakesRef = useRef(resultData.mistakes);
+  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } = resultData;
+
 
   const wpm = useMemo(() => {
-    return getWpm(resultData.totalChars, resultData.mistakes, 4, totalTime);
+    const lastDetectedMistake = mistakesPerMin.length - 1;
+    const wpm = getWpm(
+      correctChars,
+      lastDetectedMistake,
+      avgWordLength,
+      totalTime
+    );
+    return wpm
+
   }, [resultData, totalTime]);
 
   useEffect(() => {
@@ -72,7 +83,6 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
       }));
       prevMistakesRef.current = resultData.mistakes;
     } else {
-      console.log(prevMistakesRef.current, resultData.mistakes);
       setResultData((prevData) => ({
         ...prevData,
         mistakesPerMin: [...prevData.mistakesPerMin, 0],
@@ -83,7 +93,7 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   useEffect(() => {
     if (currentWordsAmount === totalWords) {
       callback();
-      setTime(totalTime)
+      setGameSettings((prevData) => ({...prevData, time:totalTime}))
     }
   }, [currentWordsAmount]);
 
