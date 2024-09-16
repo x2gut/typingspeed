@@ -6,13 +6,15 @@ const RestartButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   const {theme, handleThemeChange} = useTheme()
 
   const memorizedComponent = useMemo(() => {
+    const {colors} = useTheme();
     return <button
-      className="my-3 p-3 hover:bg-gray-800 rounded-xl transition-all 0.3s"
+      className="restart-btn my-3 p-3 relative"
       onClick={() => {
         onClick()
       }}
+      tabIndex={2}
     >
-      <MdOutlineRestartAlt color="#52525b" size={28} />
+      <MdOutlineRestartAlt size={28} color={colors.subColor}/>
     </button>;
   }, [onClick]);
   return memorizedComponent;
