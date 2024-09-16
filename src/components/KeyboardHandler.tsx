@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import checkLetter from "../utils/checkLetter";
 import {
+  setCorrectChars,
   setMistakes,
-  setTotalChars,
   setWordsAmount,
 } from "../utils/resultUtil";
-import { LetterStates, ResultData } from "../types/types";
+import { GameSettings, LetterStates, ResultData } from "../types/types";
 
 interface KeyboardHandlerProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -16,8 +16,7 @@ interface KeyboardHandlerProps {
   setCurrentWordIndex: Dispatch<SetStateAction<number>>;
   setCurrentLetterIndex: Dispatch<SetStateAction<number>>;
   setLetterStates: Dispatch<SetStateAction<LetterStates>>;
-  setIsGameStarted: (started: boolean) => void;
-  setIsTimeOut: Dispatch<SetStateAction<boolean>>;
+  setGameSettings: Dispatch<SetStateAction<GameSettings>>
   setSlicedIndex: Dispatch<
     SetStateAction<{ startIndex: number; endIndex: number }>
   >;
@@ -36,8 +35,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   setCurrentWordIndex,
   setCurrentLetterIndex,
   setLetterStates,
-  setIsGameStarted,
-  setIsTimeOut,
+  setGameSettings,
   setSlicedIndex,
   letterStates,
   wordsList,
@@ -65,7 +63,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
         letterStates[currentWordIndex]
       ).filter((value) => value === "incorrect").length;
 
-      const totalChars =
+      const correctChars =
         Object.values(letterStates[currentWordIndex]).length - countMistakes;
 
       if (countMistakes === 0) {
@@ -73,7 +71,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
       }
 
       setMistakes(countMistakes, setResultData);
-      setTotalChars(totalChars, setResultData);
+      setCorrectChars(correctChars, setResultData);
     }
   };
 
@@ -102,17 +100,26 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   const handleBackSpacePressed = () => {
     if (currentLetterIndex === 0) {
       if (currentWordIndex > 0) {
-        setCurrentWordIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-  
-        const prevLetterIndex = Object.keys(letterStates[currentWordIndex - 1] || {}).length;
-  
-        setCurrentLetterIndex(prevLetterIndex);
+        // backspacing only words which has mistake(s)
+        if (
+          Object.values(letterStates[currentWordIndex - 1]).includes(
+            "incorrect"
+          )
+        ) {
+          setCurrentWordIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+
+          const prevLetterIndex = Object.keys(
+            letterStates[currentWordIndex - 1] || {}
+          ).length;
+
+          setCurrentLetterIndex(prevLetterIndex);
+        }
       }
     } else {
       setCurrentLetterIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-  
+
       const prevLetterIndex = Math.max(currentLetterIndex - 1, 0);
-  
+
       setLetterStates((prevData) => ({
         ...prevData,
         [currentWordIndex]: {
@@ -136,8 +143,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
           currentLetterIndex
         );
         if (checkedStatus && checkedStatus !== "SkipKey") {
-          setIsGameStarted(true);
-          setIsTimeOut(false);
+          setGameSettings((prevData) => ({...prevData, isGameStarted: true, isTimeOut: false}))
         }
         switch (checkedStatus) {
           case "GameCompleted":
@@ -171,7 +177,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
     handleNextLetter,
     handleMisstake,
     handleBackSpacePressed,
-    setIsGameStarted,
+    setGameSettings,
     letterStates,
     wordsList,
   ]);
