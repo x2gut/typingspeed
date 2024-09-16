@@ -13,21 +13,23 @@ interface TimerProps {
   remainingTime: number;
   callback: () => void;
   resultData: ResultData;
-  avgWordsLength: number;
+  avgWordLength: number;
   setResultData: Dispatch<SetStateAction<ResultData>>;
 }
 
 const Timer: React.FC<TimerProps> = ({
   isGameStarted,
   remainingTime,
-  avgWordsLength,
   callback,
   resultData,
+  avgWordLength,
   setResultData,
 }) => {
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
   const [timeLeft, setTimeLeft] = useState(remainingTime);
   const prevMistakesRef = useRef(resultData.mistakes);
+  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } = resultData;
+
 
   useEffect(() => {
     setTimeLeft(remainingTime);
@@ -60,10 +62,11 @@ const Timer: React.FC<TimerProps> = ({
 
   useEffect(() => {
     let totalTime: number = remainingTime - timeLeft;
+    const lastDetectedMistake = mistakesPerMin.length - 1;
     const wpm = getWpm(
-      resultData.totalChars,
-      resultData.mistakes,
-      avgWordsLength,
+      correctChars,
+      mistakesPerMin[lastDetectedMistake],
+      avgWordLength,
       totalTime
     );
     setResultData((prevData) => ({
@@ -71,13 +74,13 @@ const Timer: React.FC<TimerProps> = ({
       wordsPerMin: [...prevData.wordsPerMin, wpm],
     }));
     // SETTING MISTAKES
-    if (resultData.mistakes !== prevMistakesRef.current) {
-      const mistakes = resultData.mistakes - prevMistakesRef.current;
+    if (mistakes !== prevMistakesRef.current) {
+      const newMistakes = mistakes - prevMistakesRef.current;
       setResultData((prevData) => ({
         ...prevData,
         mistakesPerMin: [...prevData.mistakesPerMin, mistakes],
       }));
-      prevMistakesRef.current = resultData.mistakes;
+      prevMistakesRef.current = mistakes;
     } else {
       setResultData((prevData) => ({
         ...prevData,

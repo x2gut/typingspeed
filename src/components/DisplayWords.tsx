@@ -7,10 +7,12 @@ import restartTyping from "../utils/restartTyping";
 import Result from "./Result";
 import shuffleArray from "../helpers/shuffleArray";
 import BlurWarning from "./BlurWarning";
-import { LetterStates, ResultData } from "../types/types";
+import { GameSettings, LetterStates, ResultData } from "../types/types";
 import getAvgWordLength from "../helpers/getAvgWordLength";
 import { useTypeSettings } from "../contexts/TypeSettingsContext";
 import WordsCountdown from "./WordsCountdown";
+import useContainerDimensions from "./hooks/useContainerDimensions";
+import useResultData from "./hooks/useResultData";
 
 interface DisplayWordsProps {
   wordsList: string[];
@@ -19,38 +21,21 @@ interface DisplayWordsProps {
 const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
-  const [isFocused, setIsFocused] = useState<boolean>(false);
   const [letterStates, setLetterStates] = useState<LetterStates>({});
-
-  const [slicedIndex, setSlicedIndex] = useState({
-    startIndex: 0,
-    endIndex: 0,
-  });
-  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
-  const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
-  const [wordsPerContainer, setWordsPerContainer] = useState<number>(0);
-  const { typeSettings, setTypeSettings } = useTypeSettings();
-  const [time, setTime] = useState(typeSettings.time);
+  const { typeSettings } = useTypeSettings();
   const [shuffledWords, setShuffledWords] = useState(wordsList);
-  const wordsContainerRef = useRef<HTMLDivElement>(null);
-  const [resultData, setResultData] = useState<ResultData>({
-    wordsPerMin: [],
-    mistakes: 0,
-    totalChars: 0,
-    wordsAmount: 0,
-    mistakesPerMin: []
+  const [gameSettings, setGameSettings] = useState<GameSettings>({
+    isFocused: false,
+    isGameStarted: false,
+    isTimeOut: false,
+    time: typeSettings.time,
   });
   const [avgWordsLength, setAvgWordsLength] = useState<number>(0);
+  const wordsContainerRef = useRef<HTMLDivElement>(null);
 
-  const resetResultData = () => {
-    setResultData({
-      wordsPerMin: [],
-      mistakes: 0,
-      totalChars: 0,
-      wordsAmount: 0,
-      mistakesPerMin: []
-    });
-  };
+  const { wordsPerContainer, slicedIndex, setSlicedIndex } =
+    useContainerDimensions(wordsContainerRef, gameSettings.isTimeOut);
+  const { resultData, setResultData, resetResultData } = useResultData();
 
   useEffect(() => {
     setShuffledWords(shuffleArray(wordsList));
@@ -58,23 +43,12 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
     setAvgWordsLength(averageWordLength);
     handleEndGame();
     resetResultData();
-    setIsTimeOut(false)
-    setTime(typeSettings.time)
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      isTimeOut: false,
+      time: typeSettings.time,
+    }));
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
-
-  useEffect(() => {
-    if (wordsContainerRef.current) {
-      const containerWidth = wordsContainerRef.current.offsetWidth;
-      const containerHeight = wordsContainerRef.current.offsetHeight;
-      const avgWordWidth = 100;
-      const avgWordHeight = 16.5 + 16 + 28;
-      const wordsAmountPerLine = Math.floor(containerWidth / avgWordWidth);
-      const LinesAmount = Math.floor(containerHeight / avgWordHeight);
-      const wordsPerContainer = wordsAmountPerLine * LinesAmount;
-      setWordsPerContainer(wordsPerContainer);
-      setSlicedIndex({ ...slicedIndex, endIndex: wordsPerContainer });
-    }
-  }, [isTimeOut]);
 
   const handleEndGame = () => {
     restartTyping(
@@ -84,57 +58,74 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
       setSlicedIndex,
       wordsPerContainer
     );
-    setIsGameStarted(false);
+    setGameSettings((prevSettings) => ({ ...prevSettings, isTimeOut: false, isGameStarted: false }));
     setShuffledWords(shuffleArray(wordsList));
   };
 
   return (
     <>
-      {isTimeOut ? (
-        <Result resultData={resultData} totalTime={time} />
+      {gameSettings.isTimeOut ? (
+        <Result resultData={resultData} avgWordLength={avgWordsLength} />
       ) : (
         <>
           {typeSettings.mode === "time" ? (
             <Timer
-              isGameStarted={isGameStarted}
+              isGameStarted={gameSettings.isGameStarted}
               remainingTime={typeSettings.time}
               resultData={resultData}
               setResultData={setResultData}
-              avgWordsLength={avgWordsLength}
+              avgWordLength={avgWordsLength}
               callback={() => {
                 handleEndGame();
-                setIsTimeOut(true);
+                setGameSettings((prevSettings) => ({
+                  ...prevSettings,
+                  isTimeOut: true,
+                }));
               }}
             />
           ) : (
             <WordsCountdown
               totalWords={typeSettings.words}
               currentWordsAmount={resultData.wordsAmount}
-              isGameStarted={isGameStarted}
+              isGameStarted={gameSettings.isGameStarted}
               resultData={resultData}
+              avgWordLength={avgWordsLength}
               setResultData={setResultData}
-              setTime={setTime}
+              setGameSettings={setGameSettings}
               callback={() => {
                 handleEndGame();
-                setIsTimeOut(true);
+                setGameSettings((prevSettings) => ({
+                  ...prevSettings,
+                  isTimeOut: true,
+                }));
               }}
             />
           )}
           <div
             className={`blur-warning ${
-              isFocused ? "hidden" : "visible"
+              gameSettings.isFocused ? "hidden" : "visible"
             } absolute`}
           >
             <BlurWarning />
           </div>
           <div
             className={`words-container flex gap-4 max-w-7xl max-h-60 h-full w-full min-h-52 flex-wrap p-7 justify-center outline-none ${
-              !isFocused ? "blur opacity-40" : ""
+              !gameSettings.isFocused ? "blur opacity-40" : ""
             }`}
             ref={wordsContainerRef}
-            tabIndex={0}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            tabIndex={1}
+            onFocus={() =>
+              setGameSettings((prevSettings) => ({
+                ...prevSettings,
+                isFocused: true,
+              }))
+            }
+            onBlur={() =>
+              setGameSettings((prevSettings) => ({
+                ...prevSettings,
+                isFocused: false,
+              }))
+            }
           >
             {shuffledWords
               .slice(slicedIndex.startIndex, slicedIndex.endIndex)
@@ -152,7 +143,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
           {wordsContainerRef.current && (
             <KeyboardHandler
               containerRef={wordsContainerRef}
-              isGameStarted={isGameStarted}
+              isGameStarted={gameSettings.isGameStarted}
               currentWordIndex={currentWordIndex}
               currentLetterIndex={currentLetterIndex}
               setCurrentWordIndex={setCurrentWordIndex}
@@ -161,8 +152,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
               setSlicedIndex={setSlicedIndex}
               wordsPerContainer={wordsPerContainer}
               slicedIndex={slicedIndex}
-              setIsGameStarted={setIsGameStarted}
-              setIsTimeOut={setIsTimeOut}
+              setGameSettings={setGameSettings}
               letterStates={letterStates}
               wordsList={wordsList}
               setResultData={setResultData}
@@ -173,8 +163,14 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
       <RestartButton
         onClick={() => {
           handleEndGame();
-          setIsTimeOut(false);
+          setGameSettings((prevSettings) => ({
+            ...prevSettings,
+            isTimeOut: false,
+          }));
           resetResultData();
+          if (wordsContainerRef.current)  {
+            wordsContainerRef.current.focus();
+          }
         }}
       />
     </>

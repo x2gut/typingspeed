@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ResultData } from "../types/types";
-import LineChart from "./LineChart";
+import LineChart from "./rechart/LineChart";
 import { getAccuracy } from "../helpers/getAccuray";
 import { useTypeSettings } from "../contexts/TypeSettingsContext";
 
 interface ResultProps {
   resultData: ResultData;
-  totalTime: number;
+  avgWordLength: number;
 }
 
-const Result: React.FC<ResultProps> = ({ resultData, totalTime }) => {
+const Result: React.FC<ResultProps> = ({ resultData, avgWordLength }) => {
   const { typeSettings, setTypeSettings } = useTypeSettings();
   const [data, setData] = useState<{ second: number; wpm: number, mpm: number }[]>([
     {
@@ -19,9 +19,9 @@ const Result: React.FC<ResultProps> = ({ resultData, totalTime }) => {
     },
   ]);
 
-  const { wordsPerMin, mistakes, totalChars, mistakesPerMin } = resultData;
+  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } = resultData;
   useEffect(() => {
-    const generatedData = Array.from({ length: totalTime }, (_, i) => ({
+    const generatedData = Array.from({ length: wordsPerMin.length }, (_, i) => ({
       second: i + 1,
       wpm: wordsPerMin[i] || 0,
       mpm: mistakesPerMin[i] || 0
@@ -29,12 +29,8 @@ const Result: React.FC<ResultProps> = ({ resultData, totalTime }) => {
     setData(generatedData);
   }, []);
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
-
   const latestWPM = wordsPerMin[wordsPerMin.length - 1];
-  const accuracy = Math.round(getAccuracy(totalChars, mistakes));
+  const accuracy = Math.round(getAccuracy(wordsAmount, avgWordLength, mistakes, correctChars));
 
   return (
     <div className="result-container w-full h-full min-h-96">
@@ -58,11 +54,11 @@ const Result: React.FC<ResultProps> = ({ resultData, totalTime }) => {
         </p>
         <p className="type-mode text-2xl ">
           <span className="">characters </span>
-          {totalChars}
+          {correctChars + mistakes}
         </p>
         <p className="type-mode text-2xl">
           <span className="">total time </span>
-          {typeSettings.time}s
+          {wordsPerMin.length}s
         </p>
       </div>
     </div>
