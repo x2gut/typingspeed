@@ -8,14 +8,14 @@ const Header = () => {
       <div className="header-left">
         <div className="header-logo">
           <a  className= "flex items-center gap-3"href="/">
-            <FaKeyboard size={52} color="#94a3b8"/>
+            <FaKeyboard size={52}/>
             <p className="text-3xl font-bold">TypeTest</p>
           </a>
         </div>
       </div>
       <div className="header-right flex items-center">
         <div className="user">
-            <a className="" href=""><FaRegUser size={28} color="#94a3b8"/>
+            <a className="" href=""><FaRegUser size={28} />
             </a>
         </div>
       </div>
