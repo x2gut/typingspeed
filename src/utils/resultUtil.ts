@@ -13,15 +13,15 @@ export const setMistakes = (
   }));
 };
 
-export const setTotalChars = (
-  totalChars: number,
+export const setCorrectChars = (
+  correctChars: number,
   setResultData: Dispatch<
     SetStateAction<ResultData>
   >
 ) => {
   setResultData((prevData) => ({
     ...prevData,
-    totalChars: prevData.totalChars + totalChars,
+    correctChars: prevData.correctChars + correctChars,
   }));
 };
 
@@ -33,13 +33,13 @@ export const setWordsAmount = (setResultData: Dispatch<SetStateAction<ResultData
 }
 
 export const getWpm = (
-  totalChars: number,
+  correctChars: number,
   mistakes: number,
   avgWordLength: number,
   totalTime: number
 ) => {
   let wpm = Math.round(
-    ((totalChars - mistakes) / avgWordLength / totalTime) * 60
+    (correctChars / avgWordLength / totalTime) * 60
   );
   wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
   return wpm;
