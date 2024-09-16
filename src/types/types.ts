@@ -1,7 +1,7 @@
 export type ResultData = {
   wordsPerMin: number[];
   mistakes: number;
-  totalChars: number;
+  correctChars: number;
   wordsAmount: number;
   mistakesPerMin: number[];
 };
@@ -14,4 +14,11 @@ export type TypeSettings = {
   mode: string;
   time: number;
   words: number;
+}
+
+export type GameSettings = {
+  isFocused: boolean,
+  isGameStarted: boolean,
+  isTimeOut: boolean,
+  time: number
 }
