@@ -1,16 +1,18 @@
 import React from "react";
 import { TooltipProps } from "recharts";
+import { useTheme } from "../../contexts/ThemeProvider";
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   active,
   payload,
 }) => {
   if (active && payload && payload.length) {
+    const { colors } = useTheme();
     return (
       <div
         className="custom-tooltip"
         style={{
-          color: "white",
+          color: colors.correctTextColor,
           backgroundColor: "transparent",
           border: "1px solid #ccc",
           padding: "10px",
@@ -18,12 +20,26 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
         }}
       >
         <p className="label">{`Second: ${payload[0].payload.second}`}</p>
-        <p className="wpm"><span style={{
-            color: "#facc15"
-        }}>WPM</span> {payload[0].payload.wpm}</p>
-        <p className="mistakes"><span style={{
-            color: "#be123c"
-        }}>Mistakes</span> {payload[0].payload.mpm}</p>
+        <p className="wpm" style={{ color: colors.correctTextColor }}>
+          <span
+            style={{
+              color: colors.mainColor,
+            }}
+          >
+            WPM
+          </span>{" "}
+          {payload[0].payload.wpm}
+        </p>
+        <p className="mistakes">
+          <span
+            style={{
+              color: colors.mistakeColor,
+            }}
+          >
+            Mistakes
+          </span>{" "}
+          {payload[0].payload.mpm}
+        </p>
       </div>
     );
   }
