@@ -5,39 +5,56 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+import { themes } from "../themes/themes";
 
 const ThemeContext = createContext<any>(null);
 
 export const useTheme = () => {
-    return useContext(ThemeContext);
-  };
+  return useContext(ThemeContext);
+};
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [theme, setTheme] = useState("base");
+  const [colors, setColors] = useState({
+    mainColor: "#facc15",
+    subColor: "#cbd5e1",
+    mistakeColor: "#e11d48",
+    correctTextColor: "#e4e4e7"
+  });
 
   const applyTheme = (theme: string) => {
+    const newTheme = themes[theme];
     const root = document.documentElement;
-    if (theme === "base") {
-      root.style.setProperty("--bg-color", "#171717");
-      root.style.setProperty("--main-color", "#facc15");
-      root.style.setProperty("--sub-color", "#cbd5e1");
-      root.style.setProperty("-sub-accent-color", "#64748b");
-      root.style.setProperty("--text-color", "#52525b");
-      root.style.setProperty(" --mistake-color", "#e11d48");
-      root.style.setProperty("--text-correct-color", "#e4e4e7");
-    }
-
-    if (theme === "matcha") {
-      root.style.setProperty("--bg-color", "#44624a");
-      root.style.setProperty("--main-color", "#ffffff")
-      root.style.setProperty("--sub-color", "#8ba888");
-      root.style.setProperty("-sub-accent-color", "#64748b");
-      root.style.setProperty("--text-color", "#f1ebe1");
-      root.style.setProperty(" --mistake-color", "#e11d48");
-      root.style.setProperty("--text-correct-color", "#ffffff");
-
+    for (const key in newTheme) {
+      root.style.setProperty(key, newTheme[key]);
+      if (key === "--main-color") {
+        setColors((prevColors) => ({
+          ...prevColors,
+          mainColor: newTheme[key],
+        }));
+      } else if (key === "--sub-color") {
+        setColors((prevColors) => ({
+          ...prevColors,
+          subColor: newTheme[key],
+        }));
+      } else if (key === "--mistake-color") {
+        setColors((prevColors) => ({
+          ...prevColors,
+          mistakeColor: newTheme[key],
+        }));
+      } else if (key === "--text--corect-color") {
+        setColors((prevColors) => ({
+          ...prevColors,
+          correctTextColor: newTheme[key],
+        }));
+      } else if (key === "--bg-color") {
+        setColors((prevColors) => ({
+          ...prevColors,
+          bgColor: newTheme[key],
+        }));
+      }
     }
   };
 
@@ -54,7 +71,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, handleThemeChange }}>
+    <ThemeContext.Provider value={{ theme, colors, handleThemeChange }}>
       {children}
     </ThemeContext.Provider>
   );

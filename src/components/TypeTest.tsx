@@ -4,6 +4,8 @@ import Header from "./Header";
 import TypeSettingsMenu from "./TypeSettingsMenu";
 import { TypeSettingsProvider } from "../contexts/TypeSettingsContext";
 import { ThemeProvider } from "../contexts/ThemeProvider";
+import FooterCommands from "./FooterCommands";
+import ThemesSidebar from "./ThemesSidebar";
 const TypeTest: React.FC = () => {
   const words: string[] = [
     "apple",
@@ -125,9 +127,11 @@ const TypeTest: React.FC = () => {
         <div className="ml-auto mr-auto max-w-7xl w-full min-h-screen">
           <Header />
           <TypeSettingsMenu />
+          <ThemesSidebar />
           <div className="display-words w-full h-full flex justify-center items-center flex-col my-52">
             <DisplayWords wordsList={words} />
           </div>
+          <FooterCommands />
         </div>
       </div>
       </ThemeProvider>
