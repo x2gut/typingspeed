@@ -37,6 +37,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
     useContainerDimensions(wordsContainerRef, gameSettings.isTimeOut);
   const { resultData, setResultData, resetResultData } = useResultData();
 
+  // Reset words container and result data
   useEffect(() => {
     setShuffledWords(shuffleArray(wordsList));
     const averageWordLength = getAvgWordLength(shuffledWords);
@@ -58,7 +59,11 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
       setSlicedIndex,
       wordsPerContainer
     );
-    setGameSettings((prevSettings) => ({ ...prevSettings, isTimeOut: false, isGameStarted: false }));
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      isTimeOut: false,
+      isGameStarted: false,
+    }));
     setShuffledWords(shuffleArray(wordsList));
   };
 
@@ -168,7 +173,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
             isTimeOut: false,
           }));
           resetResultData();
-          if (wordsContainerRef.current)  {
+          if (wordsContainerRef.current) {
             wordsContainerRef.current.focus();
           }
         }}

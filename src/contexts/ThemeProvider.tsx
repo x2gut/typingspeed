@@ -21,7 +21,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     mainColor: "#facc15",
     subColor: "#cbd5e1",
     mistakeColor: "#e11d48",
-    correctTextColor: "#e4e4e7"
+    correctTextColor: "#e4e4e7",
   });
 
   const applyTheme = (theme: string) => {
@@ -44,7 +44,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
           ...prevColors,
           mistakeColor: newTheme[key],
         }));
-      } else if (key === "--text--corect-color") {
+      } else if (key === "--text-corect-color") {
         setColors((prevColors) => ({
           ...prevColors,
           correctTextColor: newTheme[key],
