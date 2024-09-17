@@ -119,19 +119,20 @@ const TypeTest: React.FC = () => {
     "fork",
     "spoon",
   ];
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
   return (
     <TypeSettingsProvider>
       <ThemeProvider>
       <div className="page-content min-h-screen">
         <div className="ml-auto mr-auto max-w-7xl w-full min-h-screen">
-          <Header />
-          <TypeSettingsMenu />
-          <ThemesSidebar />
+          <Header className={isGameStarted ? "focus" : ""}/>
+          <TypeSettingsMenu className={isGameStarted ? "focus" : ""}/>
+          <ThemesSidebar className={isGameStarted ? "focus" : ""}/>
           <div className="display-words w-full h-full flex justify-center items-center flex-col my-52">
-            <DisplayWords wordsList={words} />
+            <DisplayWords wordsList={words} setIsGameStarted={setIsGameStarted}/>
           </div>
-          <FooterCommands />
+          <FooterCommands className={isGameStarted ? "focus" : ""}/>
         </div>
       </div>
       </ThemeProvider>

@@ -2,9 +2,13 @@ import React from "react";
 import { FaKeyboard } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 
-const Header = () => {
+interface HeaderProps {
+  className: string
+}
+
+const Header: React.FC<HeaderProps> = ( { className } ) => {
   return (
-    <header className="header flex justify-between py-4">
+    <header className={`header flex justify-between py-4 transition-opacity ${className}`}>
       <div className="header-left">
         <div className="header-logo">
           <a  className= "flex items-center gap-3"href="/">

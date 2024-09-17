@@ -9,7 +9,7 @@ const RestartButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   const memorizedComponent = useMemo(() => {
     return (
       <button
-        className="restart-btn my-3 p-3 relative"
+        className="restart-btn my-3 p-3 relative outline-none"
         onClick={() => {
           onClick();
         }}

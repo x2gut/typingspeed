@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import Word from "./Word";
 import Timer from "./Timer";
 import KeyboardHandler from "./KeyboardHandler";
@@ -16,9 +16,10 @@ import useResultData from "./hooks/useResultData";
 
 interface DisplayWordsProps {
   wordsList: string[];
+  setIsGameStarted: Dispatch<SetStateAction<boolean>>
 }
 
-const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
+const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [letterStates, setLetterStates] = useState<LetterStates>({});
@@ -50,6 +51,10 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
       time: typeSettings.time,
     }));
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
+
+  useEffect(() => {
+    setIsGameStarted(gameSettings.isGameStarted)
+  }, [gameSettings.isGameStarted])
 
   const handleEndGame = () => {
     restartTyping(
@@ -159,7 +164,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList }) => {
               slicedIndex={slicedIndex}
               setGameSettings={setGameSettings}
               letterStates={letterStates}
-              wordsList={wordsList}
+              wordsList={shuffledWords}
               setResultData={setResultData}
             />
           )}

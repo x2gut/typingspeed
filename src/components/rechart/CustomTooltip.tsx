@@ -13,7 +13,8 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
         className="custom-tooltip"
         style={{
           color: colors.correctTextColor,
-          backgroundColor: "transparent",
+          backgroundColor: "rgba(60, 61, 55, 0.5)",
+          opacity: "1",
           border: "1px solid #ccc",
           padding: "10px",
           borderRadius: "4px",
