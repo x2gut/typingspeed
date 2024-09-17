@@ -155,10 +155,25 @@ body {
   margin-left: 10px;
   border: 1px solid var(--sub-color);
   padding: 25px 0px 0px 0px;
-  bottom: 50%;
   transform: translateY(50%);
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.themes-sidebar-wrappaer {
+  transform: translateX(0);
+}
+
+.themes-sidebar-wrapper.collapsed {
+  transform: translateX(-240px);
+}
+
+.sidebar-arrow-btn {
+  transition: transform 0.3s ease;
+}
+
+.sidebar-arrow-btn.rotated {
+  rotate: 180deg;
 }
 
 .themes-sidebar::-webkit-scrollbar {
@@ -167,6 +182,12 @@ body {
 
 .themes-sidebar-title {
   color: var(--main-color);
+}
+
+.focus {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .caret {
