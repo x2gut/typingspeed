@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+} from "react";
 import Word from "./Word";
 import Timer from "./Timer";
 import KeyboardHandler from "./KeyboardHandler";
@@ -11,15 +18,18 @@ import { GameSettings, LetterStates, ResultData } from "../types/types";
 import getAvgWordLength from "../helpers/getAvgWordLength";
 import { useTypeSettings } from "../contexts/TypeSettingsContext";
 import WordsCountdown from "./WordsCountdown";
-import useContainerDimensions from "./hooks/useContainerDimensions";
-import useResultData from "./hooks/useResultData";
-
+import useContainerDimensions from "../hooks/useContainerDimensions";
+import useResultData from "../hooks/useResultData";
+import Keyboard from "./responsiveKeyboard/Keyboard";
 interface DisplayWordsProps {
   wordsList: string[];
-  setIsGameStarted: Dispatch<SetStateAction<boolean>>
+  setIsGameStarted: Dispatch<SetStateAction<boolean>>;
 }
 
-const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted }) => {
+const DisplayWords: React.FC<DisplayWordsProps> = ({
+  wordsList,
+  setIsGameStarted,
+}) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [letterStates, setLetterStates] = useState<LetterStates>({});
@@ -37,10 +47,14 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted
   const { wordsPerContainer, slicedIndex, setSlicedIndex } =
     useContainerDimensions(wordsContainerRef, gameSettings.isTimeOut);
   const { resultData, setResultData, resetResultData } = useResultData();
+  const shuffledArray: string[] = useMemo(
+    () => shuffleArray(wordsList),
+    [wordsList]
+  );
 
   // Reset words container and result data
   useEffect(() => {
-    setShuffledWords(shuffleArray(wordsList));
+    setShuffledWords(shuffledArray);
     const averageWordLength = getAvgWordLength(shuffledWords);
     setAvgWordsLength(averageWordLength);
     handleEndGame();
@@ -53,8 +67,8 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
 
   useEffect(() => {
-    setIsGameStarted(gameSettings.isGameStarted)
-  }, [gameSettings.isGameStarted])
+    setIsGameStarted(gameSettings.isGameStarted);
+  }, [gameSettings.isGameStarted]);
 
   const handleEndGame = () => {
     restartTyping(
@@ -112,14 +126,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted
             />
           )}
           <div
-            className={`blur-warning ${
-              gameSettings.isFocused ? "hidden" : "visible"
-            } absolute`}
-          >
-            <BlurWarning />
-          </div>
-          <div
-            className={`words-container flex gap-4 max-w-7xl max-h-60 h-full w-full min-h-52 flex-wrap p-7 justify-center outline-none ${
+            className={`words-container flex gap-4 max-w-7xl h-52 w-full flex-wrap p-7 justify-center outline-none ${
               !gameSettings.isFocused ? "blur opacity-40" : ""
             }`}
             ref={wordsContainerRef}
@@ -150,6 +157,14 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted
                 />
               ))}
           </div>
+          <div
+            className={`blur-warning ${
+              gameSettings.isFocused ? "hidden" : "visible"
+            } absolute bottom-1/2`}
+            onClick={() => wordsContainerRef.current?.focus()}
+          >
+            <BlurWarning />
+          </div>
           {wordsContainerRef.current && (
             <KeyboardHandler
               containerRef={wordsContainerRef}
@@ -169,6 +184,9 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({ wordsList, setIsGameStarted
             />
           )}
         </>
+      )}
+      {!gameSettings.isTimeOut && (
+        <Keyboard isFocused={gameSettings.isFocused} />
       )}
       <RestartButton
         onClick={() => {
