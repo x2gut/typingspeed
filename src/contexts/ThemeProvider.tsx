@@ -29,31 +29,37 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     const root = document.documentElement;
     for (const key in newTheme) {
       root.style.setProperty(key, newTheme[key]);
-      if (key === "--main-color") {
-        setColors((prevColors) => ({
-          ...prevColors,
-          mainColor: newTheme[key],
-        }));
-      } else if (key === "--sub-color") {
-        setColors((prevColors) => ({
-          ...prevColors,
-          subColor: newTheme[key],
-        }));
-      } else if (key === "--mistake-color") {
-        setColors((prevColors) => ({
-          ...prevColors,
-          mistakeColor: newTheme[key],
-        }));
-      } else if (key === "--text-corect-color") {
-        setColors((prevColors) => ({
-          ...prevColors,
-          correctTextColor: newTheme[key],
-        }));
-      } else if (key === "--bg-color") {
-        setColors((prevColors) => ({
-          ...prevColors,
-          bgColor: newTheme[key],
-        }));
+      switch (key) {
+        case "--main-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            mainColor: newTheme[key],
+          }));
+          break;
+        case "--sub-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            subColor: newTheme[key],
+          }));
+          break;
+        case "--mistake-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            mistakeColor: newTheme[key],
+          }));
+          break;
+        case "--text-corect-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            correctTextColor: newTheme[key],
+          }));
+          break;
+        case "--bg-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            bgColor: newTheme[key],
+          }));
+          break;
       }
     }
   };
