@@ -6,7 +6,7 @@ const checkLetter = (
 ): string => {
   const currentWord = wordsList[currentWordIndex];
 
-  const skipKeys = ["Escape", "Tab", "F5"];
+  const skipKeys = ["Escape", "Tab", "F5", "Alt", "Delete", "Enter", "Shift", "Control"];
 
   if (wordsList.length <= currentWordIndex) {
     return "GameCompleted";
