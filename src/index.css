@@ -149,15 +149,16 @@ body {
 }
 
 .themes-sidebar {
-  overflow: hidden;
   overflow-y: scroll;
   margin-top: -205px;
   margin-left: 10px;
   border: 1px solid var(--sub-color);
   padding: 25px 0px 0px 0px;
   transform: translateY(50%);
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+}
+
+.themes-sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .themes-sidebar-wrappaer {
@@ -176,12 +177,64 @@ body {
   rotate: 180deg;
 }
 
-.themes-sidebar::-webkit-scrollbar {
-  display: none;
-}
-
 .themes-sidebar-title {
   color: var(--main-color);
+}
+
+.header-user {
+  position: relative;
+  z-index: 999;
+}
+
+.register-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 998;
+
+}
+
+.register-modal-form {
+  padding: 20px;
+  border-radius: 5px;
+  background-color: var(--bg-color);
+}
+
+.register-field {
+  border-radius: 5px;
+  padding: 5px;
+  color: var(--sub-color);
+  background-color: var(--sub-accent-color);
+}
+
+.register-field::placeholder {
+  color: var(--text-color);
+}
+
+.register-submit-btn {
+  background-color: var(--sub-accent-color);
+  padding: 5px;
+  border-radius: 5px;
+  color: var(--main-color);
+}
+
+.reg-modal-title {
+  color: var(--text-correct-color);
+  font-size: 18px;
+}
+
+.keyboard-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+.key {
+  color: var(--sub-color);
+  background-color: var(--sub-accent-color);
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 3px 10px;
+
 }
 
 .focus {
@@ -201,6 +254,36 @@ body {
   transition: transform 0.2s ease-out;
   animation: caret-animation 2s infinite;
   background-color: var(--main-color);
+}
+
+.keyboard-animation {
+  animation: keyboard-animation 0.3s ease-in-out;
+}
+
+@keyframes keyboard-animation {
+  0% {
+    transform: scale(1);
+    background-color: var(--sub-accent-color);
+    box-shadow: 0 0 5px var(--sub-accent-color);
+  }
+
+  30% {
+    transform: scale(1.2);
+    background-color: var(--main-color);
+    box-shadow: 0 0 10px var(--main-color);
+  }
+
+  60% {
+    transform: scale(0.9);
+    background-color: var(--sub-accent-color);
+    box-shadow: 0 0 5px var(--sub-accent-color);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: var(--sub-accent-color);
+    box-shadow: none;
+  }
 }
 
 @keyframes caret-animation {
