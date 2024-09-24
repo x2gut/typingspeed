@@ -45,9 +45,9 @@ export const themes: Themes = {
   },
   FOREST: {
     "--bg-color": "#122a22",
-    "--main-color": "#1b4033",
+    "--main-color": "#eaa09c",
     "--sub-color": "#4a6b59",
-    "--sub-accent-color": "#5e3d2b",
+    "--sub-accent-color": "#1f4e43",
     "--text-color": "#d0cfc4",
     "--mistake-color": "#b34338",
     "--text-correct-color": "#5e3d2b",
