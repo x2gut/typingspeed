@@ -1,7 +1,10 @@
-import TypeTest from "./components/TypeTest";
+import { RouterProvider } from "react-router-dom";
+import { typeTestRouter } from "./routers/routers";
 
 function App() {
-  return <TypeTest />;
+  return (
+      <RouterProvider router={typeTestRouter} />
+  );
 }
 
 export default App;
