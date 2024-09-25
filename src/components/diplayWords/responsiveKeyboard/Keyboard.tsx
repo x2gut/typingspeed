@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import useKeyPressed from "../../hooks/useKeyPressed";
 import ResponsiveLetter from "./ResponsiveLetter";
+import useKeyPressed from "../../../hooks/useKeyPressed";
 
 const keyboardKeys = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
@@ -11,25 +11,24 @@ const keyboardKeys = [
 
 interface KeyboardProps {
   isFocused: boolean;
+  isResponsive: boolean
 }
 
-const Keyboard: React.FC<KeyboardProps> = React.memo(({ isFocused }) => {
-  const { keyPressed, setKeyPressed } = useKeyPressed();
+const Keyboard: React.FC<KeyboardProps> = React.memo(({ isFocused, isResponsive }) => {
+  const { keyPressed } = useKeyPressed();
   const [pressedKeysArr, setPressedKeyArr] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log(pressedKeysArr)
-    console.log(keyPressed)
-    if (!keyPressed) return;
+    if (isFocused && isResponsive) {
+      setPressedKeyArr((prevData) => {
+        const updatedData = [...prevData, keyPressed];
 
-    setPressedKeyArr((prevData) => {
-      const updatedData = [...prevData, keyPressed];
-
-      if (updatedData.length > 2) {
-        return updatedData.slice(1);
-      }
-      return updatedData;
-    });
+        if (updatedData.length > 2) {
+          return updatedData.slice(1);
+        }
+        return updatedData;
+      });
+    }
   }, [keyPressed]);
 
   return (

@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { TypeSettings } from "../types/types";
-import { useTypeSettings } from "../contexts/TypeSettingsContext";
+import { TypeSettings } from "../../types/types";
+import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 
 interface TypeSettingsMenuProps {
   className: string;
 }
 
-const TypeSettingsMenu:React.FC<TypeSettingsMenuProps> = ({ className }) => {
+const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
   const { typeSettings, setTypeSettings } = useTypeSettings();
 
   const { mode, time, words } = typeSettings;
 
   return (
-    <div className={`type-settings my-10 flex justify-center transition-opacity ${className}`}>
+    <div
+      className={`type-settings my-10 flex justify-center transition-opacity ${className}`}
+    >
       <div className="mode flex gap-5 justify-center rounded-md p-2">
         <button
           className={mode === "words" ? "mode-btn mode-active" : "mode-btn"}

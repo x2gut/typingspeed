@@ -10,25 +10,25 @@ import Word from "./Word";
 import Timer from "./Timer";
 import KeyboardHandler from "./KeyboardHandler";
 import RestartButton from "./RestartButton";
-import restartTyping from "../utils/restartTyping";
+import restartTyping from "../../utils/restartTyping";
 import Result from "./Result";
-import shuffleArray from "../helpers/shuffleArray";
+import shuffleArray from "../../helpers/shuffleArray";
 import BlurWarning from "./BlurWarning";
-import { GameSettings, LetterStates, ResultData } from "../types/types";
-import getAvgWordLength from "../helpers/getAvgWordLength";
-import { useTypeSettings } from "../contexts/TypeSettingsContext";
+import { GameSettings, LetterStates, ResultData } from "../../types/types";
+import getAvgWordLength from "../../helpers/getAvgWordLength";
+import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import WordsCountdown from "./WordsCountdown";
-import useContainerDimensions from "../hooks/useContainerDimensions";
-import useResultData from "../hooks/useResultData";
+import useContainerDimensions from "../../hooks/useContainerDimensions";
+import useResultData from "../../hooks/useResultData";
 import Keyboard from "./responsiveKeyboard/Keyboard";
 interface DisplayWordsProps {
   wordsList: string[];
-  setIsGameStarted: Dispatch<SetStateAction<boolean>>;
+  setIsFocused: Dispatch<SetStateAction<boolean>>;
 }
 
 const DisplayWords: React.FC<DisplayWordsProps> = ({
   wordsList,
-  setIsGameStarted,
+  setIsFocused,
 }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
@@ -67,8 +67,8 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
 
   useEffect(() => {
-    setIsGameStarted(gameSettings.isGameStarted);
-  }, [gameSettings.isGameStarted]);
+    setIsFocused(gameSettings.isFocused);
+  }, [gameSettings.isFocused]);
 
   const handleEndGame = () => {
     restartTyping(
@@ -185,8 +185,8 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
           )}
         </>
       )}
-      {!gameSettings.isTimeOut && (
-        <Keyboard isFocused={gameSettings.isFocused} />
+      {typeSettings.keyboard.show && !gameSettings.isTimeOut && (
+        <Keyboard isFocused={gameSettings.isFocused} isResponsive={typeSettings.keyboard.responsive}/>
       )}
       <RestartButton
         onClick={() => {

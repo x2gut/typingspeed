@@ -1,7 +1,6 @@
 import React from "react";
 import { TooltipProps } from "recharts";
-import { useTheme } from "../../contexts/ThemeProvider";
-
+import { useTheme } from "../../../contexts/ThemeProvider";
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
   active,
   payload,

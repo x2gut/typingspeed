@@ -6,9 +6,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { getWpm } from "../utils/resultUtil";
-import { GameSettings, ResultData } from "../types/types";
-import { useTypeSettings } from "../contexts/TypeSettingsContext";
+import { getWpm } from "../../utils/resultUtil";
+import { GameSettings, ResultData } from "../../types/types";
+import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 
 interface WordsCountdownProps {
   totalWords: number;
@@ -18,7 +18,7 @@ interface WordsCountdownProps {
   avgWordLength: number;
   setResultData: Dispatch<SetStateAction<ResultData>>;
   callback: () => void;
-  setGameSettings: Dispatch<SetStateAction<GameSettings>>
+  setGameSettings: Dispatch<SetStateAction<GameSettings>>;
 }
 
 const WordsCountdown: React.FC<WordsCountdownProps> = ({
@@ -29,13 +29,13 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   avgWordLength,
   setResultData,
   callback,
-  setGameSettings
+  setGameSettings,
 }) => {
   const [timerId, setTimerId] = useState<null | NodeJS.Timeout>(null);
   const [totalTime, setTotalTime] = useState(0);
   const prevMistakesRef = useRef(resultData.mistakes);
-  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } = resultData;
-
+  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } =
+    resultData;
 
   const wpm = useMemo(() => {
     const lastDetectedMistake = mistakesPerMin.length - 1;
@@ -45,8 +45,7 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
       avgWordLength,
       totalTime
     );
-    return wpm
-
+    return wpm;
   }, [resultData, totalTime]);
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   useEffect(() => {
     if (currentWordsAmount === totalWords) {
       callback();
-      setGameSettings((prevData) => ({...prevData, time:totalTime}))
+      setGameSettings((prevData) => ({ ...prevData, time: totalTime }));
     }
   }, [currentWordsAmount]);
 

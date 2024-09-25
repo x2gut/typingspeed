@@ -44,14 +44,14 @@ export const themes: Themes = {
     "--text-correct-color": "#4b3a2f",
   },
   FOREST: {
-    "--bg-color": "#122a22",
-    "--main-color": "#eaa09c",
-    "--sub-color": "#4a6b59",
-    "--sub-accent-color": "#1f4e43",
-    "--text-color": "#d0cfc4",
-    "--mistake-color": "#b34338",
-    "--text-correct-color": "#5e3d2b",
-  },
+    '--bg-color': "#122a22",        /* Очень тёмно-зелёный фон, как густая лесная тень */
+    '--main-color': "#1b4033",      /* Основной цвет - глубокий тёмно-зелёный */
+    '--sub-color': "#4a6b59",       /* Дополнительный цвет - более светлый зелёный с сероватым оттенком */
+    '--sub-accent-color': "#5e3d2b", /* Акцентный цвет - тёмно-древесно-коричневый */
+    '--text-color': "#d0cfc4",      /* Цвет текста - светлый, слегка теплый */
+    '--mistake-color': "#b34338",   /* Цвет ошибки - глубокий красный */
+    '--text-correct-color': "#5e3d2b" /* Цвет корректного текста - тёмный бежево-коричневый */
+},
   SPACE: {
     "--bg-color": "#0a0f29",
     "--main-color": "#152043",

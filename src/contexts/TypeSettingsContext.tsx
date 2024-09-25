@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { TypeSettings } from "../types/types";
 
 interface TypeSettingsContextProps {
@@ -6,14 +12,35 @@ interface TypeSettingsContextProps {
   setTypeSettings: React.Dispatch<React.SetStateAction<TypeSettings>>;
 }
 
-const TypeSettingsContext = createContext<TypeSettingsContextProps | undefined>(undefined);
+const TypeSettingsContext = createContext<TypeSettingsContextProps | undefined>(
+  undefined
+);
 
-export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const result = localStorage.getItem("config")
+    ? JSON.parse(localStorage.getItem("config") as string)
+    : null;
+
   const [typeSettings, setTypeSettings] = useState<TypeSettings>({
-    mode: "time",
-    time: 30,
-    words: 25,
+    mode: result?.mode || "time",
+    time: result?.time ? Number(result.time) : 60,
+    words: result?.words ? Number(result.words) : 50,
+    keyboard: {
+      show: result?.keyboard ? result.keyboard.show : false,
+      responsive: result?.keyboard ? result.keyboard.responsive : false,
+    },
   });
+
+  const { mode, time, words, keyboard } = typeSettings;
+
+  useEffect(() => {
+    localStorage.setItem(
+      "config",
+      JSON.stringify({ mode, time, words, keyboard })
+    );
+  }, [typeSettings]);
 
   return (
     <TypeSettingsContext.Provider value={{ typeSettings, setTypeSettings }}>
@@ -25,7 +52,9 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({ childr
 export const useTypeSettings = () => {
   const context = useContext(TypeSettingsContext);
   if (!context) {
-    throw new Error("useTypeSettings must be used within a TypeSettingsProvider");
+    throw new Error(
+      "useTypeSettings must be used within a TypeSettingsProvider"
+    );
   }
   return context;
 };

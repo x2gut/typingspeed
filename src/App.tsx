@@ -1,9 +1,9 @@
 import { RouterProvider } from "react-router-dom";
-import { typeTestRouter } from "./routers/routers";
+import { mainRouter } from "./routers/routers";
 
 function App() {
   return (
-      <RouterProvider router={typeTestRouter} />
+    <RouterProvider router={mainRouter}/>
   );
 }
 

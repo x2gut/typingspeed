@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from "react";
 import { MdOutlineRestartAlt } from "react-icons/md";
-import { useTheme } from "../contexts/ThemeProvider";
+import { useTheme } from "../../contexts/ThemeProvider";
 
 const RestartButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   const { colors } = useTheme();
@@ -14,7 +14,7 @@ const RestartButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
         onClick={() => {
           onClick();
           if (restarnBtnRef.current) {
-            restarnBtnRef.current.blur()
+            restarnBtnRef.current.blur();
           }
         }}
         tabIndex={2}

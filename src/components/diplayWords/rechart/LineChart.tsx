@@ -9,8 +9,7 @@ import {
   ReferenceDot,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
-import { useTheme } from "../../contexts/ThemeProvider";
-
+import { useTheme } from "../../../contexts/ThemeProvider";
 interface LineChartProps {
   data: { second: number; wpm: number; mpm: number }[];
 }

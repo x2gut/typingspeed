@@ -23,6 +23,13 @@ body {
   @apply font-mono;
 }
 
+.container {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 0 20px;
+}
+
 .page-content {
   background-color: var(--bg-color);
 }
@@ -258,6 +265,59 @@ body {
 
 .keyboard-animation {
   animation: keyboard-animation 0.3s ease-in-out;
+}
+
+.settings-title {
+  position: relative;
+  color: var(--main-color);
+}
+
+.settings-title::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  background-color: var(--sub-color);
+  left: 0;
+  bottom: 0;
+  transform: translateY(20px);
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option-title {
+  color: var(--text-correct-color);
+}
+
+.option-desc {
+  color: var(--sub-accent-color)
+}
+
+.option-btn {
+  color: var(--sub-color);
+  padding: 10px 20px;
+  background-color: var(--sub-accent-color);
+  border-radius: 5px;
+  transition: filter 0.3s ease;
+}
+
+.option-btn:hover {
+  filter: brightness(1.1);
+}
+
+.option-btn.active {
+  color: var(--main-color);
+  filter: brightness(1.3);
+
+}
+
+.option-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 @keyframes keyboard-animation {

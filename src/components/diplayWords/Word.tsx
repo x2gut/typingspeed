@@ -1,5 +1,5 @@
 import React from "react";
-import { LetterStates } from "../types/types";
+import { LetterStates } from "../../types/types";
 
 interface WordProps {
   word: string;

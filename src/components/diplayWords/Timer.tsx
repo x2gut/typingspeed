@@ -5,8 +5,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { getWpm } from "../utils/resultUtil";
-import { ResultData } from "../types/types";
+import { getWpm } from "../../utils/resultUtil";
+import { ResultData } from "../../types/types";
 
 interface TimerProps {
   isGameStarted: boolean;
@@ -28,8 +28,8 @@ const Timer: React.FC<TimerProps> = ({
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
   const [timeLeft, setTimeLeft] = useState(remainingTime);
   const prevMistakesRef = useRef(resultData.mistakes);
-  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } = resultData;
-
+  const { mistakes, correctChars, mistakesPerMin } =
+    resultData;
 
   useEffect(() => {
     setTimeLeft(remainingTime);

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import DisplayWords from "../components/DisplayWords";
+import DisplayWords from "../components/diplayWords/DisplayWords";
 import Header from "../components/Header";
-import TypeSettingsMenu from "../components/TypeSettingsMenu";
+import TypeSettingsMenu from "../components/diplayWords/TypeSettingsMenu";
 import { TypeSettingsProvider } from "../contexts/TypeSettingsContext";
 import { ThemeProvider } from "../contexts/ThemeProvider";
-import FooterCommands from "../components/FooterCommands";
+import FooterCommands from "../components/diplayWords/FooterCommands";
 import ThemesSidebar from "../components/ThemesSidebar";
-import RegisterModal from "../modals/registerModal";
 const TypeTest: React.FC = () => {
   const words: string[] = [
     "apple",
@@ -120,25 +119,20 @@ const TypeTest: React.FC = () => {
     "fork",
     "spoon",
   ];
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [isRegister, setIsRegister] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <TypeSettingsProvider>
       <ThemeProvider>
         <div className="page-content min-h-screen">
-          <div className="ml-auto mr-auto max-w-7xl w-full min-h-screen pl-2 pr-2">
-            <Header setIsRegister={setIsRegister} isRegister={isRegister} />
-            <RegisterModal isRegister={isRegister} setIsRegister={setIsRegister} />
-            <TypeSettingsMenu className={isGameStarted ? "focus" : ""} />
-            <ThemesSidebar className={isGameStarted ? "focus" : ""} />
+          <div className="container">
+            <Header/>
+            <TypeSettingsMenu className={isFocused ? "focus" : ""} />
+            <ThemesSidebar className={isFocused ? "focus" : ""} />
             <div className="display-words flex items-center flex-col my-36">
-              <DisplayWords
-                wordsList={words}
-                setIsGameStarted={setIsGameStarted}
-              />
+              <DisplayWords wordsList={words} setIsFocused={setIsFocused} />
             </div>
-            <FooterCommands className={isGameStarted ? "focus" : ""} />
+            <FooterCommands className={isFocused ? "focus" : ""} />
           </div>
         </div>
       </ThemeProvider>

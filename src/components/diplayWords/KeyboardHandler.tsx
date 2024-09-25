@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import checkLetter from "../utils/checkLetter";
+import checkLetter from "../../utils/checkLetter";
 import {
   setCorrectChars,
   setMistakes,
   setWordsAmount,
-} from "../utils/resultUtil";
-import { GameSettings, LetterStates, ResultData } from "../types/types";
+} from "../../utils/resultUtil";
+import { GameSettings, LetterStates, ResultData } from "../../types/types";
 
 interface KeyboardHandlerProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -16,7 +16,7 @@ interface KeyboardHandlerProps {
   setCurrentWordIndex: Dispatch<SetStateAction<number>>;
   setCurrentLetterIndex: Dispatch<SetStateAction<number>>;
   setLetterStates: Dispatch<SetStateAction<LetterStates>>;
-  setGameSettings: Dispatch<SetStateAction<GameSettings>>
+  setGameSettings: Dispatch<SetStateAction<GameSettings>>;
   setSlicedIndex: Dispatch<
     SetStateAction<{ startIndex: number; endIndex: number }>
   >;
@@ -143,7 +143,11 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
           currentLetterIndex
         );
         if (checkedStatus && checkedStatus !== "SkipKey") {
-          setGameSettings((prevData) => ({...prevData, isGameStarted: true, isTimeOut: false}))
+          setGameSettings((prevData) => ({
+            ...prevData,
+            isGameStarted: true,
+            isTimeOut: false,
+          }));
         }
         switch (checkedStatus) {
           case "GameCompleted":
