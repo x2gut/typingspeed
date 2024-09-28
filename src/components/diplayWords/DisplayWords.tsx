@@ -72,7 +72,6 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
 
   useEffect(() => {
     const shuffled = shuffleArray(wordsList);
-    console.log(currentWords);
     setShuffledWords(shuffled);
     setAvgWordsLength(getAvgWordLength(shuffled));
     resetGame();
