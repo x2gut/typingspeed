@@ -24,6 +24,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     : null;
 
   const [typeSettings, setTypeSettings] = useState<TypeSettings>({
+    layout: result?.layout || "english",
+    lang: result?.lang || "english",
     mode: result?.mode || "time",
     time: result?.time ? Number(result.time) : 60,
     words: result?.words ? Number(result.words) : 50,
@@ -31,14 +33,15 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
       show: result?.keyboard ? result.keyboard.show : false,
       responsive: result?.keyboard ? result.keyboard.responsive : false,
     },
+    soundOnPress: result?.soundOnPress || false
   });
 
-  const { mode, time, words, keyboard } = typeSettings;
+  const { layout, lang, mode, time, words, keyboard, soundOnPress } = typeSettings;
 
   useEffect(() => {
     localStorage.setItem(
       "config",
-      JSON.stringify({ mode, time, words, keyboard })
+      JSON.stringify({ layout, lang, mode, time, words, keyboard, soundOnPress })
     );
   }, [typeSettings]);
 

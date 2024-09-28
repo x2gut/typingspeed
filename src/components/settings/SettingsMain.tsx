@@ -1,11 +1,11 @@
+import { TbKeyboard } from "react-icons/tb";
+import { CgLoadbarSound } from "react-icons/cg";
+
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
+import { playAudio } from "../../utils/playAudio";
 
 const SettingsMain = ({}) => {
   const { typeSettings, setTypeSettings } = useTypeSettings();
-
-  const config = localStorage.getItem("config")
-    ? JSON.parse(localStorage.getItem("config") as string)
-    : null;
 
   const handleKeyboardSettings = (isShow: boolean, isResponsive = false) => {
     setTypeSettings({
@@ -18,7 +18,13 @@ const SettingsMain = ({}) => {
     });
   };
 
-  console.log(config);
+  const handleSoundSettings = (soundStatus: boolean | string) => {
+    setTypeSettings({
+      ...typeSettings,
+      soundOnPress: soundStatus,
+    });
+  };
+
   return (
     <div className="container">
       <div className="settings-top">
@@ -26,7 +32,10 @@ const SettingsMain = ({}) => {
       </div>
       <div className="settings-option keyboard">
         <div className="option-content">
-          <h4 className="option-title">Keyboard</h4>
+          <div className="option-title">
+            <TbKeyboard />
+            <h4 className="option-title">Keyboard</h4>
+          </div>
           <p className="option-desc">Show keyboard below the displayed words</p>
         </div>
         <div className="option-buttons">
@@ -48,11 +57,56 @@ const SettingsMain = ({}) => {
           </button>
           <button
             className={`option-btn ${
-                typeSettings.keyboard.responsive ? "active" : ""
-              }`}
-            onClick={() => handleKeyboardSettings(true, !typeSettings.keyboard.responsive)}
+              typeSettings.keyboard.responsive ? "active" : ""
+            }`}
+            onClick={() =>
+              handleKeyboardSettings(true, !typeSettings.keyboard.responsive)
+            }
           >
             Responsive
+          </button>
+        </div>
+      </div>
+      <div className="settings-option sound">
+        <div className="option-content">
+        <div className="option-title">
+            <CgLoadbarSound />
+            <h4 className="option-title">Sounds</h4>
+          </div>
+          <p className="option-desc">Play sound whenever u press on a key</p>
+        </div>
+        <div className="option-buttons">
+          <button
+            className={`option-btn ${
+              typeSettings.soundOnPress === false ? "active" : ""
+            }`}
+            onClick={() => handleSoundSettings(false)}
+          >
+            Off
+          </button>
+          <button
+            className={`option-btn ${
+              typeSettings.soundOnPress === "Alpacas" ? "active" : ""
+            }`}
+            onClick={() => {
+              handleSoundSettings("Alpacas");
+              playAudio("/typingspeed/assets/sounds/Alpacas_main_soundmp3.mp3");
+            }}
+          >
+            Alpacas
+          </button>
+          <button
+            className={`option-btn ${
+              typeSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
+            }`}
+            onClick={() => {
+              handleSoundSettings("NovelKeysCream");
+              playAudio(
+                "/typingspeed/assets/sounds/NovelKeysCream_main_soundmp3.mp3"
+              );
+            }}
+          >
+            NovelKeys Cream
           </button>
         </div>
       </div>
