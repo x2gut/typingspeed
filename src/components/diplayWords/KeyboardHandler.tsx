@@ -6,6 +6,8 @@ import {
   setWordsAmount,
 } from "../../utils/resultUtil";
 import { GameSettings, LetterStates, ResultData } from "../../types/types";
+import { useTypeSettings } from "../../contexts/TypeSettingsContext";
+import { playAudio } from "../../utils/playAudio";
 
 interface KeyboardHandlerProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -42,6 +44,8 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   wordsPerContainer,
   setResultData,
 }) => {
+  const { typeSettings } = useTypeSettings();
+
   const handleNextWord = () => {
     if (currentWordIndex >= slicedIndex.endIndex - 1) {
       setCurrentWordIndex((prevIndex) => prevIndex + 1);
@@ -136,6 +140,16 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
         containerRef.current &&
         containerRef.current.contains(event.target as Node)
       ) {
+        if (typeSettings.soundOnPress !== false) {
+          const sound = typeSettings.soundOnPress;
+          if (event.key === " ") {
+            playAudio(`/typingspeed/assets/sounds/${sound}_space_soundmp3.mp3`)
+          } else if (event.key === "Backspace") {
+            playAudio(`/typingspeed/assets/sounds/${sound}_backspace_soundmp3.mp3`)
+          } else {
+            playAudio(`/typingspeed/assets/sounds/${sound}_main_soundmp3.mp3`);
+          }
+        }
         const checkedStatus: string = checkLetter(
           event.key,
           wordsList,
