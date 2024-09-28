@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Root Variables */
 :root {
   --bg-color: #171717;
   --main-color: #facc15;
@@ -12,6 +13,7 @@
   --text-correct-color: #e4e4e7;
 }
 
+/* Global Styles */
 *,
 *::after,
 *::before {
@@ -25,7 +27,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 80rem;
+  max-width: 1540px;
   margin-inline: auto;
   padding: 0 20px;
 }
@@ -34,15 +36,28 @@ body {
   background-color: var(--bg-color);
 }
 
+/* Header */
 .header {
   color: var(--sub-color);
 }
 
+/* Timer and Countdown */
 .timer,
 .words-countdown {
   color: var(--main-color);
 }
 
+/* Language Button */
+.lang-btn {
+  color: var(--main-color);
+  transition: color 0.3s ease;
+}
+
+.lang-btn:hover {
+  color: var(--sub-accent-color);
+}
+
+/* Words Container */
 .words-container {
   overflow: visible clip;
   transition: all 0.15s ease;
@@ -52,6 +67,7 @@ body {
   color: var(--sub-color);
 }
 
+/* Text Styles */
 .base {
   color: var(--text-color);
   @apply text-3xl font-semibold;
@@ -66,6 +82,8 @@ body {
   color: var(--mistake-color);
   @apply text-3xl font-semibold;
 }
+
+/* Mode Styles */
 .mode {
   background-color: var(--sub-accent-color);
   color: var(--sub-color);
@@ -79,6 +97,7 @@ body {
   color: var(--main-color);
 }
 
+/* Result Styles */
 .result-left {
   p {
     color: var(--text-color);
@@ -89,6 +108,17 @@ body {
   }
 }
 
+.result-footer {
+  p {
+    color: var(--text-color);
+
+    span {
+      color: var(--main-color);
+    }
+  }
+}
+
+/* Restart Button Styles */
 .restart-btn::after {
   opacity: 0;
   visibility: hidden;
@@ -120,31 +150,19 @@ body {
 }
 
 .restart-btn:hover::after,
-.restart-btn:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-
+.restart-btn:hover::before,
 .restart-btn:focus::after,
 .restart-btn:focus::before {
   opacity: 1;
   visibility: visible;
 }
 
-.result-footer {
-  p {
-    color: var(--text-color);
-
-    span {
-      color: var(--main-color);
-    }
-  }
-}
-
+/* Chart Styles */
 .chart-line {
   stroke: var(--main-color);
 }
 
+/* Command Tips */
 .commands-tips {
   color: var(--sub-accent-color);
   font-size: 12px;
@@ -155,12 +173,13 @@ body {
   padding: 2px 5px;
 }
 
+/* Themes Sidebar */
 .themes-sidebar {
   overflow-y: scroll;
   margin-top: -205px;
   margin-left: 10px;
   border: 1px solid var(--sub-color);
-  padding: 25px 0px 0px 0px;
+  padding: 25px 0;
   transform: translateY(50%);
 }
 
@@ -168,7 +187,7 @@ body {
   display: none;
 }
 
-.themes-sidebar-wrappaer {
+.themes-sidebar-wrapper {
   transform: translateX(0);
 }
 
@@ -188,15 +207,16 @@ body {
   color: var(--main-color);
 }
 
+/* User Header */
 .header-user {
   position: relative;
-  z-index: 999;
+  z-index: 499;
 }
 
+/* Register Modal */
 .register-modal {
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 998;
-
 }
 
 .register-modal-form {
@@ -228,6 +248,7 @@ body {
   font-size: 18px;
 }
 
+/* Keyboard Styles */
 .keyboard-row {
   display: flex;
   flex-direction: row;
@@ -241,7 +262,6 @@ body {
   font-size: 18px;
   border-radius: 5px;
   padding: 3px 10px;
-
 }
 
 .focus {
@@ -250,6 +270,7 @@ body {
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
+/* Caret Animation */
 .caret {
   content: "";
   position: absolute;
@@ -263,10 +284,12 @@ body {
   background-color: var(--main-color);
 }
 
+/* Keyboard Animation */
 .keyboard-animation {
   animation: keyboard-animation 0.3s ease-in-out;
 }
 
+/* Settings Styles */
 .settings-title {
   position: relative;
   color: var(--main-color);
@@ -287,14 +310,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 24px;
 }
 
 .option-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-correct-color);
 }
 
 .option-desc {
-  color: var(--sub-accent-color)
+  color: var(--sub-accent-color);
 }
 
 .option-btn {
@@ -302,43 +329,65 @@ body {
   padding: 10px 20px;
   background-color: var(--sub-accent-color);
   border-radius: 5px;
+  filter: brightness(0.5);
   transition: filter 0.3s ease;
 }
 
 .option-btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(0.8);
 }
 
 .option-btn.active {
   color: var(--main-color);
-  filter: brightness(1.3);
-
+  filter: brightness(1.1);
 }
 
 .option-buttons {
   display: flex;
   gap: 10px;
+  width: 400px;
 }
 
+.language-modal {
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 500;
+}
+
+.language-modal-content {
+  margin-top: 100px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 800px;
+  background-color: var(--bg-color);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.language-option {
+  color: var(--main-color);
+  cursor: pointer;
+}
+
+.language-option:hover {
+  background-color: var(--sub-accent-color);
+}
+
+/* Keyframes */
 @keyframes keyboard-animation {
   0% {
     transform: scale(1);
     background-color: var(--sub-accent-color);
     box-shadow: 0 0 5px var(--sub-accent-color);
   }
-
   30% {
     transform: scale(1.2);
     background-color: var(--main-color);
     box-shadow: 0 0 10px var(--main-color);
   }
-
   60% {
     transform: scale(0.9);
     background-color: var(--sub-accent-color);
     box-shadow: 0 0 5px var(--sub-accent-color);
   }
-
   100% {
     transform: scale(1);
     background-color: var(--sub-accent-color);
@@ -350,11 +399,9 @@ body {
   0% {
     opacity: 0;
   }
-
   50% {
     opacity: 1;
   }
-
   100% {
     opacity: 0;
   }
