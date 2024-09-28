@@ -47,36 +47,22 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   const { typeSettings } = useTypeSettings();
 
   const handleNextWord = () => {
-    if (currentWordIndex >= slicedIndex.endIndex - 1) {
-      setCurrentWordIndex((prevIndex) => prevIndex + 1);
-      setCurrentLetterIndex(0);
-      setLetterStates({});
-      const newEndIndex = Math.min(
-        slicedIndex.endIndex + wordsPerContainer,
-        wordsList.length
-      );
-      setSlicedIndex({
-        startIndex: slicedIndex.endIndex,
-        endIndex: newEndIndex,
-      });
-    } else {
-      setCurrentWordIndex((prevIndex) => prevIndex + 1);
-      setCurrentLetterIndex(0);
+    setCurrentWordIndex((prevIndex) => prevIndex + 1);
+    setCurrentLetterIndex(0);
 
-      const countMistakes = Object.values(
-        letterStates[currentWordIndex]
-      ).filter((value) => value === "incorrect").length;
+    const countMistakes = Object.values(letterStates[currentWordIndex]).filter(
+      (value) => value === "incorrect"
+    ).length;
 
-      const correctChars =
-        Object.values(letterStates[currentWordIndex]).length - countMistakes;
+    const correctChars =
+      Object.values(letterStates[currentWordIndex]).length - countMistakes;
 
-      if (countMistakes === 0) {
-        setWordsAmount(setResultData);
-      }
-
-      setMistakes(countMistakes, setResultData);
-      setCorrectChars(correctChars, setResultData);
+    if (countMistakes === 0) {
+      setWordsAmount(setResultData);
     }
+
+    setMistakes(countMistakes, setResultData);
+    setCorrectChars(correctChars, setResultData);
   };
 
   const handleNextLetter = () => {
@@ -143,9 +129,11 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
         if (typeSettings.soundOnPress !== false) {
           const sound = typeSettings.soundOnPress;
           if (event.key === " ") {
-            playAudio(`/typingspeed/assets/sounds/${sound}_space_soundmp3.mp3`)
+            playAudio(`/typingspeed/assets/sounds/${sound}_space_soundmp3.mp3`);
           } else if (event.key === "Backspace") {
-            playAudio(`/typingspeed/assets/sounds/${sound}_backspace_soundmp3.mp3`)
+            playAudio(
+              `/typingspeed/assets/sounds/${sound}_backspace_soundmp3.mp3`
+            );
           } else {
             playAudio(`/typingspeed/assets/sounds/${sound}_main_soundmp3.mp3`);
           }

@@ -105,7 +105,6 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
       isTimeOut: false,
       isGameStarted: false,
     }));
-    setSlicedIndex({ startIndex: 0, endIndex: 30 });
   };
 
   // Handles the transition to the next row of words.
@@ -177,7 +176,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
             />
           )}
           <LanguageSelectModal
-            callback={() => resetGame()}
+            resetGame={() => resetGame()}
             isActive={isLangModalActive}
             setIsActive={setIsLangModalActive}
           />
@@ -235,7 +234,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
               setCurrentLetterIndex={setCurrentLetterIndex}
               setLetterStates={setLetterStates}
               setSlicedIndex={setSlicedIndex}
-              wordsPerContainer={30}
+              wordsPerContainer={currentWords[0].length}
               slicedIndex={slicedIndex}
               setGameSettings={setGameSettings}
               letterStates={letterStates}
