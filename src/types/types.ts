@@ -11,6 +11,8 @@ export type LetterStates = {
 };
 
 export type TypeSettings = {
+  layout: string,
+  lang: string,
   mode: string;
   time: number;
   words: number;
@@ -18,6 +20,7 @@ export type TypeSettings = {
     show: boolean;
     responsive: boolean;
   }; 
+  soundOnPress: boolean | string
 }
 
 export type GameSettings = {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DisplayWords from "../components/diplayWords/DisplayWords";
 import Header from "../components/Header";
 import TypeSettingsMenu from "../components/diplayWords/TypeSettingsMenu";
@@ -7,134 +7,52 @@ import { ThemeProvider } from "../contexts/ThemeProvider";
 import FooterCommands from "../components/diplayWords/FooterCommands";
 import ThemesSidebar from "../components/ThemesSidebar";
 const TypeTest: React.FC = () => {
-  const words: string[] = [
-    "apple",
-    "banana",
-    "grape",
-    "peach",
-    "plum",
-    "berry",
-    "lemon",
-    "melon",
-    "mango",
-    "orange",
-    "pearl",
-    "rose",
-    "star",
-    "moon",
-    "sun",
-    "cloud",
-    "rain",
-    "wind",
-    "snow",
-    "leaf",
-    "tree",
-    "bush",
-    "grass",
-    "sand",
-    "rock",
-    "bird",
-    "fish",
-    "frog",
-    "bear",
-    "lion",
-    "cat",
-    "dog",
-    "rat",
-    "fox",
-    "wolf",
-    "cow",
-    "horse",
-    "duck",
-    "goat",
-    "sheep",
-    "man",
-    "woman",
-    "girl",
-    "boy",
-    "child",
-    "baby",
-    "house",
-    "home",
-    "car",
-    "bus",
-    "train",
-    "plane",
-    "bike",
-    "boat",
-    "ship",
-    "lake",
-    "river",
-    "sea",
-    "park",
-    "zoo",
-    "shop",
-    "store",
-    "book",
-    "pen",
-    "pencil",
-    "desk",
-    "chair",
-    "table",
-    "bed",
-    "room",
-    "floor",
-    "wall",
-    "door",
-    "window",
-    "lamp",
-    "phone",
-    "music",
-    "game",
-    "toy",
-    "ball",
-    "cake",
-    "cookie",
-    "bread",
-    "milk",
-    "egg",
-    "juice",
-    "rice",
-    "meat",
-    "fish",
-    "tea",
-    "salt",
-    "sugar",
-    "butter",
-    "cheese",
-    "pizza",
-    "pasta",
-    "salad",
-    "soup",
-    "sandwich",
-    "fruit",
-    "vegetable",
-    "spoon",
-    "fork",
-    "knife",
-    "plate",
-    "cup",
-    "bowl",
-    "napkin",
-    "fork",
-    "spoon",
-  ];
   const [isFocused, setIsFocused] = useState(false);
+  const [currentLang, setCurrentLang] = useState("");
+  const [words, setWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    const result = localStorage.getItem("config")
+      ? JSON.parse(localStorage.getItem("config") as string)
+      : null;
+
+    setCurrentLang(result.lang);
+  }, []);
+
+  useEffect(() => {
+    fetch(`/typingspeed/languages/${currentLang}.json`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch: " + response.statusText);
+        }
+        return response.json();
+      })
+      .then((jsonData) => {setWords(jsonData.words)
+      })
+      .catch((error) =>
+        console.error("Execution failed: ", error)
+      );
+  }, [currentLang]);
 
   return (
     <TypeSettingsProvider>
       <ThemeProvider>
+        {words.length > 0 &&
         <div className="page-content min-h-screen">
-          <div className="container">
-            <Header/>
-            <TypeSettingsMenu className={isFocused ? "focus" : ""} />
-            <ThemesSidebar className={isFocused ? "focus" : ""} />
-            <div className="display-words flex items-center flex-col my-36">
-              <DisplayWords wordsList={words} setIsFocused={setIsFocused} />
-            </div>
-            <FooterCommands className={isFocused ? "focus" : ""} />
+        <div className="container">
+          <Header />
+          <TypeSettingsMenu className={isFocused ? "focus" : ""} />
+          <ThemesSidebar className={isFocused ? "focus" : ""} />
+          <div className="display-words flex items-center flex-col my-36">
+            <DisplayWords
+              setCurrentLang={setCurrentLang}
+              wordsList={words}
+              setIsFocused={setIsFocused}
+            />
           </div>
+          <FooterCommands className={isFocused ? "focus" : ""} />
         </div>
+      </div>}
       </ThemeProvider>
     </TypeSettingsProvider>
   );
