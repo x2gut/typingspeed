@@ -4,7 +4,6 @@ import React, {
   useEffect,
   Dispatch,
   SetStateAction,
-  useMemo,
 } from "react";
 import Word from "./Word";
 import Timer from "./Timer";
@@ -21,19 +20,26 @@ import WordsCountdown from "./WordsCountdown";
 import useContainerDimensions from "../../hooks/useContainerDimensions";
 import useResultData from "../../hooks/useResultData";
 import Keyboard from "./responsiveKeyboard/Keyboard";
+import { getCurrentSlice } from "../../utils/getCurrentSlice";
+import LanguageBtn from "./LanguageBtn";
+import LanguageSelectModal from "../../modals/languageSelectModal";
+
 interface DisplayWordsProps {
   wordsList: string[];
   setIsFocused: Dispatch<SetStateAction<boolean>>;
+  setCurrentLang: Dispatch<SetStateAction<string>>;
 }
 
 const DisplayWords: React.FC<DisplayWordsProps> = ({
   wordsList,
   setIsFocused,
+  setCurrentLang,
 }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [letterStates, setLetterStates] = useState<LetterStates>({});
   const { typeSettings } = useTypeSettings();
+  const [isLangModalActive, setIsLangModalActive] = useState<boolean>(false);
   const [shuffledWords, setShuffledWords] = useState(wordsList);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     isFocused: false,
@@ -42,35 +48,50 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
     time: typeSettings.time,
   });
   const [avgWordsLength, setAvgWordsLength] = useState<number>(0);
+  const [currentWords, setCurrentWords] = useState<string[][]>([]);
   const wordsContainerRef = useRef<HTMLDivElement>(null);
-
-  const { wordsPerContainer, slicedIndex, setSlicedIndex } =
-    useContainerDimensions(wordsContainerRef, gameSettings.isTimeOut);
   const { resultData, setResultData, resetResultData } = useResultData();
-  const shuffledArray: string[] = useMemo(
-    () => shuffleArray(wordsList),
-    [wordsList]
-  );
+  const { wordsPerContainer, slicedIndex, setSlicedIndex, wordsPerRow } =
+    useContainerDimensions(
+      wordsContainerRef,
+      gameSettings.isTimeOut,
+      shuffledWords
+    );
 
-  // Reset words container and result data
   useEffect(() => {
-    setShuffledWords(shuffledArray);
-    const averageWordLength = getAvgWordLength(shuffledWords);
-    setAvgWordsLength(averageWordLength);
-    handleEndGame();
-    resetResultData();
-    setGameSettings((prevSettings) => ({
-      ...prevSettings,
-      isTimeOut: false,
-      time: typeSettings.time,
-    }));
+    if (wordsContainerRef.current) {
+      setCurrentWords(
+        getCurrentSlice(
+          shuffledWords,
+          slicedIndex,
+          wordsContainerRef.current.offsetWidth - 56
+        )
+      );
+    }
+  }, [slicedIndex]);
+
+  useEffect(() => {
+    const shuffled = shuffleArray(wordsList);
+    console.log(currentWords);
+    setShuffledWords(shuffled);
+    setAvgWordsLength(getAvgWordLength(shuffled));
+    resetGame();
+  }, [wordsList]);
+
+  useEffect(() => {
+    setCurrentLang(typeSettings.lang);
+  }, [typeSettings.lang]);
+
+  useEffect(() => {
+    setAvgWordsLength(getAvgWordLength(shuffledWords));
+    resetGame();
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
 
   useEffect(() => {
     setIsFocused(gameSettings.isFocused);
   }, [gameSettings.isFocused]);
 
-  const handleEndGame = () => {
+  const resetGame = () => {
     restartTyping(
       setCurrentWordIndex,
       setCurrentLetterIndex,
@@ -78,13 +99,36 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
       setSlicedIndex,
       wordsPerContainer
     );
+    const shuffled = shuffleArray(wordsList);
+    getAvgWordLength(shuffled);
     setGameSettings((prevSettings) => ({
       ...prevSettings,
       isTimeOut: false,
       isGameStarted: false,
     }));
-    setShuffledWords(shuffleArray(wordsList));
+    setSlicedIndex({ startIndex: 0, endIndex: 30 });
   };
+
+  // Handles the transition to the next row of words.
+  // If the user entered the last word in the second row,
+  // update the slice indices to move to the next set of words.
+  useEffect(() => {
+    const hasCurrentWords = currentWords[0] && currentWords[1];
+
+    if (hasCurrentWords) {
+      const lastWordInSecondRow = currentWords[1][currentWords[1].length - 1];
+      const lastWordIndexInSecondRow =
+        shuffledWords.indexOf(lastWordInSecondRow);
+      const isIndexMatch = currentWordIndex - 1 === lastWordIndexInSecondRow;
+
+      if (isIndexMatch && slicedIndex.endIndex < shuffledWords.length) {
+        setSlicedIndex((prev) => ({
+          startIndex: prev.startIndex + currentWords[0].length,
+          endIndex: prev.endIndex + currentWords[0].length,
+        }));
+      }
+    }
+  }, [currentWordIndex]);
 
   return (
     <>
@@ -92,7 +136,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
         <Result resultData={resultData} avgWordLength={avgWordsLength} />
       ) : (
         <>
-          {typeSettings.mode === "time" ? (
+          {gameSettings.isGameStarted && typeSettings.mode === "time" ? (
             <Timer
               isGameStarted={gameSettings.isGameStarted}
               remainingTime={typeSettings.time}
@@ -100,7 +144,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
               setResultData={setResultData}
               avgWordLength={avgWordsLength}
               callback={() => {
-                handleEndGame();
+                resetGame();
                 setGameSettings((prevSettings) => ({
                   ...prevSettings,
                   isTimeOut: true,
@@ -108,25 +152,38 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
               }}
             />
           ) : (
-            <WordsCountdown
-              totalWords={typeSettings.words}
-              currentWordsAmount={resultData.wordsAmount}
-              isGameStarted={gameSettings.isGameStarted}
-              resultData={resultData}
-              avgWordLength={avgWordsLength}
-              setResultData={setResultData}
-              setGameSettings={setGameSettings}
-              callback={() => {
-                handleEndGame();
-                setGameSettings((prevSettings) => ({
-                  ...prevSettings,
-                  isTimeOut: true,
-                }));
-              }}
+            gameSettings.isGameStarted && (
+              <WordsCountdown
+                totalWords={typeSettings.words}
+                currentWordsAmount={resultData.wordsAmount}
+                isGameStarted={gameSettings.isGameStarted}
+                resultData={resultData}
+                avgWordLength={avgWordsLength}
+                setResultData={setResultData}
+                setGameSettings={setGameSettings}
+                callback={() => {
+                  resetGame();
+                  setGameSettings((prevSettings) => ({
+                    ...prevSettings,
+                    isTimeOut: true,
+                  }));
+                }}
+              />
+            )
+          )}
+          {!gameSettings.isGameStarted && (
+            <LanguageBtn
+              isModalActive={isLangModalActive}
+              setIsModalActive={setIsLangModalActive}
             />
           )}
+          <LanguageSelectModal
+            callback={() => resetGame()}
+            isActive={isLangModalActive}
+            setIsActive={setIsLangModalActive}
+          />
           <div
-            className={`words-container flex gap-4 max-w-7xl h-52 w-full flex-wrap p-7 justify-center outline-none ${
+            className={`words-container flex h-52 w-full justify-center flex-wrap p-7 outline-none ${
               !gameSettings.isFocused ? "blur opacity-40" : ""
             }`}
             ref={wordsContainerRef}
@@ -144,23 +201,27 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
               }))
             }
           >
-            {shuffledWords
-              .slice(slicedIndex.startIndex, slicedIndex.endIndex)
-              .map((word: string, wordIndex: number) => (
-                <Word
-                  key={wordIndex}
-                  word={word}
-                  currentWordIndex={currentWordIndex}
-                  currentLetterIndex={currentLetterIndex}
-                  wordIndex={wordIndex + slicedIndex.startIndex}
-                  letterStates={letterStates}
-                />
+            <div className="words">
+              {currentWords.map((row, rowIndex) => (
+                <div className="word-row flex gap-2" key={rowIndex}>
+                  {row.map((word, wordIndex) => (
+                    <Word
+                      key={wordIndex}
+                      word={word}
+                      currentWordIndex={currentWordIndex}
+                      currentLetterIndex={currentLetterIndex}
+                      wordIndex={shuffledWords.indexOf(word)}
+                      letterStates={letterStates}
+                    />
+                  ))}
+                </div>
               ))}
+            </div>
           </div>
           <div
             className={`blur-warning ${
               gameSettings.isFocused ? "hidden" : "visible"
-            } absolute bottom-1/2`}
+            } absolute bottom-1/2 -translate-y-10`}
             onClick={() => wordsContainerRef.current?.focus()}
           >
             <BlurWarning />
@@ -175,7 +236,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
               setCurrentLetterIndex={setCurrentLetterIndex}
               setLetterStates={setLetterStates}
               setSlicedIndex={setSlicedIndex}
-              wordsPerContainer={wordsPerContainer}
+              wordsPerContainer={30}
               slicedIndex={slicedIndex}
               setGameSettings={setGameSettings}
               letterStates={letterStates}
@@ -186,19 +247,19 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
         </>
       )}
       {typeSettings.keyboard.show && !gameSettings.isTimeOut && (
-        <Keyboard isFocused={gameSettings.isFocused} isResponsive={typeSettings.keyboard.responsive}/>
+        <Keyboard
+          isFocused={gameSettings.isFocused}
+          isResponsive={typeSettings.keyboard.responsive}
+        />
       )}
       <RestartButton
         onClick={() => {
-          handleEndGame();
+          resetGame();
           setGameSettings((prevSettings) => ({
             ...prevSettings,
             isTimeOut: false,
           }));
           resetResultData();
-          if (wordsContainerRef.current) {
-            wordsContainerRef.current.focus();
-          }
         }}
       />
     </>

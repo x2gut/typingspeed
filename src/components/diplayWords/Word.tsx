@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LetterStates } from "../../types/types";
 
 interface WordProps {
@@ -15,34 +15,37 @@ const Word: React.FC<WordProps> = ({
   currentLetterIndex,
   wordIndex,
   letterStates,
-}) => (
-  <div
-    className={`word ${wordIndex === currentWordIndex ? "relative" : ""}`}
-    key={wordIndex}
-  >
-    {word.split("").map((letter, letterIndex) => (
-      <span
-        className={`letter ${
-          letterStates[wordIndex]?.[letterIndex] === "correct"
-            ? "correct"
-            : letterStates[wordIndex]?.[letterIndex] === "incorrect"
-            ? "incorrect"
-            : "base"
-        }`}
-        key={letterIndex}
-      >
-        {letter}
-      </span>
-    ))}
-    {currentWordIndex === wordIndex && (
-      <div
-        className="caret"
-        style={{
-          transform: `translate(${currentLetterIndex * 16.5}px)`,
-        }}
-      ></div>
-    )}
-  </div>
-);
+}) => {
+
+  return (
+    <div
+      className={`word m-2 ${wordIndex === currentWordIndex ? "relative" : ""}`}
+      key={wordIndex}
+    >
+      {word.split("").map((letter, letterIndex) => (
+        <span
+          className={`letter ${
+            letterStates[wordIndex]?.[letterIndex] === "correct"
+              ? "correct"
+              : letterStates[wordIndex]?.[letterIndex] === "incorrect"
+              ? "incorrect"
+              : "base"
+          }`}
+          key={letterIndex}
+        >
+          {letter}
+        </span>
+      ))}
+      {currentWordIndex === wordIndex && (
+        <div
+          className="caret"
+          style={{
+            transform: `translate(${currentLetterIndex * 16.5}px)`,
+          }}
+        ></div>
+      )}
+    </div>
+  );
+};
 
 export default Word;
