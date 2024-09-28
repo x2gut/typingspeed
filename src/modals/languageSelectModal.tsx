@@ -4,13 +4,13 @@ import { useTypeSettings } from "../contexts/TypeSettingsContext";
 interface LanguageSelectModalProps {
   isActive: boolean;
   setIsActive: Dispatch<SetStateAction<boolean>>;
-  callback: () => void;
+  resetGame: () => void;
 }
 
 const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
   isActive,
   setIsActive,
-  callback,
+  resetGame,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { setTypeSettings } = useTypeSettings();
@@ -55,7 +55,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
               onClick={() => {
                 changeLang("english");
                 changeLayout("english");
-                callback();
+                resetGame();
               }}
             >
               <button className="pl-7 py-1" id="english">
@@ -67,7 +67,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
               onClick={() => {
                 changeLang("english_1k");
                 changeLayout("english");
-                callback();
+                resetGame();
               }}
             >
               <button className="pl-7 py-1" id="english_1k">
@@ -79,7 +79,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
               onClick={() => {
                 changeLang("english_10k");
                 changeLayout("english");
-                callback();
+                resetGame();
               }}
             >
               <button className="pl-7 py-1" id="english_10k">
@@ -91,7 +91,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
               onClick={() => {
                 changeLang("russian");
                 changeLayout("russian");
-                callback();
+                resetGame();
               }}
             >
               <button className="pl-7 py-1" id="rusian">

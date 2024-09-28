@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 export const getCurrentSlice = (
   shuffledWords: string[],
   slicedIndex: { startIndex: number; endIndex: number },

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { LetterStates } from "../../types/types";
+import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 
 interface WordProps {
   word: string;
@@ -16,6 +17,7 @@ const Word: React.FC<WordProps> = ({
   wordIndex,
   letterStates,
 }) => {
+  const { typeSettings } = useTypeSettings();
 
   return (
     <div
@@ -36,9 +38,9 @@ const Word: React.FC<WordProps> = ({
           {letter}
         </span>
       ))}
-      {currentWordIndex === wordIndex && (
+      {typeSettings.caretType !== false && currentWordIndex === wordIndex && (
         <div
-          className="caret"
+          className={`caret-${typeSettings.caretType}`}
           style={{
             transform: `translate(${currentLetterIndex * 16.5}px)`,
           }}

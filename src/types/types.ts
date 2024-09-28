@@ -20,7 +20,8 @@ export type TypeSettings = {
     show: boolean;
     responsive: boolean;
   }; 
-  soundOnPress: boolean | string
+  soundOnPress: boolean | string,
+  caretType: boolean | string,
 }
 
 export type GameSettings = {

@@ -14,17 +14,21 @@ const useContainerDimensions = (
 
   const calculateWordsPerContainer = () => {
     if (containerRef.current) {
-      const containerWidth = containerRef.current.offsetWidth - 56;
+      const containerWidth = containerRef.current.offsetWidth - 56; // 56 == (padding left + padding right)
       const avgWordWidth =
-        wordsList.slice(slicedIndex.startIndex, slicedIndex.endIndex + 10).reduce((totalWidth, word) => {
-          return totalWidth + word.length * 16.5 + 16;
-        }, 0) / wordsList.slice(slicedIndex.startIndex, slicedIndex.endIndex + 10).length;
+        wordsList
+          .slice(slicedIndex.startIndex, slicedIndex.endIndex + 10)
+          .reduce((totalWidth, word) => {
+            return totalWidth + word.length * 16.5 + 16;
+          }, 0) /
+        wordsList.slice(slicedIndex.startIndex, slicedIndex.endIndex + 10)
+          .length;
       const wordsAmountPerLine = Math.floor(containerWidth / avgWordWidth);
       setWordsPerRow(wordsAmountPerLine);
       const linesAmount = 3;
       const wordsPerContainer = wordsAmountPerLine * linesAmount;
       setWordsPerContainer(wordsPerContainer);
-      setSlicedIndex({ startIndex: 0, endIndex: wordsPerContainer });}
+    }
   };
 
   useEffect(() => {
