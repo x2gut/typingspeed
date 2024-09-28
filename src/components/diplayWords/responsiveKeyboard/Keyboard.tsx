@@ -2,20 +2,9 @@ import React, { useEffect, useState } from "react";
 import ResponsiveLetter from "./ResponsiveLetter";
 import useKeyPressed from "../../../hooks/useKeyPressed";
 import { useTypeSettings } from "../../../contexts/TypeSettingsContext";
+import { engKeyboardKeys } from "../../../static/keyboardsLayouts";
+import { rusKeyboardKeys } from "../../../static/keyboardsLayouts";
 
-const engKeyboardKeys = [
-  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-  ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-  ["z", "x", "c", "v", "b", "n", "m"],
-  ["space"],
-];
-
-const rusKeyboardKeys = [
-  ["й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ"],
-  ["ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э"],
-  ["я", "ч", "с", "м", "и", "т", "ь", "б", "ю"],
-  ["space"],
-];
 
 interface KeyboardProps {
   isFocused: boolean;
