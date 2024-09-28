@@ -33,15 +33,26 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
       show: result?.keyboard ? result.keyboard.show : false,
       responsive: result?.keyboard ? result.keyboard.responsive : false,
     },
-    soundOnPress: result?.soundOnPress || false
+    soundOnPress: result?.soundOnPress || false,
+    caretType: result?.caretType ?? "default",
   });
 
-  const { layout, lang, mode, time, words, keyboard, soundOnPress } = typeSettings;
+  const { layout, lang, mode, time, words, keyboard, soundOnPress, caretType } =
+    typeSettings;
 
   useEffect(() => {
     localStorage.setItem(
       "config",
-      JSON.stringify({ layout, lang, mode, time, words, keyboard, soundOnPress })
+      JSON.stringify({
+        layout,
+        lang,
+        mode,
+        time,
+        words,
+        keyboard,
+        soundOnPress,
+        caretType,
+      })
     );
   }, [typeSettings]);
 

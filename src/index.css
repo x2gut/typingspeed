@@ -270,13 +270,38 @@ body {
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-/* Caret Animation */
-.caret {
+/* Caret*/
+.caret-default {
   content: "";
   position: absolute;
   width: 2px;
   height: 2rem;
   top: 5%;
+  left: -1px;
+  opacity: 0.6;
+  transition: transform 0.2s ease-out;
+  animation: caret-animation 2s infinite;
+  background-color: var(--main-color);
+}
+
+.caret-under {
+  content: "";
+  position: absolute;
+  width: 16.5px;
+  height: 2px;
+  bottom: 0;
+  left: -1px;
+  opacity: 0.6;
+  transition: transform 0.2s ease-out;
+  background-color: var(--main-color);
+}
+
+.caret-block {
+  content: "";
+  position: absolute;
+  width: 16.5px;
+  height: 36px;
+  bottom: 0;
   left: -1px;
   opacity: 0.6;
   transition: transform 0.2s ease-out;
@@ -325,6 +350,7 @@ body {
 }
 
 .option-btn {
+  flex-grow: 1;
   color: var(--sub-color);
   padding: 10px 20px;
   background-color: var(--sub-accent-color);
@@ -343,6 +369,7 @@ body {
 }
 
 .option-buttons {
+  justify-content: center;
   display: flex;
   gap: 10px;
   width: 400px;
@@ -400,7 +427,7 @@ body {
     opacity: 0;
   }
   50% {
-    opacity: 1;
+    opacity: 0.6;
   }
   100% {
     opacity: 0;

@@ -25,6 +25,13 @@ const SettingsMain = ({}) => {
     });
   };
 
+  const handleCaretType = (caretType: boolean | string) => {
+    setTypeSettings({
+      ...typeSettings,
+      caretType: caretType,
+    });
+  };
+
   return (
     <div className="container">
       <div className="settings-top">
@@ -34,7 +41,7 @@ const SettingsMain = ({}) => {
         <div className="option-content">
           <div className="option-title">
             <TbKeyboard />
-            <h4 className="option-title">Keyboard</h4>
+            <h4>Keyboard</h4>
           </div>
           <p className="option-desc">Show keyboard below the displayed words</p>
         </div>
@@ -69,9 +76,9 @@ const SettingsMain = ({}) => {
       </div>
       <div className="settings-option sound">
         <div className="option-content">
-        <div className="option-title">
+          <div className="option-title">
             <CgLoadbarSound />
-            <h4 className="option-title">Sounds</h4>
+            <h4>Sounds</h4>
           </div>
           <p className="option-desc">Play sound whenever u press on a key</p>
         </div>
@@ -107,6 +114,46 @@ const SettingsMain = ({}) => {
             }}
           >
             NovelKeys Cream
+          </button>
+        </div>
+      </div>
+      <div className="settings-option typing-caret">
+        <div className="option-content">
+          <div className="option-title">
+            <h4 className="Caret">| Caret</h4>
+          </div>
+          <p className="option-desc">Change style of yours caret</p>
+        </div>
+        <div className="option-buttons">
+          <button
+            className={`option-btn ${!typeSettings.caretType && "active"}`}
+            onClick={() => handleCaretType(false)}
+          >
+            Off
+          </button>
+          <button
+            className={`option-btn ${
+              typeSettings.caretType === "default" && "active"
+            }`}
+            onClick={() => handleCaretType("default")}
+          >
+            |
+          </button>
+          <button
+            className={`option-btn ${
+              typeSettings.caretType === "under" && "active"
+            }`}
+            onClick={() => handleCaretType("under")}
+          >
+            _
+          </button>
+          <button
+            className={`option-btn ${
+              typeSettings.caretType === "block" && "active"
+            }`}
+            onClick={() => handleCaretType("block")}
+          >
+            ▮
           </button>
         </div>
       </div>
