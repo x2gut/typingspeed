@@ -4,6 +4,8 @@
 
 ## Description
 
+*Inspired by MonkeyType*
+
 Type Speed Test is a React-based application that allows you to check and improve yours typing speed. Users can type a given words, and the application will track their speed and accuracy, providing real-time results.
 
 ## Features
@@ -14,11 +16,11 @@ Type Speed Test is a React-based application that allows you to check and improv
 - **Statistics**: After completing the test, users receive statistics, including typing speed in words per minute (WPM) and accuracy percentage.
 - **Test History**: Users can save results from previous tests to track their progress. #To be added soon
 
- ## Technologies
+## Technologies
 
-  - *React*
-  - *Tailwind*
-  - *TS*
-  - *HTML*
-  - *CSS*
+- ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=white) React
+- ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) TypeScript
+- ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white) Tailwind CSS
+- ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat-square&logo=css3&logoColor=white) CSS
+- ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) HTML
 
