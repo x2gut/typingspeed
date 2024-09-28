@@ -18,7 +18,7 @@ Type Speed Test is a React-based application that allows you to check and improv
 
   - *React*
   - *Tailwind*
-  - *JS*
+  - *TS*
   - *HTML*
   - *CSS*
 
