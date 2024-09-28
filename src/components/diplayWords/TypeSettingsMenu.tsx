@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { TypeSettings } from "../../types/types";
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
+import { MdOutlineTimelapse } from "react-icons/md";
+import { TbHexagonLetterAFilled } from "react-icons/tb";
+
+
 
 interface TypeSettingsMenuProps {
   className: string;
@@ -17,7 +19,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
     >
       <div className="mode flex gap-5 justify-center rounded-md p-2">
         <button
-          className={mode === "words" ? "mode-btn mode-active" : "mode-btn"}
+          className={`flex items-center gap-2 hover:brightness-125 duration-150 ${mode === "words" ? "mode-btn  mode-active" : "mode-btn"}`}
           onClick={() =>
             setTypeSettings((prevData) => ({
               ...prevData,
@@ -25,10 +27,11 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
             }))
           }
         >
+          <TbHexagonLetterAFilled />
           Words
         </button>
         <button
-          className={mode === "time" ? "mode-btn mode-active" : "mode-btn"}
+          className={`flex items-center gap-2 hover:brightness-125 duration-150 ${mode === "time" ? "mode-btn  mode-active" : "mode-btn"}`}
           onClick={() => {
             setTypeSettings((prevData) => ({
               ...prevData,
@@ -36,6 +39,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
             }));
           }}
         >
+          <MdOutlineTimelapse />
           Time
         </button>
         <div className="vertical-separator h-full w-1 bg-gray-900 rounded-xl opacity-50"></div>
@@ -49,7 +53,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     time: 15,
                   }))
                 }
-                className={time === 15 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${time === 15 ? "mode-active" : ""}`}
               >
                 15
               </button>
@@ -60,7 +64,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     time: 30,
                   }))
                 }
-                className={time === 30 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${time === 30 ? "mode-active" : ""}`}
               >
                 30
               </button>
@@ -71,7 +75,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     time: 60,
                   }))
                 }
-                className={time === 60 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${time === 60 ? "mode-active" : ""}`}
               >
                 60
               </button>
@@ -85,7 +89,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     words: 25,
                   }))
                 }
-                className={words === 25 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${words === 25 ? "mode-active" : ""}`}
               >
                 25
               </button>
@@ -96,7 +100,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     words: 50,
                   }))
                 }
-                className={words === 50 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${words === 50 ? "mode-active" : ""}`}
               >
                 50
               </button>
@@ -107,7 +111,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
                     words: 100,
                   }))
                 }
-                className={words === 100 ? "mode-active" : ""}
+                className={`hover:brightness-125 duration-150 ${words === 100 ? "mode-active" : ""}`}
               >
                 100
               </button>
