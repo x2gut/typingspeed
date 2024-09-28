@@ -14,3 +14,11 @@ Type Speed Test is a React-based application that allows you to check and improv
 - **Statistics**: After completing the test, users receive statistics, including typing speed in words per minute (WPM) and accuracy percentage.
 - **Test History**: Users can save results from previous tests to track their progress. #To be added soon
 
+- ## Technologies
+
+  - *React*
+  - *Tailwind*
+  - *JS*
+  - *HTML*
+  - *CSS*
+
