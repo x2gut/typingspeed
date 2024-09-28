@@ -309,6 +309,10 @@ body {
   background-color: var(--main-color);
 }
 
+.caret-rainbow {
+  animation: rainbow 10s infinite;
+}
+
 /* Keyboard Animation */
 .keyboard-animation {
   animation: keyboard-animation 0.3s ease-in-out;
@@ -431,5 +435,29 @@ body {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-color: red;
+  }
+  16.67% {
+    background-color: orange;
+  }
+  33.33% {
+    background-color: yellow;
+  }
+  50% {
+    background-color: green;
+  }
+  66.67% {
+    background-color: blue;
+  }
+  83.33% {
+    background-color: indigo;
+  }
+  100% {
+    background-color: violet;
   }
 }

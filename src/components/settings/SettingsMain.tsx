@@ -32,6 +32,13 @@ const SettingsMain = ({}) => {
     });
   };
 
+  const handleCaretRainbow = (caretRainbow: boolean) => {
+    setTypeSettings({
+      ...typeSettings,
+      caretRainbow: caretRainbow,
+    });
+  };
+
   return (
     <div className="container">
       <div className="settings-top">
@@ -154,6 +161,30 @@ const SettingsMain = ({}) => {
             onClick={() => handleCaretType("block")}
           >
             ▮
+          </button>
+        </div>
+      </div>
+      <div className="settings-option typing-caret-rainbow">
+        <div className="option-content">
+          <div className="option-title">
+            <h4>Caret rainbow</h4>
+          </div>
+          <p className="option-desc">
+            Set animated rainbow effect for the caret
+          </p>
+        </div>
+        <div className="option-buttons">
+          <button
+            className={`option-btn ${!typeSettings.caretRainbow && "active"}`}
+            onClick={() => handleCaretRainbow(false)}
+          >
+            Off
+          </button>
+          <button
+            className={`option-btn ${typeSettings.caretRainbow && "active"}`}
+            onClick={() => handleCaretRainbow(true)}
+          >
+            On
           </button>
         </div>
       </div>

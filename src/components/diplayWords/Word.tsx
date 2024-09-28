@@ -40,7 +40,9 @@ const Word: React.FC<WordProps> = ({
       ))}
       {typeSettings.caretType !== false && currentWordIndex === wordIndex && (
         <div
-          className={`caret-${typeSettings.caretType}`}
+          className={`caret-${typeSettings.caretType} ${
+            typeSettings.caretRainbow && "caret-rainbow"
+          }`}
           style={{
             transform: `translate(${currentLetterIndex * 16.5}px)`,
           }}

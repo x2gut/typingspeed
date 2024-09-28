@@ -35,10 +35,20 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     },
     soundOnPress: result?.soundOnPress || false,
     caretType: result?.caretType ?? "default",
+    caretRainbow: result?.caretRainbow ?? false,
   });
 
-  const { layout, lang, mode, time, words, keyboard, soundOnPress, caretType } =
-    typeSettings;
+  const {
+    layout,
+    lang,
+    mode,
+    time,
+    words,
+    keyboard,
+    soundOnPress,
+    caretType,
+    caretRainbow,
+  } = typeSettings;
 
   useEffect(() => {
     localStorage.setItem(
@@ -52,6 +62,7 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
         keyboard,
         soundOnPress,
         caretType,
+        caretRainbow,
       })
     );
   }, [typeSettings]);

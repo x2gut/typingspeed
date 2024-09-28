@@ -22,6 +22,7 @@ export type TypeSettings = {
   }; 
   soundOnPress: boolean | string,
   caretType: boolean | string,
+  caretRainbow: boolean,
 }
 
 export type GameSettings = {
