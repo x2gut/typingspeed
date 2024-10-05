@@ -7,7 +7,7 @@ type Themes = {
 };
 
 export const themes: Themes = {
-  BASE: {
+  base: {
     "--bg-color": "#171717",
     "--main-color": "#facc15",
     "--sub-color": "#cbd5e1",
@@ -16,7 +16,7 @@ export const themes: Themes = {
     "--mistake-color": "#e11d48",
     "--text-correct-color": "#e4e4e7",
   },
-  MATCHA: {
+  matcha: {
     "--bg-color": "#44624a",
     "--main-color": "#ffffff",
     "--sub-color": "#8ba888",
@@ -25,7 +25,7 @@ export const themes: Themes = {
     "--mistake-color": "#d99b77",
     "--text-correct-color": "#ffffff",
   },
-  LIGHT: {
+  light: {
     "--bg-color": "#fafafa",
     "--main-color": "#484b6a",
     "--sub-color": "#9394a5",
@@ -34,7 +34,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff9354",
     "--text-correct-color": "#9093d6",
   },
-  COFFEE: {
+  coffee: {
     "--bg-color": "#f5efe6",
     "--main-color": "#d7b89a",
     "--sub-color": "#b89a7a",
@@ -43,16 +43,16 @@ export const themes: Themes = {
     "--mistake-color": "#d9534f",
     "--text-correct-color": "#4b3a2f",
   },
-  FOREST: {
-    '--bg-color': "#122a22",        /* Очень тёмно-зелёный фон, как густая лесная тень */
-    '--main-color': "#1b4033",      /* Основной цвет - глубокий тёмно-зелёный */
-    '--sub-color': "#4a6b59",       /* Дополнительный цвет - более светлый зелёный с сероватым оттенком */
-    '--sub-accent-color': "#5e3d2b", /* Акцентный цвет - тёмно-древесно-коричневый */
-    '--text-color': "#d0cfc4",      /* Цвет текста - светлый, слегка теплый */
-    '--mistake-color': "#b34338",   /* Цвет ошибки - глубокий красный */
-    '--text-correct-color': "#5e3d2b" /* Цвет корректного текста - тёмный бежево-коричневый */
+  forest: {
+    '--bg-color': "#122a22",       
+    '--main-color': "#1b4033",     
+    '--sub-color': "#4a6b59",     
+    '--sub-accent-color': "#5e3d2b",
+    '--text-color': "#d0cfc4",
+    '--mistake-color': "#b34338",   
+    '--text-correct-color': "#5e3d2b"
 },
-  SPACE: {
+  space: {
     "--bg-color": "#0a0f29",
     "--main-color": "#152043",
     "--sub-color": "#3b4d71",
@@ -61,7 +61,7 @@ export const themes: Themes = {
     "--mistake-color": "#e63946",
     "--text-correct-color": "#b8c1ec",
   },
-  DARK: {
+  dark: {
     "--bg-color": "#0d0d0d",
     "--main-color": "#1a1a1a",
     "--sub-color": "#333333",
@@ -70,7 +70,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff4c4c",
     "--text-correct-color": "#5ac18e",
   },
-  VOLCANIC: {
+  volcanic: {
     "--bg-color": "#1c1c1c",
     "--main-color": "#2e2e2e",
     "--sub-color": "#5a3326",
@@ -79,7 +79,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff2400",
     "--text-correct-color": "#ffa07a",
   },
-  ICE: {
+  ice: {
     "--bg-color": "#e0f7fa",
     "--main-color": "#b2ebf2",
     "--sub-color": "#80deea",
@@ -88,7 +88,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff4081",
     "--text-correct-color": "#4fc3f7",
   },
-  MATRIX: {
+  matrix: {
     "--bg-color": "#000000",
     "--main-color": "#003300",
     "--sub-color": "#004d00",
@@ -97,7 +97,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff4d4d",
     "--text-correct-color": "#33ff00",
   },
-  HALLOWEEN: {
+  halloween: {
     "--bg-color": "#1a1a1a",
     "--main-color": "#333333",
     "--sub-color": "#ff6600",
@@ -106,7 +106,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff3300",
     "--text-correct-color": "#66ff66",
   },
-  DRAGON: {
+  dragon: {
     "--bg-color": "#1a0d0a",
     "--main-color": "#4b1e17",
     "--sub-color": "#b33a12",
@@ -115,7 +115,7 @@ export const themes: Themes = {
     "--mistake-color": "#ff4d4d",
     "--text-correct-color": "#b33a12",
   },
-  BARBIE: {
+  barbie: {
     "--bg-color": "#ffccd4",
     "--main-color": "#ff5aa7",
     "--sub-color": "#ff5aa7",
@@ -124,4 +124,22 @@ export const themes: Themes = {
     "--mistake-color": "#b71c1c",
     "--text-correct-color": "#ff5aa7",
   },
+  waves: {
+    "--bg-color": "#023e8a",
+    "--main-color": "#3a86ff",
+    "--sub-color": "#0096c7",
+    "--sub-accent-color": "#caf0f8",
+    "--text-color": "#ade8f4",
+    "--mistake-color": "#e76f51",
+    "--text-correct-color": "#0077b6",
+  },
+  softgirl: {
+    "--bg-color": "#b8c0ff",
+    "--main-color": "#3a86ff",
+    "--sub-color": "#cddafd",
+    "--sub-accent-color": "#1e6091",
+    "--text-color": "#7d8597",
+    "--mistake-color": "#e76f51",
+    "--text-correct-color": "#0077b6",
+  }
 };
