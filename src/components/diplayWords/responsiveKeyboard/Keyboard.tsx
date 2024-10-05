@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import ResponsiveLetter from "./ResponsiveLetter";
 import useKeyPressed from "../../../hooks/useKeyPressed";
 import { useTypeSettings } from "../../../contexts/TypeSettingsContext";
-import { engKeyboardKeys } from "../../../static/keyboardsLayouts";
+import {
+  engKeyboardKeys,
+  uaKeyboardKeys,
+} from "../../../static/keyboardsLayouts";
 import { rusKeyboardKeys } from "../../../static/keyboardsLayouts";
-
 
 interface KeyboardProps {
   isFocused: boolean;
@@ -25,6 +27,9 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(
           break;
         case "english":
           setLayout(engKeyboardKeys);
+          break;
+        case "ukrainian":
+          setLayout(uaKeyboardKeys);
           break;
       }
     }, [typeSettings.layout]);
