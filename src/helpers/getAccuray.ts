@@ -1,6 +1,4 @@
 export const getAccuracy = (
-    wordsAmount: number,
-    avgWordsLength: number,
     mistakes: number,
     correctChars: number
   ) => {
