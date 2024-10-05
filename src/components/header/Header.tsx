@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
-import RegisterModal from "../modals/registerModal";
+import RegisterModal from "../../modals/registerModal";
 import { Link } from "react-router-dom";
+import { useTheme } from "../../contexts/ThemeProvider";
 
 const Header: React.FC = () => {
-
+  const {colors} = useTheme();
   const [isRegister, setIsRegister] = useState(false)
 
   return (
@@ -15,7 +16,7 @@ const Header: React.FC = () => {
       <RegisterModal isRegister={isRegister} setIsRegister={setIsRegister}/>
         <div className="header-logo">
           <Link className="flex items-center gap-3" to="/">
-            <FaKeyboard size={52} />
+            <FaKeyboard size={52} color={colors.mainColor}/>
             <p className="text-3xl font-bold">TypeTest</p>
           </Link>
         </div>
@@ -26,7 +27,7 @@ const Header: React.FC = () => {
       <div className="header-right flex items-center">
         <div className="user">
           <button className="header-user" onClick={() => setIsRegister(!isRegister)}>
-            <FaRegUser size={28} />
+            <FaRegUser size={28} color={colors.mainColor}/>
           </button>
         </div>
       </div>
