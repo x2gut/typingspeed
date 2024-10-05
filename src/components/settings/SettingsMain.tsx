@@ -1,8 +1,14 @@
 import { TbKeyboard } from "react-icons/tb";
 import { CgLoadbarSound } from "react-icons/cg";
+import { CiRainbow } from "react-icons/ci";
 
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import { playAudio } from "../../utils/playAudio";
+import SettingsBtn from "./settingsBtn";
+import { themes } from "../../themes/themes";
+import ThemeButton from "../ThemeBtn";
+import { FaRandom } from "react-icons/fa";
+import { BsLayoutSidebarInset } from "react-icons/bs";
 
 const SettingsMain = ({}) => {
   const { typeSettings, setTypeSettings } = useTypeSettings();
@@ -39,6 +45,20 @@ const SettingsMain = ({}) => {
     });
   };
 
+  const handleRandomTheme = (randomTheme: boolean) => {
+    setTypeSettings({
+      ...typeSettings,
+      randomTheme: randomTheme,
+    });
+  };
+
+  const handleThemesSidebar = (themesSidebar: boolean) => {
+    setTypeSettings({
+      ...typeSettings,
+      themesSidebar: themesSidebar,
+    });
+  };
+
   return (
     <div className="container">
       <div className="settings-top">
@@ -53,32 +73,23 @@ const SettingsMain = ({}) => {
           <p className="option-desc">Show keyboard below the displayed words</p>
         </div>
         <div className="option-buttons">
-          <button
-            className={`option-btn ${
-              !typeSettings.keyboard.show ? "active" : ""
-            }`}
-            onClick={() => handleKeyboardSettings(false)}
-          >
-            Off
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.keyboard.show ? "active" : ""
-            }`}
-            onClick={() => handleKeyboardSettings(true, false)}
-          >
-            Show
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.keyboard.responsive ? "active" : ""
-            }`}
-            onClick={() =>
+          <SettingsBtn
+            label="Off"
+            callback={() => handleKeyboardSettings(false)}
+            className={!typeSettings.keyboard.show ? "active" : ""}
+          />
+          <SettingsBtn
+            label="Show"
+            callback={() => handleKeyboardSettings(true, false)}
+            className={typeSettings.keyboard.show ? "active" : ""}
+          />
+          <SettingsBtn
+            label="Responsive"
+            callback={() =>
               handleKeyboardSettings(true, !typeSettings.keyboard.responsive)
             }
-          >
-            Responsive
-          </button>
+            className={typeSettings.keyboard.responsive ? "active" : ""}
+          />
         </div>
       </div>
       <div className="settings-option sound">
@@ -90,38 +101,31 @@ const SettingsMain = ({}) => {
           <p className="option-desc">Play sound whenever u press on a key</p>
         </div>
         <div className="option-buttons">
-          <button
-            className={`option-btn ${
-              typeSettings.soundOnPress === false ? "active" : ""
-            }`}
-            onClick={() => handleSoundSettings(false)}
-          >
-            Off
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.soundOnPress === "Alpacas" ? "active" : ""
-            }`}
-            onClick={() => {
+          <SettingsBtn
+            label="Off"
+            callback={() => handleSoundSettings(false)}
+            className={typeSettings.soundOnPress === false ? "active" : ""}
+          />
+          <SettingsBtn
+            label="Alpacas"
+            callback={() => {
               handleSoundSettings("Alpacas");
               playAudio("/typingspeed/assets/sounds/Alpacas_main_soundmp3.mp3");
             }}
-          >
-            Alpacas
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
-            }`}
-            onClick={() => {
+            className={typeSettings.soundOnPress === "Alpacas" ? "active" : ""}
+          />
+          <SettingsBtn
+            label="NovelKeys Cream"
+            callback={() => {
               handleSoundSettings("NovelKeysCream");
               playAudio(
                 "/typingspeed/assets/sounds/NovelKeysCream_main_soundmp3.mp3"
               );
             }}
-          >
-            NovelKeys Cream
-          </button>
+            className={
+              typeSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
+            }
+          />
         </div>
       </div>
       <div className="settings-option typing-caret">
@@ -132,41 +136,32 @@ const SettingsMain = ({}) => {
           <p className="option-desc">Change style of yours caret</p>
         </div>
         <div className="option-buttons">
-          <button
-            className={`option-btn ${!typeSettings.caretType && "active"}`}
-            onClick={() => handleCaretType(false)}
-          >
-            Off
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.caretType === "default" && "active"
-            }`}
-            onClick={() => handleCaretType("default")}
-          >
-            |
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.caretType === "under" && "active"
-            }`}
-            onClick={() => handleCaretType("under")}
-          >
-            _
-          </button>
-          <button
-            className={`option-btn ${
-              typeSettings.caretType === "block" && "active"
-            }`}
-            onClick={() => handleCaretType("block")}
-          >
-            ▮
-          </button>
+          <SettingsBtn
+            label="Off"
+            callback={() => handleCaretType(false)}
+            className={!typeSettings.caretType && "active"}
+          />
+          <SettingsBtn
+            label="|"
+            callback={() => handleCaretType("default")}
+            className={typeSettings.caretType === "default" && "active"}
+          />
+          <SettingsBtn
+            label="_"
+            callback={() => handleCaretType("under")}
+            className={typeSettings.caretType === "under" && "active"}
+          />
+          <SettingsBtn
+            label="▮"
+            callback={() => handleCaretType("block")}
+            className={typeSettings.caretType === "block" && "active"}
+          />
         </div>
       </div>
       <div className="settings-option typing-caret-rainbow">
         <div className="option-content">
           <div className="option-title">
+            <CiRainbow />
             <h4>Caret rainbow</h4>
           </div>
           <p className="option-desc">
@@ -174,18 +169,81 @@ const SettingsMain = ({}) => {
           </p>
         </div>
         <div className="option-buttons">
-          <button
-            className={`option-btn ${!typeSettings.caretRainbow && "active"}`}
-            onClick={() => handleCaretRainbow(false)}
-          >
-            Off
-          </button>
-          <button
-            className={`option-btn ${typeSettings.caretRainbow && "active"}`}
-            onClick={() => handleCaretRainbow(true)}
-          >
-            On
-          </button>
+          <SettingsBtn
+            label="Off"
+            callback={() => handleCaretRainbow(false)}
+            className={!typeSettings.caretRainbow && "active"}
+          />
+          <SettingsBtn
+            label="On"
+            callback={() => handleCaretRainbow(true)}
+            className={typeSettings.caretRainbow && "active"}
+          />
+        </div>
+      </div>
+      <div className="settings-option random-theme">
+        <div className="option-content">
+          <div className="option-title">
+            <FaRandom />
+            <h4>Random theme</h4>
+          </div>
+          <p className="option-desc">
+            A random theme will be apply after every completed test <br />
+            (new theme do not saves to yours config)
+          </p>
+        </div>
+        <div className="option-buttons">
+          <SettingsBtn
+            label="Off"
+            callback={() => handleRandomTheme(false)}
+            className={!typeSettings.randomTheme && "active"}
+          />
+          <SettingsBtn
+            label="On"
+            callback={() => handleRandomTheme(true)}
+            className={typeSettings.randomTheme && "active"}
+          />
+        </div>
+      </div>
+      <div className="settings-option sidebar">
+        <div className="option-content">
+          <div className="option-title">
+            <BsLayoutSidebarInset />
+            <h4>Themes sidebar</h4>
+          </div>
+          <p className="option-desc">Show themes sidebar</p>
+        </div>
+        <div className="option-buttons">
+          <SettingsBtn
+            label="Off"
+            callback={() => handleThemesSidebar(false)}
+            className={!typeSettings.themesSidebar && "active"}
+          />
+          <SettingsBtn
+            label="On"
+            callback={() => handleThemesSidebar(true)}
+            className={typeSettings.themesSidebar && "active"}
+          />
+        </div>
+      </div>
+      
+      <div className="settings-option themes">
+        <div className="option-content">
+          <div className="option-title">
+            <h4>Themes</h4>
+          </div>
+          <p className="option-desc">Change site theme</p>
+        </div>
+        <div className="option-buttons theme">
+          {Object.keys(themes).map((value) => {
+            return (
+              <ThemeButton
+                key={value}
+                value={value}
+                className="option-btn theme-btn"
+              />
+            );
+          })}
         </div>
       </div>
     </div>
