@@ -15,7 +15,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
 
   return (
     <div
-      className={`type-settings my-10 flex justify-center transition-opacity ${className}`}
+      className={`type-settings flex justify-center transition-opacity mb-[150px] mt-10 ${className}`}
     >
       <div className="mode flex gap-5 justify-center rounded-md p-2">
         <button

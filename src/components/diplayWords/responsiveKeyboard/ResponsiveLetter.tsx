@@ -6,7 +6,7 @@ interface ResponsiveLetterProps {
 }
 
 const ResponsiveLetter: React.FC<ResponsiveLetterProps> = React.memo(({ keyLabel, pressedKeysArr }) => {
-  const isPressed = keyLabel === "space" ? pressedKeysArr.includes(" ") : pressedKeysArr.includes(keyLabel);
+  const isPressed: boolean = keyLabel === "space" ? pressedKeysArr.includes(" ") : pressedKeysArr.includes(keyLabel);
 
   const memorizedLetter = useMemo(() => {
     return (
