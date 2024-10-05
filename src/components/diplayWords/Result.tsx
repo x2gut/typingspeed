@@ -37,7 +37,7 @@ const Result: React.FC<ResultProps> = ({ resultData, avgWordLength }) => {
 
   const latestWPM = wordsPerMin[wordsPerMin.length - 1];
   const accuracy = Math.round(
-    getAccuracy(wordsAmount, avgWordLength, mistakes, correctChars)
+    getAccuracy(mistakes, correctChars)
   );
 
   return (
