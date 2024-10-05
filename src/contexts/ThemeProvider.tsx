@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { themes } from "../themes/themes";
+import getRandomTheme from "../utils/getRandomTheme";
 
 const ThemeContext = createContext<any>(null);
 
@@ -23,6 +24,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     mistakeColor: "#e11d48",
     correctTextColor: "#e4e4e7",
   });
+
+  const applyRandomTheme = () => {
+    applyTheme(getRandomTheme());
+  }
 
   const applyTheme = (theme: string) => {
     const newTheme = themes[theme];
@@ -77,7 +82,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, colors, handleThemeChange }}>
+    <ThemeContext.Provider value={{ theme, colors, handleThemeChange, applyRandomTheme }}>
       {children}
     </ThemeContext.Provider>
   );
