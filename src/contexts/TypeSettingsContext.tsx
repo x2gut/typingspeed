@@ -36,6 +36,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     soundOnPress: result?.soundOnPress || false,
     caretType: result?.caretType ?? "default",
     caretRainbow: result?.caretRainbow ?? false,
+    randomTheme: result?.randomTheme ?? false,
+    themesSidebar: result?.themesSidebar ?? true,
   });
 
   const {
@@ -48,6 +50,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     soundOnPress,
     caretType,
     caretRainbow,
+    randomTheme,
+    themesSidebar
   } = typeSettings;
 
   useEffect(() => {
@@ -63,6 +67,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
         soundOnPress,
         caretType,
         caretRainbow,
+        randomTheme,
+        themesSidebar
       })
     );
   }, [typeSettings]);
