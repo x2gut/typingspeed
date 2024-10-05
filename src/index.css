@@ -233,7 +233,7 @@ body {
 }
 
 .register-field::placeholder {
-  color: var(--text-color);
+  color: var(--sub-color);
 }
 
 .register-submit-btn {
@@ -310,7 +310,7 @@ body {
 }
 
 .caret-rainbow {
-  animation: rainbow 10s infinite;
+  animation: rainbow 2s infinite;
 }
 
 /* Keyboard Animation */
@@ -400,6 +400,29 @@ body {
 
 .language-option:hover {
   background-color: var(--sub-accent-color);
+}
+
+.language-search {
+  caret-color: var(--main-color);
+  color: var(--text-correct-color);
+}
+
+.themes {
+  flex-direction: column;
+  align-items: flex-start !important;
+  gap: 10px;
+}
+
+.theme {
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+  width: 290px;
+  max-width: 290px;
+  filter: brightness(1);
 }
 
 /* Keyframes */
