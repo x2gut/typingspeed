@@ -50,6 +50,6 @@
   "devDependencies": {
     "eslint": "^8.57.1",
     "gh-pages": "^6.1.1",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.13"
   }
 }
