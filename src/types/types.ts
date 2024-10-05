@@ -23,6 +23,8 @@ export type TypeSettings = {
   soundOnPress: boolean | string,
   caretType: boolean | string,
   caretRainbow: boolean,
+  randomTheme: boolean,
+  themesSidebar: boolean,
 }
 
 export type GameSettings = {
