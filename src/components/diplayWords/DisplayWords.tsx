@@ -23,6 +23,7 @@ import Keyboard from "./responsiveKeyboard/Keyboard";
 import { getCurrentSlice } from "../../utils/getCurrentSlice";
 import LanguageBtn from "./LanguageBtn";
 import LanguageSelectModal from "../../modals/languageSelectModal";
+import { useTheme } from "../../contexts/ThemeProvider";
 
 interface DisplayWordsProps {
   wordsList: string[];
@@ -57,6 +58,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
       gameSettings.isTimeOut,
       shuffledWords
     );
+  const { applyRandomTheme } = useTheme();
 
   useEffect(() => {
     if (wordsContainerRef.current) {
@@ -252,6 +254,9 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
       )}
       <RestartButton
         onClick={() => {
+          if (typeSettings.randomTheme && gameSettings.isTimeOut) {
+            applyRandomTheme();
+          }
           resetGame();
           setGameSettings((prevSettings) => ({
             ...prevSettings,
