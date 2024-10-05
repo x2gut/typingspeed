@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DisplayWords from "../components/diplayWords/DisplayWords";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import TypeSettingsMenu from "../components/diplayWords/TypeSettingsMenu";
 import { TypeSettingsProvider } from "../contexts/TypeSettingsContext";
 import { ThemeProvider } from "../contexts/ThemeProvider";
@@ -27,34 +27,32 @@ const TypeTest: React.FC = () => {
         }
         return response.json();
       })
-      .then((jsonData) => {setWords(jsonData.words)
+      .then((jsonData) => {
+        setWords(jsonData.words);
       })
-      .catch((error) =>
-        console.error("Execution failed: ", error)
-      );
+      .catch((error) => console.error("Execution failed: ", error));
   }, [currentLang]);
 
   return (
-    <TypeSettingsProvider>
-      <ThemeProvider>
-        {words.length > 0 &&
+    <>
+      {words.length > 0 && (
         <div className="page-content min-h-screen">
-        <div className="container">
-          <Header />
-          <TypeSettingsMenu className={isFocused ? "focus" : ""} />
-          <ThemesSidebar className={isFocused ? "focus" : ""} />
-          <div className="display-words flex items-center flex-col my-36">
-            <DisplayWords
-              setCurrentLang={setCurrentLang}
-              wordsList={words}
-              setIsFocused={setIsFocused}
-            />
+          <div className="container">
+            <Header />
+            <TypeSettingsMenu className={isFocused ? "focus" : ""} />
+            <ThemesSidebar className={isFocused ? "focus" : ""} />
+            <div className="display-words flex items-center flex-col h-[600px]">
+              <DisplayWords
+                setCurrentLang={setCurrentLang}
+                wordsList={words}
+                setIsFocused={setIsFocused}
+              />
+            </div>
+            <FooterCommands className={isFocused ? "focus" : ""} />
           </div>
-          <FooterCommands className={isFocused ? "focus" : ""} />
         </div>
-      </div>}
-      </ThemeProvider>
-    </TypeSettingsProvider>
+      )}
+    </>
   );
 };
 
