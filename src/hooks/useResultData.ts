@@ -7,7 +7,9 @@ const useResultData = () => {
       mistakes: 0,
       correctChars: 0,
       wordsAmount: 0,
-      mistakesPerMin: []
+      mistakesPerMin: [],
+      wordsTyped: [],
+      letterStates: {},
     });
   
     const resetResultData = () => {
@@ -16,7 +18,9 @@ const useResultData = () => {
         mistakes: 0,
         correctChars: 0,
         wordsAmount: 0,
-        mistakesPerMin: []
+        mistakesPerMin: [],
+        wordsTyped: [],
+        letterStates: {},
       });
     };
   
