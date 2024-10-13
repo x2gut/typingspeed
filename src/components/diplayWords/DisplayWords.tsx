@@ -10,7 +10,7 @@ import Timer from "./Timer";
 import KeyboardHandler from "./KeyboardHandler";
 import RestartButton from "./RestartButton";
 import restartTyping from "../../utils/restartTyping";
-import Result from "./Result";
+import Result from "./result/Result";
 import shuffleArray from "../../helpers/shuffleArray";
 import BlurWarning from "./BlurWarning";
 import { GameSettings, LetterStates, ResultData } from "../../types/types";
@@ -24,6 +24,7 @@ import { getCurrentSlice } from "../../utils/getCurrentSlice";
 import LanguageBtn from "./LanguageBtn";
 import LanguageSelectModal from "../../modals/languageSelectModal";
 import { useTheme } from "../../contexts/ThemeProvider";
+import NoticeComponent from "../common/Notice";
 
 interface DisplayWordsProps {
   wordsList: string[];
@@ -38,7 +39,6 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
 }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
-  const [letterStates, setLetterStates] = useState<LetterStates>({});
   const { typeSettings } = useTypeSettings();
   const [isLangModalActive, setIsLangModalActive] = useState<boolean>(false);
   const [shuffledWords, setShuffledWords] = useState(wordsList);
@@ -75,7 +75,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
   useEffect(() => {
     const shuffled = shuffleArray(wordsList);
     setShuffledWords(shuffled);
-    setAvgWordsLength(getAvgWordLength(shuffled));
+    getAvgWordLength(shuffled);
     resetGame();
   }, [wordsList]);
 
@@ -85,6 +85,10 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
 
   useEffect(() => {
     setAvgWordsLength(getAvgWordLength(shuffledWords));
+    setResultData((prevData) => ({
+      ...prevData,
+      letterStates: {},
+    }));
     resetGame();
   }, [typeSettings.mode, typeSettings.words, typeSettings.time]);
 
@@ -96,7 +100,6 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
     restartTyping(
       setCurrentWordIndex,
       setCurrentLetterIndex,
-      setLetterStates,
       setSlicedIndex,
       wordsPerContainer
     );
@@ -133,7 +136,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
   return (
     <>
       {gameSettings.isTimeOut ? (
-        <Result resultData={resultData} avgWordLength={avgWordsLength} />
+        <Result resultData={resultData} />
       ) : (
         <>
           {gameSettings.isGameStarted && typeSettings.mode === "time" ? (
@@ -211,7 +214,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
                       currentWordIndex={currentWordIndex}
                       currentLetterIndex={currentLetterIndex}
                       wordIndex={shuffledWords.indexOf(word)}
-                      letterStates={letterStates}
+                      letterStates={resultData.letterStates}
                     />
                   ))}
                 </div>
@@ -228,18 +231,14 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
           </div>
           {wordsContainerRef.current && (
             <KeyboardHandler
+              resultData={resultData}
               containerRef={wordsContainerRef}
               isGameStarted={gameSettings.isGameStarted}
               currentWordIndex={currentWordIndex}
               currentLetterIndex={currentLetterIndex}
               setCurrentWordIndex={setCurrentWordIndex}
               setCurrentLetterIndex={setCurrentLetterIndex}
-              setLetterStates={setLetterStates}
-              setSlicedIndex={setSlicedIndex}
-              wordsPerContainer={currentWords[0].length}
-              slicedIndex={slicedIndex}
               setGameSettings={setGameSettings}
-              letterStates={letterStates}
               wordsList={shuffledWords}
               setResultData={setResultData}
             />
