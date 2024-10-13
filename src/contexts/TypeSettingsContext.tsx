@@ -38,6 +38,7 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     caretRainbow: result?.caretRainbow ?? false,
     randomTheme: result?.randomTheme ?? false,
     themesSidebar: result?.themesSidebar ?? true,
+    wordsHistory: result?.wordsHistory ?? true,
   });
 
   const {
@@ -51,7 +52,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     caretType,
     caretRainbow,
     randomTheme,
-    themesSidebar
+    themesSidebar,
+    wordsHistory
   } = typeSettings;
 
   useEffect(() => {
@@ -68,7 +70,8 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
         caretType,
         caretRainbow,
         randomTheme,
-        themesSidebar
+        themesSidebar,
+        wordsHistory
       })
     );
   }, [typeSettings]);
