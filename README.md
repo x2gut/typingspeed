@@ -8,6 +8,9 @@
 
 Type Speed Test is a React-based application that allows you to check and improve yours typing speed. Users can type a given words, and the application will track their speed and accuracy, providing real-time results.
 
+[DEMO](https://x2gut.github.io/typingspeed/)
+
+
 ## Features
 
 - **Typing Speed Test**: Users can start a test and type the provided words.
