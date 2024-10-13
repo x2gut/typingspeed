@@ -75,7 +75,6 @@ const Timer: React.FC<TimerProps> = ({
     }));
     // SETTING MISTAKES
     if (mistakes !== prevMistakesRef.current) {
-      const newMistakes = mistakes - prevMistakesRef.current;
       setResultData((prevData) => ({
         ...prevData,
         mistakesPerMin: [...prevData.mistakesPerMin, mistakes],
