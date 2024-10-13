@@ -6,9 +6,10 @@ import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import { playAudio } from "../../utils/playAudio";
 import SettingsBtn from "./settingsBtn";
 import { themes } from "../../themes/themes";
-import ThemeButton from "../ThemeBtn";
+import ThemeButton from "../common/ThemeBtn";
 import { FaRandom } from "react-icons/fa";
 import { BsLayoutSidebarInset } from "react-icons/bs";
+import { MdHistory } from "react-icons/md";
 
 const SettingsMain = ({}) => {
   const { typeSettings, setTypeSettings } = useTypeSettings();
@@ -56,6 +57,13 @@ const SettingsMain = ({}) => {
     setTypeSettings({
       ...typeSettings,
       themesSidebar: themesSidebar,
+    });
+  };
+
+  const handleWordsHistory = (wordsHistory: boolean) => {
+    setTypeSettings({
+      ...typeSettings,
+      wordsHistory: wordsHistory,
     });
   };
 
@@ -226,7 +234,29 @@ const SettingsMain = ({}) => {
           />
         </div>
       </div>
-      
+      <div className="settings-option words-history">
+        <div className="option-content">
+          <div className="option-title">
+            <MdHistory />
+            <h4>Words history</h4>
+          </div>
+          <p className="option-desc">
+            Show your words history in the end of each test
+          </p>
+        </div>
+        <div className="option-buttons">
+          <SettingsBtn
+            label="Off"
+            callback={() => handleWordsHistory(false)}
+            className={!typeSettings.wordsHistory && "active"}
+          />
+          <SettingsBtn
+            label="On"
+            callback={() => handleWordsHistory(true)}
+            className={typeSettings.wordsHistory && "active"}
+          />
+        </div>
+      </div>
       <div className="settings-option themes">
         <div className="option-content">
           <div className="option-title">
