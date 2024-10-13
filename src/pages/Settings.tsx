@@ -1,19 +1,16 @@
-import Header from "../components/header/Header";
-import { ThemeProvider } from "../contexts/ThemeProvider";
-import {
-  TypeSettingsProvider,
-  useTypeSettings,
-} from "../contexts/TypeSettingsContext";
+import { useEffect } from "react";
 import SettingsMain from "../components/settings/SettingsMain";
+import { TypeSettingsProvider } from "../contexts/TypeSettingsContext";
 
 const Settings = () => {
+  useEffect(() => {
+    document.title = "Settings";
+  }, []);
+
   return (
-    <>
-      <div className="page-content h-full">
-        <Header />
-        <SettingsMain />
-      </div>
-    </>
+    <TypeSettingsProvider>
+      <SettingsMain />
+    </TypeSettingsProvider>
   );
 };
 
