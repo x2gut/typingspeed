@@ -5,7 +5,7 @@ import TypeSettingsMenu from "../components/diplayWords/TypeSettingsMenu";
 import { TypeSettingsProvider } from "../contexts/TypeSettingsContext";
 import { ThemeProvider } from "../contexts/ThemeProvider";
 import FooterCommands from "../components/diplayWords/FooterCommands";
-import ThemesSidebar from "../components/ThemesSidebar";
+import ThemesSidebar from "../components/diplayWords/ThemesSidebar";
 const TypeTest: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [currentLang, setCurrentLang] = useState("");
@@ -17,6 +17,8 @@ const TypeTest: React.FC = () => {
       : null;
 
     setCurrentLang(result.lang);
+
+    document.title = "TypeTest";
   }, []);
 
   useEffect(() => {
@@ -34,25 +36,22 @@ const TypeTest: React.FC = () => {
   }, [currentLang]);
 
   return (
-    <>
+    <TypeSettingsProvider>
       {words.length > 0 && (
-        <div className="page-content min-h-screen">
-          <div className="container">
-            <Header />
-            <TypeSettingsMenu className={isFocused ? "focus" : ""} />
-            <ThemesSidebar className={isFocused ? "focus" : ""} />
-            <div className="display-words flex items-center flex-col h-[600px]">
-              <DisplayWords
-                setCurrentLang={setCurrentLang}
-                wordsList={words}
-                setIsFocused={setIsFocused}
-              />
-            </div>
-            <FooterCommands className={isFocused ? "focus" : ""} />
+        <div className="container">
+          <TypeSettingsMenu className={isFocused ? "focus" : ""} />
+          <ThemesSidebar className={isFocused ? "focus" : ""} />
+          <div className="display-words flex items-center flex-col h-[600px]">
+            <DisplayWords
+              setCurrentLang={setCurrentLang}
+              wordsList={words}
+              setIsFocused={setIsFocused}
+            />
           </div>
+          <FooterCommands className={isFocused ? "focus" : ""} />
         </div>
       )}
-    </>
+    </TypeSettingsProvider>
   );
 };
 
