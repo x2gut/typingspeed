@@ -20,6 +20,10 @@
   box-sizing: border-box;
 }
 
+html  {
+  height: 100vh;
+}
+
 body {
   user-select: none;
   @apply font-mono;
@@ -29,11 +33,8 @@ body {
   width: 100%;
   max-width: 1540px;
   margin-inline: auto;
-  padding: 0 20px;
-}
-
-.page-content {
-  background-color: var(--bg-color);
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /* Header */
@@ -70,17 +71,17 @@ body {
 /* Text Styles */
 .base {
   color: var(--text-color);
-  @apply text-3xl font-semibold;
+  @apply font-semibold;
 }
 
 .correct {
   color: var(--text-correct-color);
-  @apply text-3xl font-semibold;
+  @apply font-semibold;
 }
 
 .incorrect {
   color: var(--mistake-color);
-  @apply text-3xl font-semibold;
+  @apply font-semibold;
 }
 
 /* Mode Styles */
@@ -214,36 +215,29 @@ body {
 }
 
 /* Register Modal */
-.register-modal {
+.modal {
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 998;
+  z-index: 499;
 }
 
-.register-modal-form {
+.modal-form {
   padding: 20px;
   border-radius: 5px;
   background-color: var(--bg-color);
 }
 
-.register-field {
+.modal-field {
   border-radius: 5px;
   padding: 5px;
   color: var(--sub-color);
   background-color: var(--sub-accent-color);
 }
 
-.register-field::placeholder {
+.modal-field::placeholder {
   color: var(--sub-color);
 }
 
-.register-submit-btn {
-  background-color: var(--sub-accent-color);
-  padding: 5px;
-  border-radius: 5px;
-  color: var(--main-color);
-}
-
-.reg-modal-title {
+.modal-title {
   color: var(--text-correct-color);
   font-size: 18px;
 }
@@ -423,6 +417,24 @@ body {
   width: 290px;
   max-width: 290px;
   filter: brightness(1);
+}
+
+.words-history-title {
+  color: var(--text-color)
+}
+
+.words::-webkit-scrollbar {
+  width: 10px;
+}
+
+.words::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  filter: brightness(0.9);
+}
+
+.words::-webkit-scrollbar-thumb {
+  background: var(--sub-accent-color);
+  border-radius: 5px;
 }
 
 /* Keyframes */
