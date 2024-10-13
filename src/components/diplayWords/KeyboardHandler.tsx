@@ -8,54 +8,49 @@ import {
 import { GameSettings, LetterStates, ResultData } from "../../types/types";
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import { playAudio } from "../../utils/playAudio";
+import { useNotice } from "../../contexts/NoticeContext";
+import { BsCapslock } from "react-icons/bs";
 
 interface KeyboardHandlerProps {
+  resultData: ResultData;
   containerRef: React.RefObject<HTMLDivElement>;
   isGameStarted: boolean;
   currentWordIndex: number;
   currentLetterIndex: number;
-  slicedIndex: { startIndex: number; endIndex: number };
   setCurrentWordIndex: Dispatch<SetStateAction<number>>;
   setCurrentLetterIndex: Dispatch<SetStateAction<number>>;
-  setLetterStates: Dispatch<SetStateAction<LetterStates>>;
   setGameSettings: Dispatch<SetStateAction<GameSettings>>;
-  setSlicedIndex: Dispatch<
-    SetStateAction<{ startIndex: number; endIndex: number }>
-  >;
   setResultData: Dispatch<SetStateAction<ResultData>>;
-  letterStates: LetterStates;
   wordsList: string[];
-  wordsPerContainer: number;
 }
 
 const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
+  resultData,
   containerRef,
   isGameStarted,
   currentWordIndex,
   currentLetterIndex,
-  slicedIndex,
   setCurrentWordIndex,
   setCurrentLetterIndex,
-  setLetterStates,
   setGameSettings,
-  setSlicedIndex,
-  letterStates,
   wordsList,
-  wordsPerContainer,
   setResultData,
 }) => {
   const { typeSettings } = useTypeSettings();
+  const { showNotice } = useNotice();
 
   const handleNextWord = () => {
+    console.log(resultData.wordsTyped);
     setCurrentWordIndex((prevIndex) => prevIndex + 1);
     setCurrentLetterIndex(0);
 
-    const countMistakes = Object.values(letterStates[currentWordIndex]).filter(
-      (value) => value === "incorrect"
-    ).length;
+    const countMistakes = Object.values(
+      resultData.letterStates[currentWordIndex]
+    ).filter((value) => value === "incorrect").length;
 
     const correctChars =
-      Object.values(letterStates[currentWordIndex]).length - countMistakes;
+      Object.values(resultData.letterStates[currentWordIndex]).length -
+      countMistakes;
 
     if (countMistakes === 0) {
       setWordsAmount(setResultData);
@@ -63,26 +58,37 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
 
     setMistakes(countMistakes, setResultData);
     setCorrectChars(correctChars, setResultData);
+
+    setResultData((prevData) => ({
+      ...prevData,
+      wordsTyped: [...prevData.wordsTyped, wordsList[currentWordIndex]],
+    }));
   };
 
   const handleNextLetter = () => {
     setCurrentLetterIndex((prevIndex) => prevIndex + 1);
-    setLetterStates((prevData) => ({
+    setResultData((prevData) => ({
       ...prevData,
-      [currentWordIndex]: {
-        ...prevData[currentWordIndex],
-        [currentLetterIndex]: "correct",
+      letterStates: {
+        ...prevData.letterStates,
+        [currentWordIndex]: {
+          ...prevData.letterStates[currentWordIndex],
+          [currentLetterIndex]: "correct",
+        },
       },
     }));
   };
 
   const handleMisstake = () => {
     setCurrentLetterIndex((prevIndex) => prevIndex + 1);
-    setLetterStates((prevData) => ({
+    setResultData((prevData) => ({
       ...prevData,
-      [currentWordIndex]: {
-        ...prevData[currentWordIndex],
-        [currentLetterIndex]: "incorrect",
+      letterStates: {
+        ...prevData.letterStates,
+        [currentWordIndex]: {
+          ...prevData.letterStates[currentWordIndex],
+          [currentLetterIndex]: "incorrect",
+        },
       },
     }));
   };
@@ -92,29 +98,38 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
       if (currentWordIndex > 0) {
         // backspacing only words which has mistake(s)
         if (
-          Object.values(letterStates[currentWordIndex - 1]).includes(
+          Object.values(resultData.letterStates[currentWordIndex - 1]).includes(
             "incorrect"
           )
         ) {
           setCurrentWordIndex((prevIndex) => Math.max(prevIndex - 1, 0));
 
           const prevLetterIndex = Object.keys(
-            letterStates[currentWordIndex - 1] || {}
+            resultData.letterStates[currentWordIndex - 1] || {}
           ).length;
 
           setCurrentLetterIndex(prevLetterIndex);
         }
+
+        setResultData((prevData) => ({
+          ...prevData,
+          wordsTyped: prevData.wordsTyped.filter(
+            (_, index) => index !== Math.max(currentWordIndex - 1, 0)
+          ),
+        }));
       }
     } else {
       setCurrentLetterIndex((prevIndex) => Math.max(prevIndex - 1, 0));
 
       const prevLetterIndex = Math.max(currentLetterIndex - 1, 0);
-
-      setLetterStates((prevData) => ({
+      setResultData((prevData) => ({
         ...prevData,
-        [currentWordIndex]: {
-          ...(prevData[currentWordIndex] || {}),
-          [prevLetterIndex]: "base",
+        letterStates: {
+          ...prevData.letterStates,
+          [currentWordIndex]: {
+            ...(prevData.letterStates[currentWordIndex] || {}),
+            [prevLetterIndex]: "base",
+          },
         },
       }));
     }
@@ -122,11 +137,14 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.getModifierState("CapsLock")) {
+        showNotice("CapsLock is ON", "info", 3500);
+      }
       if (
         containerRef.current &&
         containerRef.current.contains(event.target as Node)
       ) {
-        if (typeSettings.soundOnPress !== false) {
+        if (typeSettings.soundOnPress) {
           const sound = typeSettings.soundOnPress;
           if (event.key === " ") {
             playAudio(`/typingspeed/assets/sounds/${sound}_space_soundmp3.mp3`);
@@ -184,7 +202,6 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
     handleMisstake,
     handleBackSpacePressed,
     setGameSettings,
-    letterStates,
     wordsList,
   ]);
 
