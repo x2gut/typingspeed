@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { LetterStates } from "../../types/types";
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 
@@ -26,7 +26,7 @@ const Word: React.FC<WordProps> = ({
     >
       {word.split("").map((letter, letterIndex) => (
         <span
-          className={`letter ${
+          className={`text-3xl ${
             letterStates[wordIndex]?.[letterIndex] === "correct"
               ? "correct"
               : letterStates[wordIndex]?.[letterIndex] === "incorrect"
@@ -38,7 +38,7 @@ const Word: React.FC<WordProps> = ({
           {letter}
         </span>
       ))}
-      {typeSettings.caretType !== false && currentWordIndex === wordIndex && (
+      {typeSettings.caretType && currentWordIndex === wordIndex && (
         <div
           className={`caret-${typeSettings.caretType} ${
             typeSettings.caretRainbow && "caret-rainbow"
