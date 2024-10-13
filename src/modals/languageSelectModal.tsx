@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useTypeSettings } from "../contexts/TypeSettingsContext";
 import { GoSearch } from "react-icons/go";
 import { useTheme } from "../contexts/ThemeProvider";
-import SearchInput from "../components/SearchInput";
+import SearchInput from "../components/common/SearchInput";
 
 interface LanguageOption {
   id: string;
