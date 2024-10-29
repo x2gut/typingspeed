@@ -1,6 +1,6 @@
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { CiLogin } from "react-icons/ci";
-import loginUser from "../api/login";
+import loginUser from "../api/loginApi";
 import { useAuth } from "../contexts/authContext";
 import { useNotice } from "../contexts/NoticeContext";
 import { useMutation } from "react-query";

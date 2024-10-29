@@ -65,7 +65,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
   return (
     <>
       {isActive && (
-        <div className="language-modal w-screen h-screen fixed top-0 left-0 flex justify-center">
+        <div className="language-modal w-screen h-screen fixed -top-28 left-0 flex justify-center">
           <div className="language-modal-content rounded-r-lg" ref={modalRef}>
             <GoSearch
               size={20}

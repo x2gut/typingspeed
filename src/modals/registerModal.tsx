@@ -1,7 +1,7 @@
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import registerUser from "../api/register";
-import loginUser from "../api/login";
+import registerUser from "../api/registerApi";
+import loginUser from "../api/loginApi";
 import { useNotice } from "../contexts/NoticeContext";
 import { useAuth } from "../contexts/authContext";
 import { useMutation } from "react-query";

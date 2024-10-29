@@ -8,9 +8,9 @@ const Settings = () => {
   }, []);
 
   return (
-    <TypeSettingsProvider>
+    <>
       <SettingsMain />
-    </TypeSettingsProvider>
+    </>
   );
 };
 
