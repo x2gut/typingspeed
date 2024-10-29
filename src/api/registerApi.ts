@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError } from "axios";
+import axios from "axios";
 import apiClient from "./apiClient";
 
 const registerUser = async ({
