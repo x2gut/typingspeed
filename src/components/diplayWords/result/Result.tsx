@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { LetterStates, ResultData } from "../../../types/types";
+import { ResultData } from "../../../types/types";
 import LineChart from "./rechart/LineChart";
 import { getAccuracy } from "../../../helpers/getAccuray";
 import { useTypeSettings } from "../../../contexts/TypeSettingsContext";
 import WordsHistory from "./WordsHistory";
+import { useMutation } from "react-query";
+import { addResults } from "../../../api/resultsApi";
+import { useAuth } from "../../../contexts/authContext";
 
 interface ResultProps {
   resultData: ResultData;
 }
 
 const Result: React.FC<ResultProps> = ({ resultData }) => {
+  const { wordsPerMin, mistakes, correctChars, mistakesPerMin } = resultData;
+  const { userId }: { userId: number } = useAuth();
   const { typeSettings } = useTypeSettings();
+  const [accuracy] = useState<number>(
+    Math.round(getAccuracy(mistakes, correctChars))
+  );
+  const [latestWPM] = useState<number>(
+    wordsPerMin[wordsPerMin.length - 1]
+  );
   const [data, setData] = useState<
     { second: number; wpm: number; mpm: number }[]
   >([
@@ -21,7 +32,15 @@ const Result: React.FC<ResultProps> = ({ resultData }) => {
     },
   ]);
 
-  const { wordsPerMin, mistakes, correctChars, mistakesPerMin } = resultData;
+  const mutation = useMutation(addResults, {
+    onSuccess: (data) => {
+      console.log(`added: ${data.data}`);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   useEffect(() => {
     const generatedData = Array.from(
       { length: wordsPerMin.length },
@@ -31,12 +50,18 @@ const Result: React.FC<ResultProps> = ({ resultData }) => {
         mpm: mistakesPerMin[i] || 0,
       })
     );
-    console.log(resultData);
     setData(generatedData);
+    mutation.mutate({
+      user_id: userId,
+      wpm: latestWPM,
+      accuracy: accuracy,
+      mistakes: mistakes,
+      time: typeSettings.mode === "time" ? typeSettings.time : wordsPerMin.length,
+      words: typeSettings.mode === "words" ? typeSettings.words : resultData.wordsAmount,
+      mode: typeSettings.mode,
+      language: typeSettings.lang
+    });
   }, []);
-
-  const latestWPM = wordsPerMin[wordsPerMin.length - 1];
-  const accuracy = Math.round(getAccuracy(mistakes, correctChars));
 
   return (
     <div className="result-container w-full h-full min-h-96">
@@ -46,7 +71,8 @@ const Result: React.FC<ResultProps> = ({ resultData }) => {
             <span className="">WPM</span> {latestWPM}
           </p>
           <p className="accuracy text-4xl">
-            <span className="">ACC</span> {accuracy}%
+            <span className="">ACC</span>{" "}
+            {accuracy}%
           </p>
         </div>
         <div className="result-right max-w-screen-lg max-h-64 w-full">
