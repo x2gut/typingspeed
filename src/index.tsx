@@ -5,6 +5,7 @@ import { ThemeProvider } from "./contexts/ThemeProvider";
 import { AuthProvider } from "./contexts/authContext";
 import { NoticeProvider } from "./contexts/NoticeContext";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { TypeSettingsProvider } from "./contexts/TypeSettingsContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -17,7 +18,9 @@ root.render(
     <AuthProvider>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <TypeSettingsProvider>
+            <App />
+          </TypeSettingsProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </AuthProvider>
