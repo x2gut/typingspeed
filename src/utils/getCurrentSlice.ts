@@ -5,7 +5,7 @@ export const getCurrentSlice = (
 ) => {
   const letterLength = 16.5;
   const letterMargin = 16;
-  const currentSlice: string[][] = [[], [], []];
+  let currentSlice: string[][] = [[], [], []];
 
   let spaceAvailable = containerWidth;
   let currentSliceIndex = 0;

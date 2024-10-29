@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { LetterStates } from "../types/types";
 
 interface SlicedIndex {
   startIndex: number;
