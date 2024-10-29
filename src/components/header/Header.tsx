@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
 import RegisterModal from "../../modals/RegisterModal";
 import { Link } from "react-router-dom";

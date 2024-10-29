@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSpring, animated } from "react-spring";
 import { CiCircleInfo } from "react-icons/ci";
 import { MdNearbyError } from "react-icons/md";

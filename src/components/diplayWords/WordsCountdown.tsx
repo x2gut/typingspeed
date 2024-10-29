@@ -8,7 +8,6 @@ import {
 } from "react";
 import { getWpm } from "../../utils/resultUtil";
 import { GameSettings, ResultData } from "../../types/types";
-import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 
 interface WordsCountdownProps {
   totalWords: number;
@@ -34,7 +33,7 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   const [timerId, setTimerId] = useState<null | NodeJS.Timeout>(null);
   const [totalTime, setTotalTime] = useState(0);
   const prevMistakesRef = useRef(resultData.mistakes);
-  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, wordsAmount } =
+  const { correctChars, mistakesPerMin } =
     resultData;
 
   const wpm = useMemo(() => {

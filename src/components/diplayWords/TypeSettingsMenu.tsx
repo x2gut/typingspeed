@@ -32,7 +32,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
         </button>
         <button
           className={`flex items-center gap-2 hover:brightness-125 duration-150 ${
-            mode === "time" ? "mode-btn  mode-active" : "mode-btn"
+            mode === "time" ? "mode-btn mode-active" : "mode-btn"
           }`}
           onClick={() => {
             setTypeSettings((prevData) => ({

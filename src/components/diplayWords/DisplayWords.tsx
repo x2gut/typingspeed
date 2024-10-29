@@ -24,7 +24,6 @@ import { getCurrentSlice } from "../../utils/getCurrentSlice";
 import LanguageBtn from "./LanguageBtn";
 import LanguageSelectModal from "../../modals/languageSelectModal";
 import { useTheme } from "../../contexts/ThemeProvider";
-import NoticeComponent from "../common/Notice";
 
 interface DisplayWordsProps {
   wordsList: string[];
@@ -186,7 +185,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
             setIsActive={setIsLangModalActive}
           />
           <div
-            className={`words-container flex h-52 w-full justify-center flex-wrap p-7 outline-none ${
+            className={`words-container flex h-52 w-[1280px] justify-center flex-wrap p-7 outline-none ${
               !gameSettings.isFocused ? "blur opacity-40" : ""
             }`}
             ref={wordsContainerRef}
@@ -215,6 +214,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
                       currentLetterIndex={currentLetterIndex}
                       wordIndex={shuffledWords.indexOf(word)}
                       letterStates={resultData.letterStates}
+                      isGameStarted={gameSettings.isGameStarted}
                     />
                   ))}
                 </div>

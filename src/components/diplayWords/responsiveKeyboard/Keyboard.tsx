@@ -5,8 +5,8 @@ import { useTypeSettings } from "../../../contexts/TypeSettingsContext";
 import {
   engKeyboardKeys,
   uaKeyboardKeys,
+  rusKeyboardKeys
 } from "../../../static/keyboardsLayouts";
-import { rusKeyboardKeys } from "../../../static/keyboardsLayouts";
 
 interface KeyboardProps {
   isFocused: boolean;

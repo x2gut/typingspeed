@@ -64,7 +64,7 @@ const ThemesSidebar: React.FC<ThemeSidebarProps> = ({ className }) => {
                 <HiMagnifyingGlass className="absolute left-2 top-3" />
               </div>
               {filteredData.map((value) => {
-                return <ThemeButton key={value} value={value} />;
+                return <ThemeButton key={value} newTheme={value} />;
               })}
             </div>
           </div>

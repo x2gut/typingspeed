@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { getUsername } from "../utils/decodeJwt";
+import { getUserId, getUsername } from "../utils/decodeJwt";
 
 const AuthContext = createContext<any>(null);
 
@@ -14,6 +14,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [username, setUsername] = useState<string | undefined>("");
+  const [userId, setUserId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -21,12 +22,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsAuthenticated(true);
       const username = getUsername(token);
       setUsername(username);
+      setUserId(getUserId(token))
     }
   }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, username }}
+      value={{ isAuthenticated, setIsAuthenticated, username, userId }}
     >
       {children}
     </AuthContext.Provider>
