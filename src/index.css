@@ -252,7 +252,8 @@ body {
 
 .key {
   color: var(--sub-color);
-  background-color: var(--sub-accent-color);
+  background-color: var(--bg-color);
+  filter: brightness(0.9);
   font-size: 18px;
   border-radius: 5px;
   padding: 3px 10px;
@@ -437,26 +438,23 @@ body {
   border-radius: 5px;
 }
 
+.word-error {
+  border-bottom: 3px solid var(--mistake-color);
+  margin-bottom: 2px;
+}
+
 /* Keyframes */
 @keyframes keyboard-animation {
   0% {
-    transform: scale(1);
-    background-color: var(--sub-accent-color);
-    box-shadow: 0 0 5px var(--sub-accent-color);
+    box-shadow: 0 0 5px var(--main-color);
   }
   30% {
-    transform: scale(1.2);
-    background-color: var(--main-color);
     box-shadow: 0 0 10px var(--main-color);
   }
   60% {
-    transform: scale(0.9);
-    background-color: var(--sub-accent-color);
-    box-shadow: 0 0 5px var(--sub-accent-color);
+    box-shadow: 0 0 5px var(--main-color);
   }
   100% {
-    transform: scale(1);
-    background-color: var(--sub-accent-color);
     box-shadow: none;
   }
 }
