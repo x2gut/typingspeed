@@ -38,3 +38,54 @@ export type GameSettings = {
   isTimeOut: boolean;
   time: number | string;
 };
+
+export type Notice = {
+  message: string;
+  type?: "success" | "error" | "info";
+  id: number;
+  duration?: number;
+};
+
+export type ShowNotice = (
+  message: string,
+  noticeType?: "success" | "error" | "info",
+  duration?: number
+) => void;
+
+export type ProfileData = {
+  username: string | null;
+  email: string | null;
+  id: number | null;
+  isActive: boolean | null;
+};
+
+export type ProfileResultsData = {
+  id: number,
+  user_id: number,
+  wpm: number;
+  accuracy: number;
+  mistakes: number;
+  time: number;
+  words: number;
+  language: string;
+  mode: string;
+  created_at: string;
+};
+
+export interface TimeStats {
+  avg_wpm_time_15: number;
+  avg_wpm_time_30: number;
+  avg_wpm_time_60: number;
+  best_wpm_time_15: number;
+  best_wpm_time_30: number;
+  best_wpm_time_60: number;
+}
+
+export interface WordsStats {
+  avg_wpm_words_25: number;
+  avg_wpm_words_50: number;
+  avg_wpm_words_100: number;
+  best_wpm_words_25: number;
+  best_wpm_words_50: number;
+  best_wpm_words_100: number;
+}
