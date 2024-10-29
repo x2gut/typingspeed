@@ -1,12 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import NoticeComponent from "../components/common/Notice";
-
-interface Notice {
-  message: string;
-  type?: "success" | "error" | "info";
-  id: number;
-  duration?: number;
-}
+import { Notice } from "../types/types";
 
 interface NoticeContextProps {
   showNotice: (

@@ -17,7 +17,7 @@ const SettingsBtn: React.FC<SettingsBtnProps> = ({
     <button
       style={style}
       className={`option-btn ${className}`}
-      onClick={() => callback()}
+      onClick={callback}
     >
       {label}
     </button>

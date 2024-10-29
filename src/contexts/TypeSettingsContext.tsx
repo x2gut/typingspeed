@@ -6,6 +6,9 @@ import React, {
   useEffect,
 } from "react";
 import { TypeSettings } from "../types/types";
+import { useMutation } from "react-query";
+import { updateConfig } from "../api/configApi";
+import { useAuth } from "./authContext";
 
 interface TypeSettingsContextProps {
   typeSettings: TypeSettings;
@@ -19,6 +22,7 @@ const TypeSettingsContext = createContext<TypeSettingsContextProps | undefined>(
 export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const { isAuthenticated } = useAuth();
   const result = localStorage.getItem("config")
     ? JSON.parse(localStorage.getItem("config") as string)
     : null;
@@ -53,9 +57,13 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
     caretRainbow,
     randomTheme,
     themesSidebar,
-    wordsHistory
+    wordsHistory,
   } = typeSettings;
 
+  const mutation = useMutation(updateConfig);
+  const [timeOutId, setTimeOutId] = useState<number | NodeJS.Timeout | null>(
+    null
+  );
   useEffect(() => {
     localStorage.setItem(
       "config",
@@ -71,9 +79,28 @@ export const TypeSettingsProvider: React.FC<{ children: ReactNode }> = ({
         caretRainbow,
         randomTheme,
         themesSidebar,
-        wordsHistory
+        wordsHistory,
       })
     );
+
+    if (!isAuthenticated) {
+      return;
+    }
+
+    if (timeOutId !== null) {
+      clearTimeout(timeOutId);
+    }
+
+    const timeout = setTimeout(() => {
+      mutation.mutate(typeSettings);
+    }, 500);
+
+    setTimeOutId(timeout);
+
+    return () => {
+      clearTimeout(timeout);
+      setTimeOutId(null);
+    };
   }, [typeSettings]);
 
   return (

@@ -24,7 +24,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     mistakeColor: "#e11d48",
     correctTextColor: "#e4e4e7",
   });
-
   const applyRandomTheme = () => {
     applyTheme(getRandomTheme());
   }

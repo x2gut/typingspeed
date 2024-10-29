@@ -118,7 +118,7 @@ const SettingsMain = ({}) => {
             label="Alpacas"
             callback={() => {
               handleSoundSettings("Alpacas");
-              playAudio("/typingspeed/assets/sounds/Alpacas_main_soundmp3.mp3");
+              playAudio("Main", "Alpacas");
             }}
             className={typeSettings.soundOnPress === "Alpacas" ? "active" : ""}
           />
@@ -126,9 +126,7 @@ const SettingsMain = ({}) => {
             label="NovelKeys Cream"
             callback={() => {
               handleSoundSettings("NovelKeysCream");
-              playAudio(
-                "/typingspeed/assets/sounds/NovelKeysCream_main_soundmp3.mp3"
-              );
+              playAudio("Main", "NovelKeysCream");
             }}
             className={
               typeSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
@@ -269,7 +267,7 @@ const SettingsMain = ({}) => {
             return (
               <ThemeButton
                 key={value}
-                value={value}
+                newTheme={value}
                 className="option-btn theme-btn"
               />
             );
