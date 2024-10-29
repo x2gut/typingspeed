@@ -9,7 +9,6 @@ import { GameSettings, LetterStates, ResultData } from "../../types/types";
 import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import { playAudio } from "../../utils/playAudio";
 import { useNotice } from "../../contexts/NoticeContext";
-import { BsCapslock } from "react-icons/bs";
 
 interface KeyboardHandlerProps {
   resultData: ResultData;
@@ -40,7 +39,6 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   const { showNotice } = useNotice();
 
   const handleNextWord = () => {
-    console.log(resultData.wordsTyped);
     setCurrentWordIndex((prevIndex) => prevIndex + 1);
     setCurrentLetterIndex(0);
 
@@ -52,7 +50,11 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
       Object.values(resultData.letterStates[currentWordIndex]).length -
       countMistakes;
 
-    if (countMistakes === 0) {
+    const isLengthMatch =
+      wordsList[currentWordIndex].length ===
+      Object.keys(resultData.letterStates[currentWordIndex]).length;
+
+    if (countMistakes === 0 && isLengthMatch) {
       setWordsAmount(setResultData);
     }
 
@@ -94,45 +96,55 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   };
 
   const handleBackSpacePressed = () => {
-    if (currentLetterIndex === 0) {
-      if (currentWordIndex > 0) {
-        // backspacing only words which has mistake(s)
-        if (
-          Object.values(resultData.letterStates[currentWordIndex - 1]).includes(
-            "incorrect"
-          )
-        ) {
-          setCurrentWordIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    const isAtStartOfWord = currentLetterIndex === 0;
+    const hasPreviousWord = currentWordIndex > 0;
 
-          const prevLetterIndex = Object.keys(
-            resultData.letterStates[currentWordIndex - 1] || {}
-          ).length;
-
-          setCurrentLetterIndex(prevLetterIndex);
-        }
-
-        setResultData((prevData) => ({
-          ...prevData,
-          wordsTyped: prevData.wordsTyped.filter(
-            (_, index) => index !== Math.max(currentWordIndex - 1, 0)
-          ),
-        }));
-      }
+    if (isAtStartOfWord && hasPreviousWord) {
+      handleBackspacingPreviousWord();
     } else {
-      setCurrentLetterIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-
-      const prevLetterIndex = Math.max(currentLetterIndex - 1, 0);
-      setResultData((prevData) => ({
-        ...prevData,
-        letterStates: {
-          ...prevData.letterStates,
-          [currentWordIndex]: {
-            ...(prevData.letterStates[currentWordIndex] || {}),
-            [prevLetterIndex]: "base",
-          },
-        },
-      }));
+      handleBackspacingCurrentLetter();
     }
+  };
+
+  const handleBackspacingPreviousWord = () => {
+    const previousWordIndex = currentWordIndex - 1;
+    const previousLetterStates =
+      resultData.letterStates[previousWordIndex] || {};
+    const isPreviousWordIncomplete =
+      Object.values(previousLetterStates).includes("incorrect") ||
+      wordsList[previousWordIndex].length !==
+        Object.keys(previousLetterStates).length;
+
+    if (isPreviousWordIncomplete) {
+      setCurrentWordIndex(previousWordIndex);
+      setCurrentLetterIndex(Object.keys(previousLetterStates).length);
+      updateWordsTyped(previousWordIndex);
+    }
+  };
+
+  const handleBackspacingCurrentLetter = () => {
+    const prevLetterIndex = Math.max(currentLetterIndex - 1, 0);
+    setCurrentLetterIndex(prevLetterIndex);
+
+    setResultData((prevData) => ({
+      ...prevData,
+      letterStates: {
+        ...prevData.letterStates,
+        [currentWordIndex]: {
+          ...(prevData.letterStates[currentWordIndex] || {}),
+          [prevLetterIndex]: "base",
+        },
+      },
+    }));
+  };
+
+  const updateWordsTyped = (indexToRemove: number) => {
+    setResultData((prevData) => ({
+      ...prevData,
+      wordsTyped: prevData.wordsTyped.filter(
+        (_, index) => index !== indexToRemove
+      ),
+    }));
   };
 
   useEffect(() => {
@@ -144,16 +156,14 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
         containerRef.current &&
         containerRef.current.contains(event.target as Node)
       ) {
-        if (typeSettings.soundOnPress) {
-          const sound = typeSettings.soundOnPress;
+        const sound = typeSettings.soundOnPress;
+        if (typeSettings.soundOnPress && typeof sound === "string") {
           if (event.key === " ") {
-            playAudio(`/typingspeed/assets/sounds/${sound}_space_soundmp3.mp3`);
+            playAudio("Space", sound);
           } else if (event.key === "Backspace") {
-            playAudio(
-              `/typingspeed/assets/sounds/${sound}_backspace_soundmp3.mp3`
-            );
+            playAudio("BackSpace", sound);
           } else {
-            playAudio(`/typingspeed/assets/sounds/${sound}_main_soundmp3.mp3`);
+            playAudio("Main", sound);
           }
         }
         const checkedStatus: string = checkLetter(
