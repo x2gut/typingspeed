@@ -14,30 +14,28 @@ import Tooltip from "../components/common/Tooltip";
 import useResultStore from "../store/result-store";
 import useProfile from "../hooks/useProfile";
 import useAuthStore from "../store/auth-store";
+import { TimeStats, WordsStats } from "../types/types";
 
 const TypeTest: React.FC = () => {
-  const [currentLang, setCurrentLang] = useState("");
+  const { userId } = useAuthStore();
+  const { typeSettings, gameSettings, setTypeSettings } = useSettingsStore();
+  const { avgStats } = useProfile(userId, { fetchResultsData: true });
   const [words, setWords] = useState<string[]>([]);
   const [isResetData, setIsResetData] = useState(false);
-  const { typeSettings, gameSettings, setTypeSettings } = useSettingsStore();
+  const [resultsData, setResultsData] = useState<{
+    time: TimeStats;
+    words: WordsStats;
+  } | null>(null);
   const { applyRandomTheme } = useTheme();
   const { resetUserResults } = useResultStore();
-  const {userId} = useAuthStore();
-  const {avgStats} = useProfile(userId, {fetchResultsData: true})
   const { config } = useConfig();
 
   useEffect(() => {
-    const result = localStorage.getItem("config")
-      ? JSON.parse(localStorage.getItem("config") as string)
-      : null;
-
-    setCurrentLang(result?.lang || "english");
-
-    document.title = "TypeTest";
-  }, [gameSettings.lang]);
+    setResultsData(avgStats)
+  }, [avgStats])
 
   useEffect(() => {
-    fetch(`/typingspeed/languages/${currentLang}.json`)
+    fetch(`/typingspeed/languages/${gameSettings.lang || "english"}.json`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch: " + response.statusText);
@@ -48,7 +46,9 @@ const TypeTest: React.FC = () => {
         setWords(jsonData.words);
       })
       .catch((error) => console.error("Execution failed: ", error));
-  }, [currentLang]);
+
+    document.title = "TypeTest";
+  }, [gameSettings.lang]);
 
   return (
     <>
@@ -57,13 +57,10 @@ const TypeTest: React.FC = () => {
           <TypeSettingsMenu className={typeSettings.isFocused ? "focus" : ""} />
           <ThemesSidebar className={typeSettings.isFocused ? "focus" : ""} />
           <div className="display-words flex items-center flex-col h-[600px]">
-            {typeSettings.isTimeOut && avgStats !== null ? (
-              <Result avgStats={avgStats}/>
+            {typeSettings.isTimeOut ? (
+              <Result avgStats={resultsData} />
             ) : (
-              <DisplayWords
-                wordsList={words}
-                isResetData={isResetData}
-              />
+              <DisplayWords wordsList={words} isResetData={isResetData} />
             )}
             {gameSettings.keyboard.show && !typeSettings.isTimeOut && (
               <Keyboard

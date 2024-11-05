@@ -10,25 +10,34 @@ import useSettingsStore from "../../../store/settings-store";
 import useResultStore from "../../../store/result-store";
 import { PiCrownSimpleFill } from "react-icons/pi";
 import Tooltip from "../../common/Tooltip";
+import { queryClient } from "../../..";
 
 interface ResultProps {
   avgStats: {
-    time: TimeStats,
-    words: WordsStats
-  }
+    time: TimeStats;
+    words: WordsStats;
+  } | null;
 }
 
 const Result: React.FC<ResultProps> = ({ avgStats }) => {
-  const { userId } = useAuthStore();
-  const {userResults} = useResultStore();
-  const { wordsPerMin, mistakes, correctChars, mistakesPerMin, rawWordsPerMin } = userResults;
+  const { userId, isAuthenticated } = useAuthStore();
+  const { userResults } = useResultStore();
+  const {
+    wordsPerMin,
+    mistakes,
+    correctChars,
+    mistakesPerMin,
+    rawWordsPerMin,
+  } = userResults;
   const { gameSettings } = useSettingsStore();
-  const [accuracy] = useState<number>(Math.round(getAccuracy(mistakes, correctChars)));
+  const [accuracy] = useState<number>(
+    Math.round(getAccuracy(mistakes, correctChars))
+  );
   const [latestWPM] = useState<number>(wordsPerMin[wordsPerMin.length - 1]);
-  const [wpmDifference, setWpmDifference] = useState<number | null>(null)
+  const [wpmDifference, setWpmDifference] = useState<number | null>(null);
 
   const [data, setData] = useState<
-    { second: number; wpm: number; mpm: number, rawWpm: number }[]
+    { second: number; wpm: number; mpm: number; rawWpm: number }[]
   >([
     {
       second: 0,
@@ -40,20 +49,26 @@ const Result: React.FC<ResultProps> = ({ avgStats }) => {
   const mutation = useMutation(addResults, {
     onSuccess: (data) => {
       console.log(`added: ${data.data}`);
+      queryClient.invalidateQueries("userResults")
     },
     onError: (error) => {
       console.log(error);
     },
   });
 
-  function isNewBest()  {
-    const { mode, time, words } = gameSettings;
-    const bestWPM = mode === "time" 
-      ? avgStats.time[`best_wpm_time_${time}` as keyof TimeStats] 
-      : avgStats.words[`best_wpm_words_${words}` as keyof WordsStats];
-      console.log(latestWPM - bestWPM)
-      return latestWPM - bestWPM
-  };
+  function isNewBest() {
+    if (avgStats !== null) {
+      const { mode, time, words } = gameSettings;
+      const bestWPM =
+        mode === "time"
+          ? avgStats.time[`best_wpm_time_${time}` as keyof TimeStats]
+          : avgStats.words[`best_wpm_words_${words}` as keyof WordsStats];
+      console.log(latestWPM - bestWPM);
+      return latestWPM - bestWPM;
+    } else {
+      return null;
+    }
+  }
 
   useEffect(() => {
     const generatedData = Array.from(
@@ -66,20 +81,21 @@ const Result: React.FC<ResultProps> = ({ avgStats }) => {
       })
     );
     setData(generatedData);
-    mutation.mutate({
-      user_id: userId,
-      wpm: latestWPM,
-      accuracy: accuracy,
-      mistakes: mistakes,
-      time:
-        gameSettings.mode === "time" ? gameSettings.time : wordsPerMin.length,
-      words:
-        gameSettings.mode === "words"
-          ? gameSettings.words
-          : userResults.wordsAmount,
-      mode: gameSettings.mode,
-      language: gameSettings.lang,
-    });
+    isAuthenticated &&
+      mutation.mutate({
+        user_id: userId,
+        wpm: latestWPM,
+        accuracy: accuracy,
+        mistakes: mistakes,
+        time:
+          gameSettings.mode === "time" ? gameSettings.time : wordsPerMin.length,
+        words:
+          gameSettings.mode === "words"
+            ? gameSettings.words
+            : userResults.wordsAmount,
+        mode: gameSettings.mode,
+        language: gameSettings.lang,
+      });
     setWpmDifference(isNewBest());
   }, []);
 
@@ -88,11 +104,13 @@ const Result: React.FC<ResultProps> = ({ avgStats }) => {
       <div className="result-upper flex justify-center w-full">
         <div className="result-left flex flex-col justify-around">
           <p className="wpm flex items-center gap-3">
-            {wpmDifference !== null && wpmDifference >= 0 && 
-            <Tooltip tooltipLabel={`+${wpmDifference}`}>
-              <PiCrownSimpleFill size={24} fill="var(--text-correct-color)"/>
-              </Tooltip>}
-            <span className="text-4xl">WPM</span> <span className="text-4xl">{latestWPM}</span>
+            {wpmDifference !== null && wpmDifference >= 0 && (
+              <Tooltip tooltipLabel={`+${wpmDifference}`}>
+                <PiCrownSimpleFill size={24} fill="var(--text-correct-color)" className="animation-"/>
+              </Tooltip>
+            )}
+            <span className="text-4xl">WPM</span>{" "}
+            <span className="text-4xl">{latestWPM}</span>
           </p>
           <p className="accuracy text-4xl">
             <span className="">ACC</span> {accuracy}%

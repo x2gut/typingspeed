@@ -13,17 +13,15 @@ import useKeyPressed from "../../hooks/useKeyPressed";
 
 interface TimerProps {
   isGameStarted: boolean;
-  callback: () => void;
   avgWordLength: number;
 }
 
 const Timer: React.FC<TimerProps> = ({
   isGameStarted,
-  callback,
   avgWordLength,
 }) => {
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
-  const { gameSettings } = useSettingsStore();
+  const { gameSettings, setTypeSettings, typeSettings } = useSettingsStore();
   const [timeLeft, setTimeLeft] = useState(gameSettings.time);
   const { userResults, setUserResults } = useResultStore();
   const prevMistakesRef = useRef(userResults.mistakes);
@@ -60,7 +58,8 @@ const Timer: React.FC<TimerProps> = ({
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(id);
-            callback();
+            setTypeSettings({ isTimeOut: true });
+            console.log(typeSettings.isTimeOut)
             return 0;
           }
           return prevTime - 1;

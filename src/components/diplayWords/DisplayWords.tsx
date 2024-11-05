@@ -115,10 +115,6 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
         <Timer
           isGameStarted={typeSettings.isGameStarted}
           avgWordLength={avgWordsLength}
-          callback={() => {
-            resetGame();
-            setTypeSettings({ isTimeOut: true });
-          }}
         />
       ) : (
         typeSettings.isGameStarted && (

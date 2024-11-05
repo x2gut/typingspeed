@@ -14,6 +14,7 @@ import {
 } from "../types/types";
 import { queryClient } from "..";
 import { useNoticeStore } from "../store/notification-store";
+import useAuthStore from "../store/auth-store";
 
 interface UseProfileOptions {
   fetchUserPicture?: boolean;
@@ -22,10 +23,8 @@ interface UseProfileOptions {
   fetchHistory?: boolean;
 }
 
-const useProfile = (
-  userId: number,
-  options: UseProfileOptions
-) => {
+const useProfile = (userId: number, options: UseProfileOptions) => {
+  const { isAuthenticated } = useAuthStore();
   const showNotice = useNoticeStore((state) => state.showNotice);
   const [isLoading, setIsLoading] = useState(true);
   const [userPicture, setUserPicture] = useState<string>("");
@@ -76,7 +75,7 @@ const useProfile = (
       onSuccess: (response) => {
         const blobUrl = URL.createObjectURL(response.data);
         setUserPicture(blobUrl);
-        setIsLoading(false)
+        setIsLoading(false);
       },
       onError: (error) => {
         showNotice(`Error fetching avatar: ${error}`, "error", 5000);
@@ -93,7 +92,7 @@ const useProfile = (
         email: data.data.email,
         id: data.data.id,
         isActive: data.data.is_active,
-        created_at: data.data.created_at
+        created_at: data.data.created_at,
       });
     },
     onError: (error) => {
@@ -103,7 +102,7 @@ const useProfile = (
   });
 
   const queryResultsData = useQuery(["userResults"], () => getStats(userId), {
-    enabled: options.fetchResultsData ?? false,
+    enabled: (options.fetchResultsData && isAuthenticated) ?? false,
     onSuccess: (data) => {
       setAvgStats(data.data);
     },
