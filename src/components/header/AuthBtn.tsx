@@ -10,7 +10,7 @@ const AuthBtn: React.FC<AuthBtnProps> = ({ isRegister, setIsRegister }) => {
   return (
     <div className="user">
       <button
-        className="header-user"
+        className="header-user hover:brightness-150 active:brightness-200 duration-200"
         onClick={() => setIsRegister(!isRegister)}
       >
         <FaRegUser size={18}/>

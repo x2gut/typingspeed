@@ -4,6 +4,7 @@ import Settings from "../pages/Settings";
 import Layout from "../layouts/Layout";
 import NotFound404 from "../pages/404";
 import Profile from "../pages/Profile";
+import Leaderboard from "../pages/Leaderboard";
 
 export const mainRouter = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const mainRouter = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />
+      },
+      {
+        path: "/Leaderboard",
+        element: <Leaderboard />
       }
     ],
   },

@@ -7,12 +7,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceDot,
+  CartesianGrid,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
 import { useTheme } from "../../../../contexts/ThemeProvider";
+import CustomReferenceDot from "./customDot";
 
 interface LineChartProps {
-  data: { second: number; wpm: number; mpm: number }[];
+  data: { second: number; wpm: number; mpm: number, rawWpm: number }[];
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
@@ -29,7 +31,8 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           bottom: 5,
         }}
       >
-        <XAxis dataKey="second" stroke={colors.subColor} />
+      <CartesianGrid stroke="var(--sub-color)" strokeOpacity={0.25} vertical={false} strokeDasharray="4 10"/>
+        <XAxis dataKey="second" stroke={colors.subColor} domain={[1, "dataMax"]}/>
         <YAxis stroke={colors.subColor} />
         <Tooltip content={CustomTooltip} />
         <Line
@@ -37,17 +40,28 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           type="monotone"
           dataKey="wpm"
           stroke={colors.mainColor}
-          activeDot={{ r: 0 }}
-          dot={false}
+          strokeWidth={3}
+          r={0}
+          activeDot={false}
+        />
+        <Line
+          className="line-chart"
+          type="monotone"
+          dataKey="rawWpm"
+          stroke={colors.textColor}
+          strokeWidth={3}
+          r={0}
+          activeDot={false}
         />
         {mistakesData.map((entry) => (
           <ReferenceDot
+            r={0}
             x={entry.second}
-            y={entry.wpm}
+            y={entry.rawWpm}
             stroke={colors.mistakeColor}
             strokeWidth={1}
-            fill="transparent"
-            r={4}
+            fill="var(--mistake-color)"
+            shape={<CustomReferenceDot/>}          
           />
         ))}
       </RechartsLineChart>

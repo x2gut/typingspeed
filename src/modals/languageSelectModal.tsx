@@ -1,8 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { useTypeSettings } from "../contexts/TypeSettingsContext";
+import { animated, useSpring } from "react-spring";
 import { GoSearch } from "react-icons/go";
 import { useTheme } from "../contexts/ThemeProvider";
 import SearchInput from "../components/common/SearchInput";
+import Modal from "../components/common/Modal";
+import useSettingsStore from "../store/settings-store";
+import { useMutation } from "react-query";
+import { updateConfig } from "../api/configApi";
+import useDebounce from "../hooks/useDebounce";
+import useAuthStore from "../store/auth-store";
 
 interface LanguageOption {
   id: string;
@@ -19,12 +25,17 @@ interface LanguageSelectModalProps {
 const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
   isActive,
   setIsActive,
-  resetGame,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { setTypeSettings } = useTypeSettings();
+  const { gameSettings, setGameSettings } = useSettingsStore();
+  const {isAuthenticated} = useAuthStore();
   const { colors } = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isClosing, setIsClosing] = useState(false);
+  const mutation = useMutation(updateConfig, {
+    onError: (error) => console.log(error),
+    
+  });
 
   const languages: LanguageOption[] = [
     { id: "english", label: "English", layout: "english" },
@@ -40,53 +51,65 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
     language.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node))
+  const animationProps = useSpring({
+    opacity: isActive && !isClosing ? 1 : 0,
+    config: { duration: 100, tension: 300 },
+    onRest: () => {
+      if (isClosing) {
         setIsActive(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [setIsActive]);
+        setIsClosing(false);
+      }
+    },
+  });
 
   const changeLang = (newLang: string, layout: string) => {
     setIsActive(false);
-    setTypeSettings((prevData) => ({
-      ...prevData,
+    setGameSettings({
       lang: newLang,
       layout: layout,
-    }));
-    resetGame();
+    });
   };
+
+  const debouncedMutation = useDebounce(mutation.mutate, 100);
+
+  useEffect(() => {
+    isAuthenticated && debouncedMutation(gameSettings);
+  }, [gameSettings.lang]);
 
   return (
     <>
       {isActive && (
-        <div className="language-modal w-screen h-screen fixed -top-28 left-0 flex justify-center">
-          <div className="language-modal-content rounded-r-lg" ref={modalRef}>
-            <GoSearch
-              size={20}
-              color={colors.mainColor}
-              className="absolute translate-y-3 translate-x-2"
-            />
-            <SearchInput
-              className="language-search w-full h-12 pl-10 bg-transparent outline-none text-xl"
-              setSearchTerm={setSearchTerm}
-            />
-            {filteredLanguages.map((language) => (
-              <button
-                key={language.id}
-                className="language-option pl-7 py-1 w-full text-start"
-                onClick={() => changeLang(language.id, language.layout)}
-              >
-                {language.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <animated.div style={animationProps}>
+          <Modal
+            callbackOnClose={() => setIsClosing(true)}
+            darknessBg={false}
+            className="-mt-[70px] modal-bg"
+          >
+            <div className="w-full h-full max-w-[600px] max-h-[800px] fixed top-1/2 left-1/3 -translate-y-1/2 flex justify-center z-[499]">
+              <div className="bg-[--bg-color] rounded-md" ref={modalRef}>
+                <GoSearch
+                  size={20}
+                  color={colors.mainColor}
+                  className="absolute translate-y-3 translate-x-2"
+                />
+                <SearchInput
+                  placeholder="Search language"
+                  className="language-search w-full h-12 pl-10 bg-transparent outline-none text-xl"
+                  setSearchTerm={setSearchTerm}
+                />
+                {filteredLanguages.map((language) => (
+                  <button
+                    key={language.id}
+                    className="language-option pl-7 py-1 w-full text-start"
+                    onClick={() => changeLang(language.id, language.layout)}
+                  >
+                    {language.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </Modal>
+        </animated.div>
       )}
     </>
   );

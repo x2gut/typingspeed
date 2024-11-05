@@ -23,6 +23,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     subColor: "#cbd5e1",
     mistakeColor: "#e11d48",
     correctTextColor: "#e4e4e7",
+    textColor: "#ccc",
   });
   const applyRandomTheme = () => {
     applyTheme(getRandomTheme());
@@ -62,6 +63,12 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
           setColors((prevColors) => ({
             ...prevColors,
             bgColor: newTheme[key],
+          }));
+          break;
+          case "--text-color":
+          setColors((prevColors) => ({
+            ...prevColors,
+            textColor: newTheme[key],
           }));
           break;
       }

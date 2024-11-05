@@ -1,9 +1,12 @@
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { CiLogin } from "react-icons/ci";
 import loginUser from "../api/loginApi";
-import { useAuth } from "../contexts/authContext";
-import { useNotice } from "../contexts/NoticeContext";
 import { useMutation } from "react-query";
+import { AxiosResponse } from "axios";
+import { useNoticeStore } from "../store/notification-store";
+import useAuthStore from "../store/auth-store";
+import storeTokens from "../utils/storeTokens";
+import Modal from "../components/common/Modal";
 
 interface LoginModalProps {
   isLogin: boolean;
@@ -18,19 +21,23 @@ const LoginModal: React.FC<LoginModalProps> = ({
 }) => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { setIsAuthenticated } = useAuth();
-  const { showNotice } = useNotice();
-  const modalRef = useRef<HTMLFormElement>(null);
+  const { setIsAuthenticated } = useAuthStore();
+  const showNotice = useNoticeStore((state) => state.showNotice);
 
   const mutation = useMutation(loginUser, {
-    onSuccess: () => {
-      setIsAuthenticated(true);
+    onSuccess: (response) => {
+      storeTokens(response.data.access_token, response.data.refresh_token);
+      setIsAuthenticated();
       setIsLogin(false);
       showNotice("You successfully logged in!", "success", 5000);
       clearFields();
     },
-    onError: (error: { status: number; error: string }) => {
-      showNotice(error.error, "error", 5000);
+    onError: (error: AxiosResponse) => {
+      if (error.status === 422) {
+        showNotice("Invalid login or password", "error", 5000);
+      } else {
+        showNotice("Network error", "error", 5000);
+      }
     },
   });
 
@@ -55,34 +62,16 @@ const LoginModal: React.FC<LoginModalProps> = ({
     mutation.mutate({ username, password });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        setIsLogin(false);
-        clearFields();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <>
       {isLogin && (
-        <div className="modal w-full h-full fixed left-0 top-0 flex items-center justify-center">
+        <Modal setCloseModal={setIsLogin} callbackOnClose={clearFields} darknessBg={true}>
           <form
             onSubmit={(event) => {
               event.preventDefault();
               handleLogin();
             }}
             className="modal-form flex justify-center items-center gap-3 flex-col max-w-80 max-h-80"
-            ref={modalRef}
           >
             <div className="modal-title flex gap-1 items-center">
               <CiLogin size={32} />
@@ -130,7 +119,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
               </button>
             </button>
           </form>
-        </div>
+        </Modal>
       )}
     </>
   );

@@ -5,7 +5,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import SearchInput from "../common/SearchInput";
 import ThemeButton from "../common/ThemeBtn";
-import { useTypeSettings } from "../../contexts/TypeSettingsContext";
+import useSettingsStore from "../../store/settings-store";
 
 interface ThemeSidebarProps {
   className: string;
@@ -16,7 +16,7 @@ const ThemesSidebar: React.FC<ThemeSidebarProps> = ({ className }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const arrowBtnRef = useRef<HTMLButtonElement>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { typeSettings } = useTypeSettings();
+  const { gameSettings } = useSettingsStore();
 
   const filteredData = Object.keys(themes).filter((item) =>
     item.toLowerCase().includes(searchTerm)
@@ -49,7 +49,7 @@ const ThemesSidebar: React.FC<ThemeSidebarProps> = ({ className }) => {
 
   return (
     <>
-      {typeSettings.themesSidebar && (
+      {gameSettings.themesSidebar && (
         <div
           className={`themes-sidebar-wrapper collapsed absolute left-0 z-10 bottom-1/2 transition-all ${className}`}
           ref={sidebarRef}
@@ -58,6 +58,7 @@ const ThemesSidebar: React.FC<ThemeSidebarProps> = ({ className }) => {
             <div className="themes-sidebar-content px-5 flex flex-col">
               <div className="search-container m-auto relative">
                 <SearchInput
+                  placeholder="Search theme"
                   setSearchTerm={setSearchTerm}
                   className="rounded-md p-2 outline-none mb-3 relative max-w-40 pl-8"
                 />

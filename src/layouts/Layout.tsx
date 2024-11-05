@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/header/Header";
 import { useTransition, animated } from "react-spring";
+import NoticeList from "../components/common/NoticeList";
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -15,7 +16,8 @@ const Layout: React.FC = () => {
     <div className="min-h-screen bg-[--bg-color]">
       <Header />
       <main>
-        {transitions((style, item) => (
+        <NoticeList />
+        {transitions((style) => (
           <animated.div style={style}>
             <Outlet />
           </animated.div>

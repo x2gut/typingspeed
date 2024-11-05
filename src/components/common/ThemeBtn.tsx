@@ -4,8 +4,8 @@ import { themes } from "../../themes/themes";
 import { useMutation } from "react-query";
 import { updateTheme } from "../../api/configApi";
 import { getUserId } from "../../utils/decodeJwt";
-import { useAuth } from "../../contexts/authContext";
-import { useNotice } from "../../contexts/NoticeContext";
+import { useNoticeStore } from "../../store/notification-store";
+import useAuthStore from "../../store/auth-store";
 
 interface ThemeButtonProps {
   newTheme: string;
@@ -17,9 +17,9 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
   className = "",
 }) => {
   const { theme, handleThemeChange } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthStore();
   const token = localStorage.getItem("access_token");
-  const { showNotice } = useNotice();
+  const showNotice = useNoticeStore((state) => state.showNotice)
   const mutation = useMutation(updateTheme, {
     onSuccess: () => {
       console.log("success");

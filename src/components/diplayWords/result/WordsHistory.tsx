@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { LetterStates } from "../../../types/types";
 import { MdHistory } from "react-icons/md";
 
@@ -45,4 +45,4 @@ const WordsHistory: React.FC<WordsHistoryProps> = ({
   );
 };
 
-export default WordsHistory;
+export default memo(WordsHistory);

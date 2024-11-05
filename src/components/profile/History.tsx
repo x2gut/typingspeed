@@ -5,7 +5,8 @@ import { ProfileResultsData } from "../../types/types";
 import { IoTimeOutline } from "react-icons/io5";
 import { VscSettings } from "react-icons/vsc";
 import { CiCalendarDate } from "react-icons/ci";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { RiExpandUpDownLine } from "react-icons/ri";
 
 interface HistoryComponentProps {
   history: {
@@ -16,18 +17,47 @@ interface HistoryComponentProps {
   setLimit: Dispatch<SetStateAction<number>>;
 }
 
-const ProfileHistory: React.FC<HistoryComponentProps> = ({
-  history,
-  limit,
-  setLimit,
-}) => {
+const ProfileHistory: React.FC<HistoryComponentProps> = ({ history }) => {
+  const [limit, setLimit] = useState<number>(10);
+  const [isFilterDateUp, setIsFilterDateUp] = useState(false);
+  const [isFilterWpmUp, setIsFilterWpmUp] = useState(false);
+
+  const filterDateResults = (filterUp?: boolean) => {
+    if (filterUp) {
+      history.history.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+    } else {
+      history.history.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
+  };
+
+  const filterWpmResults = (filterUp?: boolean) => {
+    if (filterUp) {
+      history.history.sort((a, b) => a.wpm - b.wpm);
+    } else {
+      history.history.sort((a, b) => b.wpm - a.wpm);
+    }
+  };
+
   return (
     <div className="history mt-5 mb-5 flex flex-col items-center">
-      <div className="flex">
-        <div className="flex items-center gap-2 text-[--text-color] w-[200px]">
+      <div className="history-header flex sticky top-0 z-10 p-3 bg-[--bg-color]">
+        <button
+          className="flex items-center gap-2 text-[--text-color] w-[200px] hover:brightness-200 cursor-pointer"
+          onClick={() => {
+            filterWpmResults(isFilterWpmUp);
+            setIsFilterWpmUp(!isFilterWpmUp);
+          }}
+        >
           <TbHexagonLetterAFilled />
           WPM
-        </div>
+          <RiExpandUpDownLine />
+        </button>
         <div className="flex items-center gap-2 text-[--text-color] w-[200px]">
           <FiTarget />
           ACCURACY
@@ -52,15 +82,22 @@ const ProfileHistory: React.FC<HistoryComponentProps> = ({
           <MdLanguage />
           LANGUAGE
         </div>
-        <div className="flex items-center gap-2 text-[--text-color] w-[200px]">
+        <button
+          className="flex items-center gap-2 text-[--text-color] w-[200px] hover:brightness-200 cursor-pointer"
+          onClick={() => {
+            filterDateResults(isFilterDateUp);
+            setIsFilterDateUp(!isFilterDateUp);
+          }}
+        >
           <CiCalendarDate />
           DATE
-        </div>
+          <RiExpandUpDownLine />
+        </button>
       </div>
-      {history["history"].map((item) => (
+      {history["history"].slice(0, limit).map((item) => (
         <div className="flex bg-[--bg-color] brightness-110 p-3 rounded-xl my-3">
           <div className="flex items-center gap-2 text-[--sub-color] w-[200px]">
-            {item.wpm}  <span className="text-[--text-color]">wpm</span>
+            {item.wpm} <span className="text-[--text-color]">wpm</span>
           </div>
           <div className="flex items-center gap-2 text-[--sub-color] w-[200px]">
             {item.accuracy}%

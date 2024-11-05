@@ -8,7 +8,7 @@ export const getUsername = (token: string): string | undefined => {
   }
 };
 
-export const getUserId = (token: string): number | undefined => {
+export const getUserId = (token: string): number => {
   const decodedToken = jwtDecode<{ id: number }>(token);
   const id = decodedToken.id;
   return id;

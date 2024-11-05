@@ -1,5 +1,7 @@
 export type ResultData = {
   wordsPerMin: number[];
+  rawWordsPerMin: number[];
+  allCharsTyped: string[];
   mistakes: number;
   correctChars: number;
   wordsAmount: number;
@@ -57,11 +59,12 @@ export type ProfileData = {
   email: string | null;
   id: number | null;
   isActive: boolean | null;
+  created_at: string;
 };
 
 export type ProfileResultsData = {
-  id: number,
-  user_id: number,
+  id: number;
+  user_id: number;
   wpm: number;
   accuracy: number;
   mistakes: number;
@@ -71,6 +74,8 @@ export type ProfileResultsData = {
   mode: string;
   created_at: string;
 };
+
+export type History = { total_items: number; history: ProfileResultsData[] };
 
 export interface TimeStats {
   avg_wpm_time_15: number;

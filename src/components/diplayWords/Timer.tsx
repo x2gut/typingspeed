@@ -2,49 +2,59 @@ import React, {
   Dispatch,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { getWpm } from "../../utils/resultUtil";
-import { ResultData } from "../../types/types";
+import useSettingsStore from "../../store/settings-store";
+import useResultStore from "../../store/result-store";
+import useKeyPressed from "../../hooks/useKeyPressed";
 
 interface TimerProps {
   isGameStarted: boolean;
-  remainingTime: number;
   callback: () => void;
-  resultData: ResultData;
   avgWordLength: number;
-  setResultData: Dispatch<SetStateAction<ResultData>>;
 }
 
 const Timer: React.FC<TimerProps> = ({
   isGameStarted,
-  remainingTime,
   callback,
-  resultData,
   avgWordLength,
-  setResultData,
 }) => {
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
-  const [timeLeft, setTimeLeft] = useState(remainingTime);
-  const prevMistakesRef = useRef(resultData.mistakes);
-  const { mistakes, correctChars, mistakesPerMin } =
-    resultData;
+  const { gameSettings } = useSettingsStore();
+  const [timeLeft, setTimeLeft] = useState(gameSettings.time);
+  const { userResults, setUserResults } = useResultStore();
+  const prevMistakesRef = useRef(userResults.mistakes);
+  const { mistakes, correctChars, allCharsTyped } = userResults;
+  
+  const wpm = useMemo(() => {
+    const wpm = getWpm(
+      correctChars,
+      avgWordLength,
+      gameSettings.time - timeLeft
+    );
+    return wpm;
+  }, [userResults, timeLeft]);
 
-  useEffect(() => {
-    setTimeLeft(remainingTime);
-  }, [remainingTime]);
+  const rawWpm = useMemo(() => {
+    const rawWpm = getWpm(
+      allCharsTyped.length,
+      avgWordLength,
+      gameSettings.time - timeLeft
+    );
+    return rawWpm;
+  }, [userResults, timeLeft]);
 
   useEffect(() => {
     if (!isGameStarted) {
       if (timerId) {
         clearInterval(timerId);
-        setTimeLeft(remainingTime);
       }
     } else {
       if (timerId) {
         clearInterval(timerId);
-        setTimeLeft(remainingTime);
       }
       const id = setInterval(() => {
         setTimeLeft((prevTime) => {
@@ -61,30 +71,18 @@ const Timer: React.FC<TimerProps> = ({
   }, [isGameStarted]);
 
   useEffect(() => {
-    let totalTime: number = remainingTime - timeLeft;
-    const lastDetectedMistake = mistakesPerMin.length - 1;
-    const wpm = getWpm(
-      correctChars,
-      mistakesPerMin[lastDetectedMistake],
-      avgWordLength,
-      totalTime
-    );
-    setResultData((prevData) => ({
-      ...prevData,
-      wordsPerMin: [...prevData.wordsPerMin, wpm],
-    }));
+    setUserResults({ 
+      wordsPerMin: [...userResults.wordsPerMin, wpm],
+      rawWordsPerMin: [...userResults.rawWordsPerMin, rawWpm],
+      });
     // SETTING MISTAKES
     if (mistakes !== prevMistakesRef.current) {
-      setResultData((prevData) => ({
-        ...prevData,
-        mistakesPerMin: [...prevData.mistakesPerMin, mistakes],
-      }));
+      setUserResults({
+        mistakesPerMin: [...userResults.mistakesPerMin, mistakes],
+      });
       prevMistakesRef.current = mistakes;
     } else {
-      setResultData((prevData) => ({
-        ...prevData,
-        mistakesPerMin: [...prevData.mistakesPerMin, 0],
-      }));
+      setUserResults({ mistakesPerMin: [...userResults.mistakesPerMin, 0] });
     }
   }, [timeLeft]);
 

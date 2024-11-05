@@ -2,10 +2,11 @@ import React, { Dispatch, SetStateAction } from "react";
 
 interface SearchInputProps {
     className: string;
+    placeholder: string;
     setSearchTerm: Dispatch<SetStateAction<string>>
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ className, setSearchTerm }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ className, setSearchTerm, placeholder }) => {
 
     const handleSearchInputChange = (
         event: React.ChangeEvent<HTMLInputElement>
@@ -16,7 +17,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ className, setSearchTerm }) =
     return (
         <input
         type="text"
-        placeholder="Search theme"
+        placeholder={placeholder}
         className={className}
         onChange={handleSearchInputChange}
       />

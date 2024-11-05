@@ -2,7 +2,6 @@ import { TbKeyboard } from "react-icons/tb";
 import { CgLoadbarSound } from "react-icons/cg";
 import { CiRainbow } from "react-icons/ci";
 
-import { useTypeSettings } from "../../contexts/TypeSettingsContext";
 import { playAudio } from "../../utils/playAudio";
 import SettingsBtn from "./settingsBtn";
 import { themes } from "../../themes/themes";
@@ -10,15 +9,35 @@ import ThemeButton from "../common/ThemeBtn";
 import { FaRandom } from "react-icons/fa";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { MdHistory } from "react-icons/md";
+import Container from "../common/Container";
+import useSettingsStore from "../../store/settings-store";
+import { useMutation } from "react-query";
+import { updateConfig } from "../../api/configApi";
+import { useEffect, useState } from "react";
+import useDebounce from "../../hooks/useDebounce";
+import useAuthStore from "../../store/auth-store";
 
 const SettingsMain = ({}) => {
-  const { typeSettings, setTypeSettings } = useTypeSettings();
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true)
+  const { gameSettings, setGameSettings } = useSettingsStore();
+  const {isAuthenticated} = useAuthStore();
+  const mutation = useMutation(updateConfig, {
+    onError: (error) => console.log(error),
+  });
+
+  const debouncedMutation = useDebounce(mutation.mutate, 750);
+
+  useEffect(() => {
+    if (!isFirstLaunch && isAuthenticated) {
+      debouncedMutation(gameSettings);
+    } else {
+      setIsFirstLaunch(false)
+    }
+  }, [gameSettings]);
 
   const handleKeyboardSettings = (isShow: boolean, isResponsive = false) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       keyboard: {
-        ...typeSettings.keyboard,
         show: isShow,
         responsive: isResponsive,
       },
@@ -26,49 +45,41 @@ const SettingsMain = ({}) => {
   };
 
   const handleSoundSettings = (soundStatus: boolean | string) => {
-    setTypeSettings({
-      ...typeSettings,
-      soundOnPress: soundStatus,
-    });
+    setGameSettings({ soundOnPress: soundStatus });
   };
 
   const handleCaretType = (caretType: boolean | string) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       caretType: caretType,
     });
   };
 
   const handleCaretRainbow = (caretRainbow: boolean) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       caretRainbow: caretRainbow,
     });
   };
 
   const handleRandomTheme = (randomTheme: boolean) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       randomTheme: randomTheme,
     });
   };
 
   const handleThemesSidebar = (themesSidebar: boolean) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       themesSidebar: themesSidebar,
     });
   };
 
   const handleWordsHistory = (wordsHistory: boolean) => {
-    setTypeSettings({
-      ...typeSettings,
+    setGameSettings({
       wordsHistory: wordsHistory,
     });
   };
 
   return (
-    <div className="container">
+    <Container>
       <div className="settings-top">
         <h2 className="settings-title my-20 text-4xl">Settings</h2>
       </div>
@@ -84,19 +95,19 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleKeyboardSettings(false)}
-            className={!typeSettings.keyboard.show ? "active" : ""}
+            className={!gameSettings.keyboard.show ? "active" : ""}
           />
           <SettingsBtn
             label="Show"
             callback={() => handleKeyboardSettings(true, false)}
-            className={typeSettings.keyboard.show ? "active" : ""}
+            className={gameSettings.keyboard.show ? "active" : ""}
           />
           <SettingsBtn
             label="Responsive"
             callback={() =>
-              handleKeyboardSettings(true, !typeSettings.keyboard.responsive)
+              handleKeyboardSettings(true, !gameSettings.keyboard.responsive)
             }
-            className={typeSettings.keyboard.responsive ? "active" : ""}
+            className={gameSettings.keyboard.responsive ? "active" : ""}
           />
         </div>
       </div>
@@ -112,7 +123,7 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleSoundSettings(false)}
-            className={typeSettings.soundOnPress === false ? "active" : ""}
+            className={gameSettings.soundOnPress === false ? "active" : ""}
           />
           <SettingsBtn
             label="Alpacas"
@@ -120,7 +131,7 @@ const SettingsMain = ({}) => {
               handleSoundSettings("Alpacas");
               playAudio("Main", "Alpacas");
             }}
-            className={typeSettings.soundOnPress === "Alpacas" ? "active" : ""}
+            className={gameSettings.soundOnPress === "Alpacas" ? "active" : ""}
           />
           <SettingsBtn
             label="NovelKeys Cream"
@@ -129,7 +140,7 @@ const SettingsMain = ({}) => {
               playAudio("Main", "NovelKeysCream");
             }}
             className={
-              typeSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
+              gameSettings.soundOnPress === "NovelKeysCream" ? "active" : ""
             }
           />
         </div>
@@ -145,22 +156,22 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleCaretType(false)}
-            className={!typeSettings.caretType && "active"}
+            className={!gameSettings.caretType && "active"}
           />
           <SettingsBtn
             label="|"
             callback={() => handleCaretType("default")}
-            className={typeSettings.caretType === "default" && "active"}
+            className={gameSettings.caretType === "default" && "active"}
           />
           <SettingsBtn
             label="_"
             callback={() => handleCaretType("under")}
-            className={typeSettings.caretType === "under" && "active"}
+            className={gameSettings.caretType === "under" && "active"}
           />
           <SettingsBtn
             label="▮"
             callback={() => handleCaretType("block")}
-            className={typeSettings.caretType === "block" && "active"}
+            className={gameSettings.caretType === "block" && "active"}
           />
         </div>
       </div>
@@ -178,12 +189,12 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleCaretRainbow(false)}
-            className={!typeSettings.caretRainbow && "active"}
+            className={!gameSettings.caretRainbow && "active"}
           />
           <SettingsBtn
             label="On"
             callback={() => handleCaretRainbow(true)}
-            className={typeSettings.caretRainbow && "active"}
+            className={gameSettings.caretRainbow && "active"}
           />
         </div>
       </div>
@@ -202,12 +213,12 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleRandomTheme(false)}
-            className={!typeSettings.randomTheme && "active"}
+            className={!gameSettings.randomTheme && "active"}
           />
           <SettingsBtn
             label="On"
             callback={() => handleRandomTheme(true)}
-            className={typeSettings.randomTheme && "active"}
+            className={gameSettings.randomTheme && "active"}
           />
         </div>
       </div>
@@ -223,12 +234,12 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleThemesSidebar(false)}
-            className={!typeSettings.themesSidebar && "active"}
+            className={!gameSettings.themesSidebar && "active"}
           />
           <SettingsBtn
             label="On"
             callback={() => handleThemesSidebar(true)}
-            className={typeSettings.themesSidebar && "active"}
+            className={gameSettings.themesSidebar && "active"}
           />
         </div>
       </div>
@@ -246,12 +257,12 @@ const SettingsMain = ({}) => {
           <SettingsBtn
             label="Off"
             callback={() => handleWordsHistory(false)}
-            className={!typeSettings.wordsHistory && "active"}
+            className={!gameSettings.wordsHistory && "active"}
           />
           <SettingsBtn
             label="On"
             callback={() => handleWordsHistory(true)}
-            className={typeSettings.wordsHistory && "active"}
+            className={gameSettings.wordsHistory && "active"}
           />
         </div>
       </div>
@@ -274,7 +285,7 @@ const SettingsMain = ({}) => {
           })}
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

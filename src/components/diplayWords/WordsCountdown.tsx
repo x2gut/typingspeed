@@ -7,45 +7,48 @@ import {
   useState,
 } from "react";
 import { getWpm } from "../../utils/resultUtil";
-import { GameSettings, ResultData } from "../../types/types";
+import { ResultData } from "../../types/types";
+import useSettingsStore from "../../store/settings-store";
+import useResultStore from "../../store/result-store";
 
 interface WordsCountdownProps {
   totalWords: number;
   isGameStarted: boolean;
-  currentWordsAmount: number;
-  resultData: ResultData;
   avgWordLength: number;
-  setResultData: Dispatch<SetStateAction<ResultData>>;
   callback: () => void;
-  setGameSettings: Dispatch<SetStateAction<GameSettings>>;
 }
 
 const WordsCountdown: React.FC<WordsCountdownProps> = ({
   totalWords,
-  currentWordsAmount,
   isGameStarted,
-  resultData,
   avgWordLength,
-  setResultData,
   callback,
-  setGameSettings,
 }) => {
+  const { setGameSettings } = useSettingsStore();
   const [timerId, setTimerId] = useState<null | NodeJS.Timeout>(null);
   const [totalTime, setTotalTime] = useState(0);
-  const prevMistakesRef = useRef(resultData.mistakes);
-  const { correctChars, mistakesPerMin } =
-    resultData;
+  const { userResults, setUserResults } = useResultStore();
+  const prevMistakesRef = useRef(userResults.mistakes);
+  const { correctChars, mistakes } = userResults;
 
   const wpm = useMemo(() => {
-    const lastDetectedMistake = mistakesPerMin.length - 1;
     const wpm = getWpm(
       correctChars,
-      lastDetectedMistake,
       avgWordLength,
       totalTime
     );
     return wpm;
-  }, [resultData, totalTime]);
+  }, [userResults, totalTime]);
+
+  const rawWpm = useMemo(() => {
+    const totalChars = correctChars + mistakes
+    const rawWpm = getWpm(
+      totalChars,
+      avgWordLength,
+      totalTime
+    );
+    return rawWpm;
+  }, [userResults, totalTime]);
 
   useEffect(() => {
     if (!isGameStarted) {
@@ -68,36 +71,28 @@ const WordsCountdown: React.FC<WordsCountdownProps> = ({
   }, [isGameStarted]);
 
   useEffect(() => {
-    setResultData((prevData) => ({
-      ...prevData,
-      wordsPerMin: [...prevData.wordsPerMin, wpm],
-    }));
+    setUserResults({ wordsPerMin: [...userResults.wordsPerMin, wpm] });
+    setUserResults({rawWordsPerMin: [...userResults.rawWordsPerMin, rawWpm]})
     // SETTING MISTAKES
-    if (resultData.mistakes !== prevMistakesRef.current) {
-      const mistakes = resultData.mistakes - prevMistakesRef.current;
-      setResultData((prevData) => ({
-        ...prevData,
-        mistakesPerMin: [...prevData.mistakesPerMin, mistakes],
-      }));
-      prevMistakesRef.current = resultData.mistakes;
+    if (userResults.mistakes !== prevMistakesRef.current) {
+      const mistakes = userResults.mistakes - prevMistakesRef.current;
+      setUserResults({ mistakesPerMin: [...userResults.mistakesPerMin, mistakes] });
+      prevMistakesRef.current = userResults.mistakes;
     } else {
-      setResultData((prevData) => ({
-        ...prevData,
-        mistakesPerMin: [...prevData.mistakesPerMin, 0],
-      }));
+      setUserResults({ mistakesPerMin: [...userResults.mistakesPerMin, 0] });
     }
   }, [totalTime]);
 
   useEffect(() => {
-    if (currentWordsAmount === totalWords) {
+    if (userResults.wordsAmount === totalWords) {
       callback();
-      setGameSettings((prevData) => ({ ...prevData, time: totalTime }));
+      setGameSettings({ time: totalTime });
     }
-  }, [currentWordsAmount]);
+  }, [userResults.wordsAmount]);
 
   return (
     <div className="words-countdown text-2xl">
-      {currentWordsAmount} / {totalWords}
+      {userResults.wordsAmount} / {totalWords}
     </div>
   );
 };

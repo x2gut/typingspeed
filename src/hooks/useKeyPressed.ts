@@ -7,11 +7,16 @@ const useKeyPressed = () => {
     const handleKeyPressed = (event: KeyboardEvent) => {
       setKeyPressed(event.key); 
     };
-
+    const handleKeyUp = (event: KeyboardEvent) => {
+      setKeyPressed(""); 
+    }
     window.addEventListener("keydown", handleKeyPressed);
+    window.addEventListener("keyup", handleKeyUp);
+
 
     return () => {
       window.removeEventListener("keydown", handleKeyPressed);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 

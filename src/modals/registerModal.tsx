@@ -1,10 +1,12 @@
-import React, { Dispatch, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useRef, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import registerUser from "../api/registerApi";
 import loginUser from "../api/loginApi";
-import { useNotice } from "../contexts/NoticeContext";
-import { useAuth } from "../contexts/authContext";
 import { useMutation } from "react-query";
+import { useNoticeStore } from "../store/notification-store";
+import useAuthStore from "../store/auth-store";
+import storeTokens from "../utils/storeTokens";
+import Modal from "../components/common/Modal";
 
 interface RegisterModalInterface {
   isRegister: boolean;
@@ -21,15 +23,16 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
   const [password, setPassword] = useState<string>("");
   const [repeatPassword, setRepeatPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const { showNotice } = useNotice();
-  const { setIsAuthenticated } = useAuth();
+  const showNotice = useNoticeStore((state) => state.showNotice);
+  const { setIsAuthenticated } = useAuthStore();
 
   const mutation = useMutation(registerUser, {
-    onSuccess: () => {
+    onSuccess: async () => {
       showNotice("You successfully registered", "success", 5000);
       clearFields();
-      loginUser({ username, password });
-      setIsAuthenticated(true);
+      const response = await loginUser({ username, password });
+      storeTokens(response.data.access_token, response.data.refresh_token);
+      setIsAuthenticated();
       setIsRegister(false);
     },
 
@@ -81,27 +84,14 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
     });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        setIsRegister(false);
-        clearFields();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <>
       {isRegister && (
-        <div className="modal w-full h-full fixed left-0 top-0 flex items-center justify-center">
+        <Modal
+          setCloseModal={setIsRegister}
+          callbackOnClose={clearFields}
+          darknessBg={true}
+        >
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -168,7 +158,7 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
               </button>
             </button>
           </form>
-        </div>
+        </Modal>
       )}
     </>
   );

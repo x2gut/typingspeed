@@ -36,6 +36,6 @@ export const getStats = async (userId: number) => {
   return apiClient.get(`/user/${userId}/stats`)
 }
 
-export const getHistory = async(userId: number, limit: number = 10, page: number = 1) => {
+export const getHistory = async(userId: number, limit: number = 500, page: number = 1) => {
   return apiClient.get(`/user/${userId}/history?page=${page}&limit=${limit}`)
 }

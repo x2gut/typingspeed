@@ -3,7 +3,7 @@ import { HiCursorClick } from "react-icons/hi";
 
 const BlurWarning: React.FC = () => {
   return (
-    <div className="h-full w-full flex gap-3 items-center text-center text-3xl whitespace-nowrap">
+    <div className="text-[--text-correct-color] h-full w-full flex gap-3 items-center text-center text-3xl whitespace-nowrap">
       <HiCursorClick />
       Click here to focus!
     </div>

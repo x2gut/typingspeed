@@ -21,6 +21,16 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
         }}
       >
         <p className="label">{`Second: ${payload[0].payload.second}`}</p>
+        <p className="raw-wpm">
+          <span
+            style={{
+              color: colors.subColor,
+            }}
+          >
+            raw
+          </span>{" "}
+          {payload[0].payload.rawWpm}
+        </p>
         <p className="wpm" style={{ color: colors.correctTextColor }}>
           <span
             style={{

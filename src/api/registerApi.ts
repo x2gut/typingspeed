@@ -11,7 +11,7 @@ const registerUser = async ({
   password: string;
 }): Promise<{ status: number; error?: string }[]> => {
   try {
-    const response = await apiClient.post("/user/register", {
+    const response = await apiClient.post("/auth/register", {
       username,
       email,
       password,

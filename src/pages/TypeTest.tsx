@@ -1,52 +1,30 @@
 import React, { useEffect, useState } from "react";
 import DisplayWords from "../components/diplayWords/DisplayWords";
 import TypeSettingsMenu from "../components/diplayWords/TypeSettingsMenu";
-import {
-  useTypeSettings,
-} from "../contexts/TypeSettingsContext";
 import FooterCommands from "../components/diplayWords/FooterCommands";
 import ThemesSidebar from "../components/diplayWords/ThemesSidebar";
-import { useAuth } from "../contexts/authContext";
-import { useQuery } from "react-query";
-import { getConfig } from "../api/configApi";
+import Container from "../components/common/Container";
+import useConfig from "../hooks/useConfig";
+import useSettingsStore from "../store/settings-store";
+import Result from "../components/diplayWords/result/Result";
+import Keyboard from "../components/diplayWords/responsiveKeyboard/Keyboard";
+import RestartButton from "../components/diplayWords/RestartButton";
 import { useTheme } from "../contexts/ThemeProvider";
+import Tooltip from "../components/common/Tooltip";
+import useResultStore from "../store/result-store";
+import useProfile from "../hooks/useProfile";
+import useAuthStore from "../store/auth-store";
 
 const TypeTest: React.FC = () => {
-  const [isFocused, setIsFocused] = useState(false);
   const [currentLang, setCurrentLang] = useState("");
   const [words, setWords] = useState<string[]>([]);
-  const { isAuthenticated } = useAuth();
-  const { handleThemeChange } = useTheme();
-  const { setTypeSettings } = useTypeSettings();
-
-  const config = useQuery(["config"], getConfig, {
-    enabled: isAuthenticated,
-    refetchOnWindowFocus: false,
-    onSuccess: (response) => {
-      const config = response.data[0].config[0];
-      const theme = response.data[1];
-
-      handleThemeChange(theme);
-
-      setTypeSettings({
-        layout: config?.layout,
-        lang: config?.lang,
-        mode: config?.mode,
-        time: Number(config.time),
-        words: Number(config.words),
-        keyboard: {
-          show: config?.keyboard.show,
-          responsive: config?.keyboard.responsive,
-        },
-        soundOnPress: config?.soundOnPress,
-        caretType: config?.caretType,
-        caretRainbow: config?.caretRainbow,
-        randomTheme: config?.randomTheme,
-        themesSidebar: config?.themesSidebar,
-        wordsHistory: config?.wordsHistory,
-      });
-    },
-  });
+  const [isResetData, setIsResetData] = useState(false);
+  const { typeSettings, gameSettings, setTypeSettings } = useSettingsStore();
+  const { applyRandomTheme } = useTheme();
+  const { resetUserResults } = useResultStore();
+  const {userId} = useAuthStore();
+  const {avgStats} = useProfile(userId, {fetchResultsData: true})
+  const { config } = useConfig();
 
   useEffect(() => {
     const result = localStorage.getItem("config")
@@ -56,7 +34,7 @@ const TypeTest: React.FC = () => {
     setCurrentLang(result?.lang || "english");
 
     document.title = "TypeTest";
-  }, []);
+  }, [gameSettings.lang]);
 
   useEffect(() => {
     fetch(`/typingspeed/languages/${currentLang}.json`)
@@ -75,18 +53,39 @@ const TypeTest: React.FC = () => {
   return (
     <>
       {words.length > 0 && (
-        <div className="container">
-          <TypeSettingsMenu className={isFocused ? "focus" : ""} />
-          <ThemesSidebar className={isFocused ? "focus" : ""} />
+        <Container>
+          <TypeSettingsMenu className={typeSettings.isFocused ? "focus" : ""} />
+          <ThemesSidebar className={typeSettings.isFocused ? "focus" : ""} />
           <div className="display-words flex items-center flex-col h-[600px]">
-            <DisplayWords
-              setCurrentLang={setCurrentLang}
-              wordsList={words}
-              setIsFocused={setIsFocused}
-            />
+            {typeSettings.isTimeOut && avgStats !== null ? (
+              <Result avgStats={avgStats}/>
+            ) : (
+              <DisplayWords
+                wordsList={words}
+                isResetData={isResetData}
+              />
+            )}
+            {gameSettings.keyboard.show && !typeSettings.isTimeOut && (
+              <Keyboard
+                isFocused={typeSettings.isFocused}
+                isResponsive={gameSettings.keyboard.responsive}
+              />
+            )}
+            <Tooltip tooltipLabel="Restart">
+              <RestartButton
+                onClick={() => {
+                  if (gameSettings.randomTheme && typeSettings.isTimeOut) {
+                    applyRandomTheme();
+                  }
+                  setTypeSettings({ isTimeOut: false, isGameStarted: false });
+                  resetUserResults();
+                  setIsResetData(!isResetData);
+                }}
+              />
+            </Tooltip>
           </div>
-          <FooterCommands className={isFocused ? "focus" : ""} />
-        </div>
+          <FooterCommands className={typeSettings.isFocused ? "focus" : ""} />
+        </Container>
       )}
     </>
   );

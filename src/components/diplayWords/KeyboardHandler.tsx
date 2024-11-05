@@ -1,98 +1,86 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import checkLetter from "../../utils/checkLetter";
-import {
-  setCorrectChars,
-  setMistakes,
-  setWordsAmount,
-} from "../../utils/resultUtil";
-import { GameSettings, LetterStates, ResultData } from "../../types/types";
-import { useTypeSettings } from "../../contexts/TypeSettingsContext";
+import { ResultData } from "../../types/types";
 import { playAudio } from "../../utils/playAudio";
-import { useNotice } from "../../contexts/NoticeContext";
+import { useNoticeStore } from "../../store/notification-store";
+import useSettingsStore from "../../store/settings-store";
+import useResultStore from "../../store/result-store";
 
 interface KeyboardHandlerProps {
-  resultData: ResultData;
   containerRef: React.RefObject<HTMLDivElement>;
   isGameStarted: boolean;
   currentWordIndex: number;
   currentLetterIndex: number;
   setCurrentWordIndex: Dispatch<SetStateAction<number>>;
   setCurrentLetterIndex: Dispatch<SetStateAction<number>>;
-  setGameSettings: Dispatch<SetStateAction<GameSettings>>;
-  setResultData: Dispatch<SetStateAction<ResultData>>;
   wordsList: string[];
 }
 
 const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
-  resultData,
   containerRef,
   isGameStarted,
   currentWordIndex,
   currentLetterIndex,
   setCurrentWordIndex,
   setCurrentLetterIndex,
-  setGameSettings,
   wordsList,
-  setResultData,
 }) => {
-  const { typeSettings } = useTypeSettings();
-  const { showNotice } = useNotice();
+  const { gameSettings, setTypeSettings } = useSettingsStore();
+  const showNotice = useNoticeStore((state) => state.showNotice);
+  const { userResults, setUserResults } = useResultStore();
 
   const handleNextWord = () => {
     setCurrentWordIndex((prevIndex) => prevIndex + 1);
     setCurrentLetterIndex(0);
 
     const countMistakes = Object.values(
-      resultData.letterStates[currentWordIndex]
+      userResults.letterStates[currentWordIndex]
     ).filter((value) => value === "incorrect").length;
 
     const correctChars =
-      Object.values(resultData.letterStates[currentWordIndex]).length -
+      Object.values(userResults.letterStates[currentWordIndex]).length -
       countMistakes;
 
     const isLengthMatch =
       wordsList[currentWordIndex].length ===
-      Object.keys(resultData.letterStates[currentWordIndex]).length;
+      Object.keys(userResults.letterStates[currentWordIndex]).length;
 
     if (countMistakes === 0 && isLengthMatch) {
-      setWordsAmount(setResultData);
+      setUserResults({ wordsAmount: userResults.wordsAmount + 1 });
     }
 
-    setMistakes(countMistakes, setResultData);
-    setCorrectChars(correctChars, setResultData);
+    setUserResults({ mistakes: userResults.mistakes + countMistakes });
+    setUserResults({ correctChars: userResults.correctChars + correctChars });
 
-    setResultData((prevData) => ({
-      ...prevData,
-      wordsTyped: [...prevData.wordsTyped, wordsList[currentWordIndex]],
-    }));
+    setUserResults({ wordsTyped: [...userResults.wordsTyped, wordsList[currentWordIndex]] });
   };
 
   const handleNextLetter = () => {
     setCurrentLetterIndex((prevIndex) => prevIndex + 1);
-    setResultData((prevData) => ({
-      ...prevData,
+    setUserResults({allCharsTyped: [...userResults.allCharsTyped, wordsList[currentWordIndex][currentLetterIndex]]})
+    setUserResults({
       letterStates: {
-        ...prevData.letterStates,
+        ...userResults.letterStates,
         [currentWordIndex]: {
-          ...prevData.letterStates[currentWordIndex],
+          ...userResults.letterStates[currentWordIndex],
           [currentLetterIndex]: "correct",
         },
       },
-    }));
+    });
   };
 
   const handleMisstake = () => {
     setCurrentLetterIndex((prevIndex) => prevIndex + 1);
-    setResultData((prevData) => ({
-      ...prevData,
+    setUserResults({
+      allCharsTyped: [...userResults.allCharsTyped, wordsList[currentWordIndex][currentLetterIndex]],
       letterStates: {
-        ...prevData.letterStates,
+        ...userResults.letterStates,
         [currentWordIndex]: {
-          ...prevData.letterStates[currentWordIndex],
+          ...userResults.letterStates[currentWordIndex],
           [currentLetterIndex]: "incorrect",
         },
       },
-    }));
+    })
   };
 
   const handleBackSpacePressed = () => {
@@ -109,7 +97,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
   const handleBackspacingPreviousWord = () => {
     const previousWordIndex = currentWordIndex - 1;
     const previousLetterStates =
-      resultData.letterStates[previousWordIndex] || {};
+      userResults.letterStates[previousWordIndex] || {};
     const isPreviousWordIncomplete =
       Object.values(previousLetterStates).includes("incorrect") ||
       wordsList[previousWordIndex].length !==
@@ -126,25 +114,23 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
     const prevLetterIndex = Math.max(currentLetterIndex - 1, 0);
     setCurrentLetterIndex(prevLetterIndex);
 
-    setResultData((prevData) => ({
-      ...prevData,
+    setUserResults({
       letterStates: {
-        ...prevData.letterStates,
+        ...userResults.letterStates,
         [currentWordIndex]: {
-          ...(prevData.letterStates[currentWordIndex] || {}),
+          ...(userResults.letterStates[currentWordIndex] || {}),
           [prevLetterIndex]: "base",
         },
       },
-    }));
+    });
   };
 
   const updateWordsTyped = (indexToRemove: number) => {
-    setResultData((prevData) => ({
-      ...prevData,
-      wordsTyped: prevData.wordsTyped.filter(
+    setUserResults({
+      wordsTyped: userResults.wordsTyped.filter(
         (_, index) => index !== indexToRemove
       ),
-    }));
+    });
   };
 
   useEffect(() => {
@@ -156,8 +142,8 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
         containerRef.current &&
         containerRef.current.contains(event.target as Node)
       ) {
-        const sound = typeSettings.soundOnPress;
-        if (typeSettings.soundOnPress && typeof sound === "string") {
+        const sound = gameSettings.soundOnPress;
+        if (gameSettings.soundOnPress && typeof sound === "string") {
           if (event.key === " ") {
             playAudio("Space", sound);
           } else if (event.key === "Backspace") {
@@ -173,11 +159,7 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
           currentLetterIndex
         );
         if (checkedStatus && checkedStatus !== "SkipKey") {
-          setGameSettings((prevData) => ({
-            ...prevData,
-            isGameStarted: true,
-            isTimeOut: false,
-          }));
+          setTypeSettings({ isGameStarted: true, isTimeOut: false });
         }
         switch (checkedStatus) {
           case "GameCompleted":
@@ -211,7 +193,6 @@ const KeyboardHandler: React.FC<KeyboardHandlerProps> = ({
     handleNextLetter,
     handleMisstake,
     handleBackSpacePressed,
-    setGameSettings,
     wordsList,
   ]);
 

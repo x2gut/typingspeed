@@ -2,22 +2,15 @@ import { FaRegUser } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { CiLogout } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/authContext";
 import { useState } from "react";
-import { useNotice } from "../../contexts/NoticeContext";
+import { useNoticeStore } from "../../store/notification-store";
+import useAuthStore from "../../store/auth-store";
 
 const UserProfileBtn = () => {
-  const { username, setIsAuthenticated } = useAuth();
+  const { Logout, username } = useAuthStore();
   const [isHidden, setIsHidden] = useState<boolean>(true);
-  const { showNotice } = useNotice();
+  const showNotice = useNoticeStore((state) => state.showNotice)
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setIsAuthenticated(false);
-    navigate("/");
-  };
 
   return (
     <div
@@ -49,7 +42,7 @@ const UserProfileBtn = () => {
         <button
           className="flex items-center gap-2 hover:brightness-200 duration-150"
           onClick={() => {
-            handleLogout();
+            Logout();
             showNotice("You are signed out now", "info", 5000);
           }}
         >

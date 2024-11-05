@@ -9,48 +9,44 @@ import { getHistory, getStats } from "../api/resultsApi";
 import {
   ProfileData,
   ProfileResultsData,
-  ShowNotice,
   TimeStats,
   WordsStats,
 } from "../types/types";
 import { queryClient } from "..";
+import { useNoticeStore } from "../store/notification-store";
 
-const useProfile = (showNotice: ShowNotice, userId: number, limit: number) => {
+interface UseProfileOptions {
+  fetchUserPicture?: boolean;
+  fetchProfileData?: boolean;
+  fetchResultsData?: boolean;
+  fetchHistory?: boolean;
+}
+
+const useProfile = (
+  userId: number,
+  options: UseProfileOptions
+) => {
+  const showNotice = useNoticeStore((state) => state.showNotice);
+  const [isLoading, setIsLoading] = useState(true);
   const [userPicture, setUserPicture] = useState<string>("");
   const [profileData, setProfileData] = useState<ProfileData>({
     username: null,
     email: null,
     id: null,
     isActive: null,
+    created_at: "",
   });
   const [history, setHistory] = useState<{
     total_items: number;
     history: ProfileResultsData[];
   }>({
     total_items: 0,
-    history: []
+    history: [],
   });
   const [avgStats, setAvgStats] = useState<{
     time: TimeStats;
     words: WordsStats;
-  }>({
-    time: {
-      avg_wpm_time_15: 0,
-      avg_wpm_time_30: 0,
-      avg_wpm_time_60: 0,
-      best_wpm_time_15: 0,
-      best_wpm_time_30: 0,
-      best_wpm_time_60: 0,
-    },
-    words: {
-      avg_wpm_words_25: 0,
-      avg_wpm_words_50: 0,
-      avg_wpm_words_100: 0,
-      best_wpm_words_25: 0,
-      best_wpm_words_50: 0,
-      best_wpm_words_100: 0,
-    },
-  });
+  } | null>(null);
 
   const mutation = useMutation(changeProfilePicture, {
     onSuccess: () => {
@@ -64,25 +60,23 @@ const useProfile = (showNotice: ShowNotice, userId: number, limit: number) => {
 
   const handlePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-
     if (files) {
       const file = files[0];
       const formData = new FormData();
       formData.append("profilePicture", file);
-
       mutation.mutate(formData);
     }
   };
 
   const queryProfilePicture = useQuery(
     ["userPic"],
-    () => {
-      return getUserProfilePicture(userId);
-    },
+    () => getUserProfilePicture(userId),
     {
+      enabled: options.fetchUserPicture ?? false,
       onSuccess: (response) => {
         const blobUrl = URL.createObjectURL(response.data);
         setUserPicture(blobUrl);
+        setIsLoading(false)
       },
       onError: (error) => {
         showNotice(`Error fetching avatar: ${error}`, "error", 5000);
@@ -91,13 +85,15 @@ const useProfile = (showNotice: ShowNotice, userId: number, limit: number) => {
     }
   );
 
-  const queryProfileData = useQuery(["userProfile"], getUserProfileData, {
+  const profileQuery = useQuery(["userProfile"], () => getUserProfileData(), {
+    enabled: options.fetchProfileData ?? false,
     onSuccess: (data) => {
       setProfileData({
         username: data.data.username,
         email: data.data.email,
         id: data.data.id,
         isActive: data.data.is_active,
+        created_at: data.data.created_at
       });
     },
     onError: (error) => {
@@ -107,6 +103,7 @@ const useProfile = (showNotice: ShowNotice, userId: number, limit: number) => {
   });
 
   const queryResultsData = useQuery(["userResults"], () => getStats(userId), {
+    enabled: options.fetchResultsData ?? false,
     onSuccess: (data) => {
       setAvgStats(data.data);
     },
@@ -117,20 +114,28 @@ const useProfile = (showNotice: ShowNotice, userId: number, limit: number) => {
   });
 
   const queryHistory = useQuery(
-    ["userHistory", limit],
-    () => getHistory(userId, limit, 1),
+    ["userHistory"],
+    () => getHistory(userId, 500, 1),
     {
+      enabled: options.fetchHistory ?? false,
       onSuccess: (data) => {
         setHistory(data.data);
       },
       onError: (error) => {
         showNotice(`Error fetching history: ${error}`, "error", 5000);
       },
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     }
   );
 
-  return { userPicture, profileData, avgStats, history, handlePictureChange };
+  return {
+    userPicture,
+    profileData,
+    avgStats,
+    history,
+    handlePictureChange,
+    isLoading,
+  };
 };
 
 export default useProfile;

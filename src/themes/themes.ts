@@ -62,13 +62,13 @@ export const themes: Themes = {
     "--text-correct-color": "#b8c1ec",
   },
   dark: {
-    "--bg-color": "#0d0d0d",
-    "--main-color": "#1a1a1a",
-    "--sub-color": "#333333",
-    "--sub-accent-color": "#4f4f4f",
-    "--text-color": "#b3b3b3",
+    "--bg-color": "#111",
+    "--main-color": "#eee",
+    "--sub-color": "#444",
+    "--sub-accent-color": "#191919",
+    "--text-color": "#444",
     "--mistake-color": "#ff4c4c",
-    "--text-correct-color": "#5ac18e",
+    "--text-correct-color": "#eee",
   },
   volcanic: {
     "--bg-color": "#1c1c1c",
@@ -141,5 +141,32 @@ export const themes: Themes = {
     "--text-color": "#7d8597",
     "--mistake-color": "#e76f51",
     "--text-correct-color": "#0077b6",
+  },
+  neon: {
+    "--bg-color": "#000000",
+    "--main-color": "#c58aff",
+    "--sub-color": "#972fff",
+    "--sub-accent-color": "#1e001e",
+    "--text-color": "#ebd7ff",
+    "--mistake-color": "#da3333",
+    "--text-correct-color": "#972fff",
+  },
+  nightowl: {
+   "--bg-color": "#011627",
+    "--main-color": "#82aaff",
+    "--sub-color": "#41e0b6",
+    "--sub-accent-color": "#2a2a2a",
+    "--text-color": "#d6deeb",
+    "--mistake-color": "#ff6f61",
+    "--text-correct-color": "#41e0b6",
+  },
+  catpuccin: {
+      "--bg-color": "#221c35",
+      "--main-color": "#f67599",
+      "--sub-color": "#5a3a7e",
+      "--sub-accent-color": "#2f2346",
+      "--text-color": "#5a3a7e",
+      "--mistake-color": "#efc050",
+      "--text-correct-color": "#ffe3eb"
   }
 };
