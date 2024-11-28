@@ -9,6 +9,8 @@ interface WordProps {
   currentLetterIndex: number;
   wordIndex: number;
   isGameStarted: boolean;
+  styles?: {}
+  ref?: React.RefObject<HTMLDivElement>
 }
 
 const Word: React.FC<WordProps> = React.memo(
@@ -18,6 +20,8 @@ const Word: React.FC<WordProps> = React.memo(
     currentLetterIndex,
     wordIndex,
     isGameStarted,
+    styles,
+    ref
   }) => {
     const { gameSettings } = useSettingsStore();
     const { userResults } = useResultStore();
@@ -59,6 +63,8 @@ const Word: React.FC<WordProps> = React.memo(
           wordIndex === currentWordIndex ? "relative" : ""
         }`}
         key={wordIndex}
+        style={styles}
+        ref={ref}
       >
         {word.split("").map((letter, letterIndex) => (
           <span

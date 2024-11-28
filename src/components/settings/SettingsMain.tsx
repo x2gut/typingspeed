@@ -15,12 +15,12 @@ import { useMutation } from "react-query";
 import { updateConfig } from "../../api/configApi";
 import { useEffect, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
-import useAuthStore from "../../store/auth-store";
+import {useAuthStore} from "../../store/auth-store";
 
 const SettingsMain = ({}) => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(true)
   const { gameSettings, setGameSettings } = useSettingsStore();
-  const {isAuthenticated} = useAuthStore();
+  const {isAuthenticated, userId} = useAuthStore();
   const mutation = useMutation(updateConfig, {
     onError: (error) => console.log(error),
   });
@@ -29,7 +29,7 @@ const SettingsMain = ({}) => {
 
   useEffect(() => {
     if (!isFirstLaunch && isAuthenticated) {
-      debouncedMutation(gameSettings);
+      debouncedMutation({userId: userId, config: gameSettings})
     } else {
       setIsFirstLaunch(false)
     }

@@ -78,19 +78,27 @@ export type ProfileResultsData = {
 export type History = { total_items: number; history: ProfileResultsData[] };
 
 export interface TimeStats {
-  avg_wpm_time_15: number;
-  avg_wpm_time_30: number;
-  avg_wpm_time_60: number;
-  best_wpm_time_15: number;
-  best_wpm_time_30: number;
-  best_wpm_time_60: number;
+  time_avg_15: number;
+  time_avg_30: number;
+  time_avg_60: number;
+  time_best_15: number;
+  time_best_30: number;
+  time_best_60: number;
 }
 
 export interface WordsStats {
-  avg_wpm_words_25: number;
-  avg_wpm_words_50: number;
-  avg_wpm_words_100: number;
-  best_wpm_words_25: number;
-  best_wpm_words_50: number;
-  best_wpm_words_100: number;
+  words_avg_25: number;
+  words_avg_50: number;
+  words_avg_100: number;
+  words_best_25: number;
+  words_best_50: number;
+  words_best_100: number;
+}
+
+export type User = {
+  isAuthenticated: boolean;
+  username: string;
+  id: number;
+  email: string;
+  isActive: boolean;
 }

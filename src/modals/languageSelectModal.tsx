@@ -8,7 +8,7 @@ import useSettingsStore from "../store/settings-store";
 import { useMutation } from "react-query";
 import { updateConfig } from "../api/configApi";
 import useDebounce from "../hooks/useDebounce";
-import useAuthStore from "../store/auth-store";
+import {useAuthStore} from "../store/auth-store";
 
 interface LanguageOption {
   id: string;
@@ -29,12 +29,12 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const { gameSettings, setGameSettings } = useSettingsStore();
   const {isAuthenticated} = useAuthStore();
+  const {userId} = useAuthStore();
   const { colors } = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isClosing, setIsClosing] = useState(false);
   const mutation = useMutation(updateConfig, {
     onError: (error) => console.log(error),
-    
   });
 
   const languages: LanguageOption[] = [
@@ -73,7 +73,7 @@ const LanguageSelectModal: React.FC<LanguageSelectModalProps> = ({
   const debouncedMutation = useDebounce(mutation.mutate, 100);
 
   useEffect(() => {
-    isAuthenticated && debouncedMutation(gameSettings);
+    isAuthenticated && debouncedMutation({userId: userId, config: gameSettings})
   }, [gameSettings.lang]);
 
   return (

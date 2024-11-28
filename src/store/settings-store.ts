@@ -36,7 +36,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     isFocused: false,
     isGameStarted: false,
     isTimeOut: false,
-    time: Number(localSettings.time) || 60,
+    time: localSettings?.time ? Number(localSettings.time) : 60,
   },
   setGameSettings: (gameSetting) => {
     set((state) => ({

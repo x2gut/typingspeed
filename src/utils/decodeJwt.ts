@@ -13,3 +13,15 @@ export const getUserId = (token: string): number => {
   const id = decodedToken.id;
   return id;
 };
+
+export const getUserEmail = (token: string): string => {
+  const decodedToken = jwtDecode<{ email: string }>(token);
+  const email = decodedToken.email;
+  return email;
+};
+
+export const getUserStatus = (token: string): boolean => {
+  const decodedToken = jwtDecode<{ is_active: boolean }>(token);
+  const status = decodedToken.is_active;
+  return status;
+};

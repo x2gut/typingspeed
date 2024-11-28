@@ -5,7 +5,7 @@ import { useMutation } from "react-query";
 import { updateTheme } from "../../api/configApi";
 import { getUserId } from "../../utils/decodeJwt";
 import { useNoticeStore } from "../../store/notification-store";
-import useAuthStore from "../../store/auth-store";
+import { useAuthStore } from "../../store/auth-store";
 
 interface ThemeButtonProps {
   newTheme: string;
@@ -17,9 +17,8 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
   className = "",
 }) => {
   const { theme, handleThemeChange } = useTheme();
-  const { isAuthenticated } = useAuthStore();
-  const token = localStorage.getItem("access_token");
-  const showNotice = useNoticeStore((state) => state.showNotice)
+  const { isAuthenticated, userId } = useAuthStore();
+  const showNotice = useNoticeStore((state) => state.showNotice);
   const mutation = useMutation(updateTheme, {
     onSuccess: () => {
       console.log("success");
@@ -31,13 +30,12 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
 
   const handleClick = () => {
     handleThemeChange(newTheme);
-    if (token === null || !isAuthenticated) return;
+    if (!isAuthenticated) return;
 
-    const user_id = getUserId(token);
-    if (user_id === undefined) return;
+    if (userId === undefined) return;
 
     if (newTheme !== theme) {
-      mutation.mutate({ user_id, newTheme });
+      mutation.mutate({ user_id: userId, newTheme: newTheme });
     }
   };
 

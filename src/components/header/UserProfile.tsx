@@ -4,7 +4,7 @@ import { CiLogout } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useNoticeStore } from "../../store/notification-store";
-import useAuthStore from "../../store/auth-store";
+import {useAuthStore} from "../../store/auth-store";
 
 const UserProfileBtn = () => {
   const { Logout, username } = useAuthStore();

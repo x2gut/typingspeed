@@ -5,7 +5,7 @@ import { useMutation } from "react-query";
 import { updateConfig } from "../../api/configApi";
 import useDebounce from "../../hooks/useDebounce";
 import { useEffect, useState } from "react";
-import useAuthStore from "../../store/auth-store";
+import {useAuthStore} from "../../store/auth-store";
 interface TypeSettingsMenuProps {
   className: string;
 }
@@ -13,7 +13,7 @@ interface TypeSettingsMenuProps {
 const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const { gameSettings, setGameSettings } = useSettingsStore();
-  const {isAuthenticated} = useAuthStore();
+  const {isAuthenticated, userId} = useAuthStore();
   const { mode, time, words } = gameSettings;
 
   const mutation = useMutation(updateConfig, {
@@ -23,7 +23,7 @@ const TypeSettingsMenu: React.FC<TypeSettingsMenuProps> = ({ className }) => {
 
   useEffect(() => {
     if (!isFirstLaunch && isAuthenticated) {
-      debouncedMutation(gameSettings)
+      debouncedMutation({userId: userId, config: gameSettings})
     } else {
       setIsFirstLaunch(false);
     }

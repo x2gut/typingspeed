@@ -4,6 +4,7 @@ import {
   changeProfilePicture,
   getUserProfileData,
   getUserProfilePicture,
+  sendEmail,
 } from "../api/userProfileApi";
 import { getHistory, getStats } from "../api/resultsApi";
 import {
@@ -14,7 +15,8 @@ import {
 } from "../types/types";
 import { queryClient } from "..";
 import { useNoticeStore } from "../store/notification-store";
-import useAuthStore from "../store/auth-store";
+import {useAuthStore} from "../store/auth-store";
+import { AxiosError } from "axios";
 
 interface UseProfileOptions {
   fetchUserPicture?: boolean;
@@ -47,7 +49,7 @@ const useProfile = (userId: number, options: UseProfileOptions) => {
     words: WordsStats;
   } | null>(null);
 
-  const mutation = useMutation(changeProfilePicture, {
+  const profilePictureMutation = useMutation(changeProfilePicture, {
     onSuccess: () => {
       showNotice("Profile picture updated", "success", 5000);
       queryClient.invalidateQueries("userPic");
@@ -63,7 +65,7 @@ const useProfile = (userId: number, options: UseProfileOptions) => {
       const file = files[0];
       const formData = new FormData();
       formData.append("profilePicture", file);
-      mutation.mutate(formData);
+      profilePictureMutation.mutate(formData);
     }
   };
 
@@ -84,7 +86,7 @@ const useProfile = (userId: number, options: UseProfileOptions) => {
     }
   );
 
-  const profileQuery = useQuery(["userProfile"], () => getUserProfileData(), {
+  const profileQuery = useQuery(["userProfile"], () => getUserProfileData(userId), {
     enabled: options.fetchProfileData ?? false,
     onSuccess: (data) => {
       setProfileData({
@@ -106,8 +108,10 @@ const useProfile = (userId: number, options: UseProfileOptions) => {
     onSuccess: (data) => {
       setAvgStats(data.data);
     },
-    onError: (error) => {
-      showNotice(`Error fetching results data: ${error}`, "error", 5000);
+    onError: (error: AxiosError) => {
+      if (error.status !== 404) {
+        showNotice(`Error fetching results data: ${error}`, "error", 5000);
+      }
     },
     refetchOnWindowFocus: false,
   });

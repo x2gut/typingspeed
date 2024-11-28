@@ -1,7 +1,7 @@
 import axios from "axios";
 import apiClient from "./apiClient";
 
-const registerUser = async ({
+export const registerUser = async ({
   username,
   email,
   password,
@@ -28,8 +28,7 @@ const registerUser = async ({
             "Unknown error",
         }));
 
-        return Promise.reject(errors)
-
+        return Promise.reject(errors);
       }
 
       if (Array.isArray(data.detail) && data.detail.length > 0) {
@@ -56,4 +55,32 @@ const registerUser = async ({
   }
 };
 
-export default registerUser;
+
+
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+}
+
+export const loginUser = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => {
+  const response = await apiClient.post<LoginResponse>("/auth/login", {
+    username,
+    password,
+  });
+
+  return response;
+};
+
+export const loginOauthUser = async () => {
+  return await apiClient.get("oauth/google/login");
+};
+
+export const getAuthStatus = async () => {
+  return await apiClient.get("/auth/status");
+};

@@ -2,7 +2,8 @@ import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:8000",
-  timeout: 1000,
+  timeout: 5000,
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
@@ -25,26 +26,8 @@ apiClient.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem("refresh_token");
-        const response = await axios.post(
-          "http://localhost:8000/auth/token/refresh",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
-        );
-        
-        const { access_token } = response.data;
-        localStorage.setItem("access_token", access_token);
-
-        apiClient.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${access_token}`;
-
+        await apiClient.get("auth/refresh");
         return apiClient(originalRequest);
-
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
         localStorage.removeItem("accessToken");

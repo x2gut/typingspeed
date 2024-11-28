@@ -33,11 +33,7 @@ const useContainerDimensions = (
 
   useEffect(() => {
     calculateWordsPerContainer();
-  }, [isTimeOut, wordsList]);
-
-  useEffect(() => {
-    calculateWordsPerContainer();
-  }, [containerRef.current]);
+  }, [isTimeOut, wordsList, containerRef.current]);
 
   return { wordsPerRow, wordsPerContainer, slicedIndex, setSlicedIndex };
 };

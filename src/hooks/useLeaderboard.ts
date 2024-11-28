@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { getLeaderboard } from "../api/leaderboardApi";
+import { getLeaderboard } from "../api/resultsApi";
 import { useNoticeStore } from "../store/notification-store";
 
 interface UserResult {

@@ -1,29 +1,37 @@
 import { create } from "zustand";
-import { getUserId, getUsername } from "../utils/decodeJwt";
+import { User } from "../types/types";
+import apiClient from "../api/apiClient";
+
 
 interface AuthStore {
   isAuthenticated: boolean;
   username: string;
   userId: number;
-  setIsAuthenticated: () => void;
+  email: string;
+  isActive: boolean;
+  setIsAuthenticated: (value: boolean) => void;
+  setUser: (userData: User) => void;
   Logout: () => void;
 }
 
-const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
   username: "",
   userId: 0,
-  setIsAuthenticated: () => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      const username = getUsername(token);
-      const userId = getUserId(token);
-      set({
-        isAuthenticated: true,
-        username: username,
-        userId: userId,
-      });
-    }
+  email: "",
+  isActive: false,
+  setUser: (userData) => {
+    set({
+      username: userData.username,
+      userId: userData.id,
+      email: userData.email,
+      isActive: userData.isActive,
+    })
+  },
+  setIsAuthenticated: (value) => {
+    set({
+      isAuthenticated: value
+    })
   },
   Logout: () => {
     set({
@@ -33,9 +41,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     });
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    apiClient.get("/auth/logout")
   },
 }));
 
-useAuthStore.getState().setIsAuthenticated();
-
-export default useAuthStore;

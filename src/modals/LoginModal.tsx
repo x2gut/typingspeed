@@ -1,10 +1,10 @@
 import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { CiLogin } from "react-icons/ci";
-import loginUser from "../api/loginApi";
+import { loginUser } from "../api/authApi";
 import { useMutation } from "react-query";
 import { AxiosResponse } from "axios";
 import { useNoticeStore } from "../store/notification-store";
-import useAuthStore from "../store/auth-store";
+import {useAuthStore} from "../store/auth-store";
 import storeTokens from "../utils/storeTokens";
 import Modal from "../components/common/Modal";
 
@@ -27,7 +27,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
   const mutation = useMutation(loginUser, {
     onSuccess: (response) => {
       storeTokens(response.data.access_token, response.data.refresh_token);
-      setIsAuthenticated();
+      setIsAuthenticated(true);
       setIsLogin(false);
       showNotice("You successfully logged in!", "success", 5000);
       clearFields();

@@ -7,7 +7,7 @@ import LoginModal from "../../modals/LoginModal";
 import AuthBtn from "./AuthBtn";
 import UserProfileBtn from "./UserProfile";
 import LeaderboardBtn from "./LeaderboardBtn";
-import useAuthStore from "../../store/auth-store";
+import {useAuthStore} from "../../store/auth-store";
 import Tooltip from "../common/Tooltip";
 import SettingsBtn from "./SettingsBtn";
 

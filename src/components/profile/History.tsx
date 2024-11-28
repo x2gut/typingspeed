@@ -95,7 +95,7 @@ const ProfileHistory: React.FC<HistoryComponentProps> = ({ history }) => {
         </button>
       </div>
       {history["history"].slice(0, limit).map((item) => (
-        <div className="flex bg-[--bg-color] brightness-110 p-3 rounded-xl my-3">
+        <div className="flex bg-[--bg-color] brightness-110 p-3 rounded-xl my-3" key={item.id}>
           <div className="flex items-center gap-2 text-[--sub-color] w-[200px]">
             {item.wpm} <span className="text-[--text-color]">wpm</span>
           </div>

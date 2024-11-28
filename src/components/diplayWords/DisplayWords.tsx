@@ -19,6 +19,7 @@ import LanguageBtn from "./LanguageBtn";
 import LanguageSelectModal from "../../modals/languageSelectModal";
 import useSettingsStore from "../../store/settings-store";
 import useResultStore from "../../store/result-store";
+import WordsContainer from "./WordsContainer";
 
 interface DisplayWordsProps {
   wordsList: string[];
@@ -36,7 +37,7 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
   const [shuffledWords, setShuffledWords] = useState(wordsList);
   const [avgWordsLength, setAvgWordsLength] = useState<number>(0);
   const [currentWords, setCurrentWords] = useState<string[][]>([]);
-  const {resetUserResults} = useResultStore();
+  const { resetUserResults } = useResultStore();
   const wordsContainerRef = useRef<HTMLDivElement>(null);
   const { wordsPerContainer, slicedIndex, setSlicedIndex } =
     useContainerDimensions(
@@ -135,32 +136,13 @@ const DisplayWords: React.FC<DisplayWordsProps> = ({
           setIsModalActive={setIsLangModalActive}
         />
       )}
-      <div
-        className={`words-container flex h-52 w-full max-w-[1280px] justify-center flex-wrap p-7 outline-none ${
-          !typeSettings.isFocused ? "blur opacity-40" : ""
-        }`}
-        ref={wordsContainerRef}
-        tabIndex={1}
-        onFocus={() => setTypeSettings({ isFocused: true })}
-        onBlur={() => setTypeSettings({ isFocused: false })}
-      >
-        <div className="words">
-          {currentWords.map((row, rowIndex) => (
-            <div className="word-row flex gap-2" key={rowIndex}>
-              {row.map((word, wordIndex) => (
-                <Word
-                  key={wordIndex}
-                  word={word}
-                  currentWordIndex={currentWordIndex}
-                  currentLetterIndex={currentLetterIndex}
-                  wordIndex={shuffledWords.indexOf(word)}
-                  isGameStarted={typeSettings.isGameStarted}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <WordsContainer
+        currentWords={currentWords}
+        shuffledWords={shuffledWords}
+        wordsContainerRef={wordsContainerRef}
+        currentLetterIndex={currentLetterIndex}
+        currentWordIndex={currentWordIndex}
+      />
       <div
         className={`blur-warning ${
           typeSettings.isFocused ? "hidden" : "visible"

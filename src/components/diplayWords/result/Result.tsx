@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ResultData, TimeStats, WordsStats } from "../../../types/types";
+import { TimeStats, WordsStats } from "../../../types/types";
 import LineChart from "./rechart/LineChart";
 import { getAccuracy } from "../../../helpers/getAccuray";
 import WordsHistory from "./WordsHistory";
 import { useMutation } from "react-query";
 import { addResults } from "../../../api/resultsApi";
-import useAuthStore from "../../../store/auth-store";
+import {useAuthStore} from "../../../store/auth-store";
 import useSettingsStore from "../../../store/settings-store";
 import useResultStore from "../../../store/result-store";
 import { PiCrownSimpleFill } from "react-icons/pi";
@@ -61,8 +61,8 @@ const Result: React.FC<ResultProps> = ({ avgStats }) => {
       const { mode, time, words } = gameSettings;
       const bestWPM =
         mode === "time"
-          ? avgStats.time[`best_wpm_time_${time}` as keyof TimeStats]
-          : avgStats.words[`best_wpm_words_${words}` as keyof WordsStats];
+          ? avgStats.time[`time_best_${time}` as keyof TimeStats]
+          : avgStats.words[`words_best_${words}` as keyof WordsStats];
       console.log(latestWPM - bestWPM);
       return latestWPM - bestWPM;
     } else {
@@ -71,6 +71,7 @@ const Result: React.FC<ResultProps> = ({ avgStats }) => {
   }
 
   useEffect(() => {
+    console.log(avgStats)
     const generatedData = Array.from(
       { length: wordsPerMin.length },
       (_, i) => ({

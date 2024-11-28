@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { getUserProfilePicture } from "../../api/userProfileApi";
 import { PiCrownSimpleFill } from "react-icons/pi";
-import useAuthStore from "../../store/auth-store";
+import {useAuthStore} from "../../store/auth-store";
 
 interface LeaderboardDataProps {
   user_id: number;
@@ -37,7 +37,7 @@ const LeaderboardData: React.FC<LeaderboardDataProps> = ({
   );
 
   return (
-    <div className="leaderboard-user my-2">
+    <div className="leaderboard-user my-2" key={index}>
       <ul className="flex items-center p-3 rounded-lg bg-[--bg-color] brightness-90">
         <li className="text-lg flex items-center gap-2 text-[--text-correct-color] w-[350px]">
           {index === 0 ? <PiCrownSimpleFill color="yellow"/> : <span className="px-1">{index + 1}</span>}

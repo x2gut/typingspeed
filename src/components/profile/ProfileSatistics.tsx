@@ -13,40 +13,40 @@ const ProfileStatistics: React.FC<ProfileStatisticsProps> = ({ avgStats }) => {
   const [currentMode, setCurrentMode] = useState<"time" | "words">("time");
   const [statistics, setStatistics] = useState({
     time: {
-      avg_wpm_time_15: avgStats.time.avg_wpm_time_15,
-      avg_wpm_time_30: avgStats.time.avg_wpm_time_30,
-      avg_wpm_time_60: avgStats.time.avg_wpm_time_60,
-      best_wpm_time_15: avgStats.time.best_wpm_time_15,
-      best_wpm_time_30: avgStats.time.best_wpm_time_30,
-      best_wpm_time_60: avgStats.time.best_wpm_time_60,
+      avg_wpm_time_15: avgStats.time.time_avg_15,
+      avg_wpm_time_30: avgStats.time.time_avg_30,
+      avg_wpm_time_60: avgStats.time.time_avg_60,
+      best_wpm_time_15: avgStats.time.time_best_15,
+      best_wpm_time_30: avgStats.time.time_best_30,
+      best_wpm_time_60: avgStats.time.time_best_60,
     },
     words: {
-      avg_wpm_words_25: avgStats.words.avg_wpm_words_25,
-      avg_wpm_words_50: avgStats.words.avg_wpm_words_50,
-      avg_wpm_words_100: avgStats.words.avg_wpm_words_100,
-      best_wpm_words_25: avgStats.words.best_wpm_words_25,
-      best_wpm_words_50: avgStats.words.best_wpm_words_50,
-      best_wpm_words_100: avgStats.words.best_wpm_words_100,
+      avg_wpm_words_25: avgStats.words.words_avg_25,
+      avg_wpm_words_50: avgStats.words.words_avg_50,
+      avg_wpm_words_100: avgStats.words.words_avg_100,
+      best_wpm_words_25: avgStats.words.words_best_25,
+      best_wpm_words_50: avgStats.words.words_best_50,
+      best_wpm_words_100: avgStats.words.words_best_100,
     },
   });
 
   useEffect(() => {
     setStatistics({
       time: {
-        avg_wpm_time_15: avgStats.time.avg_wpm_time_15,
-        avg_wpm_time_30: avgStats.time.avg_wpm_time_30,
-        avg_wpm_time_60: avgStats.time.avg_wpm_time_60,
-        best_wpm_time_15: avgStats.time.best_wpm_time_15,
-        best_wpm_time_30: avgStats.time.best_wpm_time_30,
-        best_wpm_time_60: avgStats.time.best_wpm_time_60,
+        avg_wpm_time_15: avgStats.time.time_avg_15,
+        avg_wpm_time_30: avgStats.time.time_avg_30,
+        avg_wpm_time_60: avgStats.time.time_avg_60,
+        best_wpm_time_15: avgStats.time.time_best_15,
+        best_wpm_time_30: avgStats.time.time_best_30,
+        best_wpm_time_60: avgStats.time.time_best_60,
       },
       words: {
-        avg_wpm_words_25: avgStats.words.avg_wpm_words_25,
-        avg_wpm_words_50: avgStats.words.avg_wpm_words_50,
-        avg_wpm_words_100: avgStats.words.avg_wpm_words_100,
-        best_wpm_words_25: avgStats.words.best_wpm_words_25,
-        best_wpm_words_50: avgStats.words.best_wpm_words_50,
-        best_wpm_words_100: avgStats.words.best_wpm_words_100,
+        avg_wpm_words_25: avgStats.words.words_avg_25,
+        avg_wpm_words_50: avgStats.words.words_avg_50,
+        avg_wpm_words_100: avgStats.words.words_avg_100,
+        best_wpm_words_25: avgStats.words.words_best_25,
+        best_wpm_words_50: avgStats.words.words_best_50,
+        best_wpm_words_100: avgStats.words.words_best_100,
       },
     });
   }, [avgStats]);

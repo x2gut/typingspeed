@@ -13,7 +13,7 @@ import { useTheme } from "../contexts/ThemeProvider";
 import Tooltip from "../components/common/Tooltip";
 import useResultStore from "../store/result-store";
 import useProfile from "../hooks/useProfile";
-import useAuthStore from "../store/auth-store";
+import {useAuthStore} from "../store/auth-store";
 import { TimeStats, WordsStats } from "../types/types";
 
 const TypeTest: React.FC = () => {

@@ -1,12 +1,12 @@
-import React, { Dispatch, useRef, useState } from "react";
+import React, { Dispatch, FormEvent, useRef, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import registerUser from "../api/registerApi";
-import loginUser from "../api/loginApi";
+import { FaGoogle } from "react-icons/fa";
+import { registerUser } from "../api/authApi";
+import { loginUser, loginOauthUser } from "../api/authApi";
 import { useMutation } from "react-query";
 import { useNoticeStore } from "../store/notification-store";
-import useAuthStore from "../store/auth-store";
-import storeTokens from "../utils/storeTokens";
 import Modal from "../components/common/Modal";
+import { useAuthCheck } from "../hooks/useCheckAuth";
 
 interface RegisterModalInterface {
   isRegister: boolean;
@@ -23,17 +23,16 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
   const [password, setPassword] = useState<string>("");
   const [repeatPassword, setRepeatPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const {refetchAuthStatus} = useAuthCheck();
   const showNotice = useNoticeStore((state) => state.showNotice);
-  const { setIsAuthenticated } = useAuthStore();
 
-  const mutation = useMutation(registerUser, {
+  const registerMutation = useMutation(registerUser, {
     onSuccess: async () => {
       showNotice("You successfully registered", "success", 5000);
-      clearFields();
-      const response = await loginUser({ username, password });
-      storeTokens(response.data.access_token, response.data.refresh_token);
-      setIsAuthenticated();
+      await loginUser({ username, password });
+      refetchAuthStatus();
       setIsRegister(false);
+      clearFields();
     },
 
     onError: (error: { error: string }[]) => {
@@ -44,6 +43,15 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
       }
     },
   });
+
+  const oauthLoginMutation = useMutation(loginOauthUser, {
+    onSuccess: () => {
+      console.log("Success")
+    },
+    onError: () => {
+      console.log("error")
+    }
+  })
 
   const modalRef = useRef<HTMLFormElement>(null);
 
@@ -77,7 +85,7 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
       return;
     }
 
-    mutation.mutate({
+    registerMutation.mutate({
       username,
       email,
       password,
@@ -97,7 +105,7 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
               event.preventDefault();
               handleRegister();
             }}
-            className="modal-form flex justify-center items-center gap-3 flex-col max-w-80 max-h-80"
+            className="modal-form flex justify-center items-center gap-3 flex-col max-w-80 max-h-96"
             ref={modalRef}
           >
             <div className="modal-title flex gap-1 items-center">
@@ -146,15 +154,27 @@ const RegisterModal: React.FC<RegisterModalInterface> = ({
                 Login
               </button>
             </p>
+            <div className="flex justify-center flex-col w-full items-center">
+              <p>OR</p>
+              <button
+                className="w-full flex justify-center px-10 py-2 bg-[--bg-color] brightness-90 rounded-lg hover:brightness-110 duration-200"
+                onClick={(event: FormEvent) => {
+                  event.preventDefault();
+                  window.location.href = "http://localhost:8000/oauth/google/login"
+                }}
+              >
+                <FaGoogle />
+              </button>
+            </div>
             <button
               className="overflow-hidden flex items-center justify-center relative w-72 bg-[--sub-accent-color]
-             text-[--sub-color] py-4 px-4 rounded-xl font-bold uppercase -- before:block before:absolute before:h-full
+             text-[--sub-color] py-4 px-4 rouPnded-xl font-bold uppercase -- before:block before:absolute before:h-full
               before:w-1/2 before:rounded-full before:bg-[--main-color] before:top-0 before:left-1/4
                before:transition-transform before:opacity-0 before:hover:opacity-100 hover:text-[--correct-text-color]
                 hover:before:animate-ping transition-all duration-300"
             >
-              <button disabled={mutation.isLoading} className="relative">
-                {mutation.isLoading ? "Registering..." : "Register"}
+              <button disabled={registerMutation.isLoading} className="relative">
+                {registerMutation.isLoading ? "Registering..." : "Register"}
               </button>
             </button>
           </form>
