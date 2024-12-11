@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/auth-store";
 import { getAuthStatus } from "../api/authApi";
 
 export const useAuthCheck = () => {
-  const { setUser, isAuthenticated } = useAuthStore();
+  const { setUser } = useAuthStore();
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
   const query = useQuery("authStatus", getAuthStatus, {

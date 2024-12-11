@@ -13,12 +13,15 @@ import { useTheme } from "../contexts/ThemeProvider";
 import Tooltip from "../components/common/Tooltip";
 import useResultStore from "../store/result-store";
 import useProfile from "../hooks/useProfile";
-import {useAuthStore} from "../store/auth-store";
+import { useAuthStore } from "../store/auth-store";
 import { TimeStats, WordsStats } from "../types/types";
+import { useLocation } from "react-router-dom";
+import { useNoticeStore } from "../store/notification-store";
 
 const TypeTest: React.FC = () => {
   const { userId } = useAuthStore();
   const { typeSettings, gameSettings, setTypeSettings } = useSettingsStore();
+  const { showNotice } = useNoticeStore();
   const { avgStats } = useProfile(userId, { fetchResultsData: true });
   const [words, setWords] = useState<string[]>([]);
   const [isResetData, setIsResetData] = useState(false);
@@ -29,10 +32,17 @@ const TypeTest: React.FC = () => {
   const { applyRandomTheme } = useTheme();
   const { resetUserResults } = useResultStore();
   const { config } = useConfig();
-
+  const location = useLocation();
   useEffect(() => {
-    setResultsData(avgStats)
-  }, [avgStats])
+    setResultsData(avgStats);
+
+    const params = new URLSearchParams(location.search);
+
+    const confirmation = params.get("confirmation");
+    if (confirmation === "success") {
+      showNotice("Email confirmed");
+    }
+  }, [avgStats]);
 
   useEffect(() => {
     fetch(`/typingspeed/languages/${gameSettings.lang || "english"}.json`)
